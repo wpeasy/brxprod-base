@@ -146,9 +146,11 @@ In short:
 
 Where code goes (follows the site's `code` section): a code manager via
 `brxprod/create-snippet` — a **draft**; never activate it or claim to have —
-never a Bricks Code element. Read `brxprod/get-site-js` first. PHP standards:
-_to be specified_; meanwhile WordPress coding standards, prefixed names,
-escape/sanitise/capability checks.
+never a Bricks Code element. Read `brxprod/get-site-js` first.
+
+**PHP: [standards/php.md](standards/php.md)** — WordPress PHP Coding Standards;
+prefixed global names; escape, sanitise, capability/nonce checks; no `eval`;
+enqueue assets. Stored as a draft snippet — never activated by the agent.
 
 ## Known issues (BRXProd plugin, not site faults)
 

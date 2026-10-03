@@ -69,6 +69,7 @@ CLAUDE.md                 How the agent works in every project (loaded each sess
 standards/
   css.md                  CSS, BEM and label standard
   js.md                   JavaScript standard
+  php.md                  PHP standard
   examples/               Reference Bricks builds
 .claude/
   settings.json           Shared permission rules
@@ -103,7 +104,8 @@ survive.
   container queries, never `@media`.
 - **[JavaScript](standards/js.md)** — IIFE, ES6+, browser APIs first, events
   instead of timers (including Bricks' frontend events).
-- **PHP** — to be specified.
+- **[PHP](standards/php.md)** — WordPress PHP Coding Standards; code goes in a
+  code manager as a draft snippet, never a Bricks Code element.
 
 Order of authority: **Bricks' skills and abilities** → the site's BRXProd
 design instructions → `CLAUDE.md` and `standards/` → other skills.
