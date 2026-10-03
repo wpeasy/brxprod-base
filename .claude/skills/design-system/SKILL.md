@@ -36,8 +36,8 @@ Report the framework detected, the variable and class counts the script prints,
 and any concept-map row that says **not found** — that means this site has no
 token for the concept, which matters before anyone writes CSS against it.
 
-If the framework is not `bricks-wireframes`, say so prominently: only the
-Wireframes branch has been verified against a real site.
+If the framework is `unknown`, say so prominently — the concept map will be
+mostly empty and the rules in CLAUDE.md can't be resolved against it.
 
 ## What the file contains
 
@@ -51,17 +51,26 @@ Wireframes branch has been verified against a real site.
 - **Palettes** (shade ramps collapsed to patterns), **global classes** by
   category (Style Guide `sg{n}-*` classes omitted), **theme styles**.
 
-## Extending to Core Framework
+## Frameworks
 
-The `ROLES` table at the top of `scripts/render.py` maps each concept to
-candidate token stems. Wireframes stems are verified; Core Framework stems
-(`space-m`, `text-m`, `gutter`, `section-padding-block`…) are guesses. When this
-is first run on a Core Framework site:
+Both are verified against real sites (Bricks Wireframes; Core Framework 2.0.2):
 
-1. Check whether its tokens are in Bricks' global variables at all — Core
-   Framework may emit its own stylesheet and only optionally sync variables to
-   Bricks. `extract.php` records any `core_framework*` options to help locate
-   them.
-2. Correct the `ROLES` candidates against the real names, and the
-   `detect_framework` fallback if needed.
-3. Remove the "provisional" note this skill tells you to give.
+- **Bricks Wireframes** — `brxw-` prefix. Brand and status colours come from
+  BRXProd's palette (`--brxp-primary` …), which exists only as palette entries,
+  not Bricks variables; the renderer includes palette names for that reason.
+- **Core Framework** — unprefixed by default (a user prefix is honoured via
+  `get-context`). It syncs all its tokens into Bricks' global variables, in one
+  "Core Framework" category, and ships its own brand/status colours with
+  transparency (`--primary-{5…90}`) and shade (`--primary-{d,l}-{1…4}`) series
+  plus semantic colours (`--text-body`, `--bg-surface`, `--border-primary`…). It
+  also adds ~900 utility classes, summarised by family.
+
+A concept that is *not found* is a real gap in that framework's preset (e.g.
+Core Framework has no width, measure, line-height, transition or ratio tokens).
+
+## Changing the concept map
+
+`ROLES` at the top of `scripts/render.py` maps each concept to candidate token
+names, tried in order. Add a candidate when a framework (or a customised
+preset) names a concept differently; add a role when house rules need a new
+concept. Re-run and check both the new row and that existing rows didn't move.

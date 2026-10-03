@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(novamira:*)",
-      "Bash(sh .claude/skills/design-system/scripts/generate.sh)"
+      "Bash(sh .claude/skills/design-system/scripts/generate.sh)",
+      "Bash(sh .claude/skills/init-brxprod/scripts/install-skills.sh)",
+      "Bash(python3 .claude/skills/init-brxprod/scripts/status.py)",
+      "Bash(python3 .claude/skills/init-brxprod/scripts/status.py --json)"
     ],
     "ask": [
       "Bash(novamira auth:*)",

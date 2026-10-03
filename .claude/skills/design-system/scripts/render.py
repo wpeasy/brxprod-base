@@ -19,32 +19,62 @@ SIZES = ["3xs", "2xs", "xs", "s", "m", "l", "xl", "2xl", "3xl", "4xl", "5xl", "6
 SIZE_RE = "|".join(sorted(SIZES, key=len, reverse=True))
 RAMP_RE = re.compile(r"^(?P<stem>.+)-(?P<kind>[ldt])-(?P<n>\d+)(?P<suffix>-text)?$")
 
-# Concept -> candidate stems (prefix is added at match time).
-# {size} = t-shirt scale, {n} = number, {word} = named member.
-# Wireframes names are verified; Core Framework candidates are best guesses
-# until a Core Framework site has been run through this (see SKILL.md).
+# Concept -> candidates, tried in order; the first that matches wins.
+# A string is a token stem with the framework prefix added; a leading "=" means
+# an absolute name (no prefix, e.g. the shared brxp-* layer). A tuple is a set
+# of sibling names, shown together if any exist.
+# Placeholders: {size} t-shirt scale, {n} number, {word} named member,
+# {ramp} l/d/t shade (e.g. l-3).
+# Verified against Bricks Wireframes (brxw-) and Core Framework 2.0 (unprefixed).
 ROLES = [
     ("Spacing scale", ["space-{size}"]),
     ("Font-size scale", ["text-{size}"]),
     ("Radius scale", ["radius-{size}"]),
     ("Shadow scale", ["shadow-{size}"]),
-    ("Section padding (block)", ["section-space-vertical", "section-padding-block", "section-space-y", "section-space"]),
-    ("Section padding (inline)", ["section-space-horizontal", "section-padding-inline", "section-space-x", "gutter"]),
+    ("Section padding (block)", ["section-space-vertical", "section-padding-block"]),
+    ("Section padding (inline) / gutter", ["section-space-horizontal", "gutter"]),
     ("Content gap", ["content-gap"]),
     ("Container gap", ["container-gap"]),
     ("Grid gap", ["grid-gap"]),
-    ("Container width", ["container-width", "container-max-width", "max-width"]),
+    ("Container width", ["container-width", "max-screen-width"]),
     ("Fixed widths", ["width-{n}"]),
     ("Text measure", ["text-width-{size}"]),
     ("Heading measure", ["title-width-{size}"]),
-    ("Body line height", ["line-height-body", "body-line-height"]),
-    ("Heading line height", ["line-height-heading", "heading-line-height"]),
+    ("Body line height", ["line-height-body"]),
+    ("Heading line height", ["line-height-heading"]),
     ("Transitions", ["transition-{size}"]),
-    ("Aspect ratios", ["ratio-{word}", "aspect-{word}"]),
-    ("Grid templates", ["grid-{n}"]),
-    ("Neutral greys", ["color-neutral-{n}", "neutral-{n}", "base-{n}"]),
-    ("Overlay colour", ["color-overlay", "overlay"]),
+    ("Aspect ratios", ["ratio-{word}"]),
+    ("Grid templates", ["grid-{n}", "columns-{n}"]),
+    ("Brand colours", [("primary", "secondary", "tertiary", "accent"),
+                       ("=brxp-primary", "=brxp-secondary")]),
+    ("Status colours", [("success", "warning", "error", "danger", "info"),
+                        ("=brxp-success", "=brxp-warning", "=brxp-danger", "=brxp-info")]),
+    ("Neutral greys", ["color-neutral-{n}", "base-{ramp}"]),
+    ("Black / white", [("dark", "light")]),
+    ("Body text colour", ["text-body"]),
+    ("Heading text colour", ["text-title"]),
+    ("Page background", ["bg-body"]),
+    ("Surface background", ["bg-surface", "=brxp-surface"]),
+    ("Border colour", ["border-primary"]),
+    ("Overlay colour", ["color-overlay"]),
 ]
+
+
+def house_rule_set(text):
+    """Which of BRXProd's two starting rule sets the site's instructions follow.
+
+    Code: styling in CSS, BEM, @container. Visual: everything in Bricks' own
+    controls, `ai-` class names, Bricks breakpoints. Anything else is reported
+    as custom so nobody assumes either.
+    """
+    t = (text or "").lower()
+    code = sum(k in t for k in ("styling goes in css", "never use `@media`", "use bem", "`/* settings */`"))
+    visual = sum(k in t for k in ("`ai-`", "\"forbid\"", "bricks' own controls", "bricks' breakpoints"))
+    if code > visual and code >= 2:
+        return "Code"
+    if visual > code and visual >= 2:
+        return "Visual"
+    return "Custom"
 
 
 def load(path):
@@ -84,6 +114,15 @@ class Tokens:
     def __init__(self, variables):
         self.values = OrderedDict((v["name"], v.get("value", "")) for v in variables)
         self.category = {v["name"]: v.get("category") or "Uncategorised" for v in variables}
+        # Variables plus colours that exist only as palette entries (BRXProd's
+        # brand ramps on a Wireframes site are emitted by the palette, not
+        # stored as Bricks variables).
+        self.known = list(self.values)
+
+    def add_palette_names(self, names):
+        for n in names:
+            if n not in self.values and n not in self.known:
+                self.known.append(n)
 
     def target(self, name):
         m = re.fullmatch(r"var\(\s*--([\w-]+)\s*(?:,.*)?\)", (self.values.get(name) or "").strip())
@@ -97,6 +136,8 @@ class Tokens:
 
     def display(self, name):
         """Readable value: fluid clamps as `min → max`, aliases named."""
+        if name not in self.values:
+            return "palette colour" if name in self.known else ""
         resolved = self.resolve(name)
         m = re.fullmatch(r"clamp\(\s*([^,]+?)\s*,.*,\s*([^,()]+?)\s*\)", re.sub(r"\s+", " ", resolved.strip()))
         shown = "%s → %s (fluid)" % (m.group(1), m.group(2)) if m else compact(resolved)
@@ -153,13 +194,18 @@ def collapse_ramps(names):
     return plain, summaries
 
 
+def full_name(prefix, candidate):
+    return candidate[1:] if candidate.startswith("=") else prefix + candidate
+
+
 def role_matches(tokens, prefix, pattern):
-    regex = re.escape(prefix + pattern)
+    regex = re.escape(full_name(prefix, pattern))
     regex = regex.replace(re.escape("{size}"), "(?P<m>%s)" % SIZE_RE)
     regex = regex.replace(re.escape("{n}"), r"(?P<m>\d+)")
     regex = regex.replace(re.escape("{word}"), r"(?P<m>[a-z][a-z-]*)")
+    regex = regex.replace(re.escape("{ramp}"), r"(?P<m>[ldt]-\d+)")
     found = []
-    for n in tokens.values:
+    for n in tokens.known:
         if is_hidden(n):
             continue
         m = re.fullmatch(regex, n)
@@ -168,27 +214,55 @@ def role_matches(tokens, prefix, pattern):
     return found
 
 
+def number_span(members):
+    nums = sorted(int(m) for m in members)
+    if len(nums) > 6 and nums == sorted(set(nums)):
+        return "%d…%d" % (nums[0], nums[-1])
+    return ", ".join(str(n) for n in nums)
+
+
+def colour_variants(tokens, name):
+    """Transparency series and shade ramps hanging off one colour token."""
+    alpha = [m.group(1) for m in (re.fullmatch(re.escape(name) + r"-(\d+)", n) for n in tokens.known) if m]
+    _, ramps = collapse_ramps(n for n in tokens.known if n.startswith(name + "-") and RAMP_RE.match(n)
+                              and RAMP_RE.match(n).group("stem") == name)
+    parts = []
+    if alpha:
+        parts.append("transparency `--%s-{%s}`" % (name, number_span(alpha)))
+    parts.extend("shades " + r for r in ramps)
+    return parts
+
+
 def concept_rows(tokens, prefix):
     rows = []
-    for label, patterns in ROLES:
-        hit = None
-        for pattern in patterns:
-            found = role_matches(tokens, prefix, pattern)
-            if found:
-                hit = (pattern, found)
-                break
-        if not hit:
-            rows.append((label, "— not found", ""))
-            continue
-        pattern, found = hit
-        if "{" not in pattern:
-            name = found[0][1]
-            rows.append((label, "`--%s`" % name, tokens.display(name)))
-            continue
-        members = sorted((m for m, _ in found), key=size_key)
-        token = "`--%s`" % (prefix + pattern.split("{")[0] + "{" + ", ".join(members) + "}")
-        sample = next((n for m, n in found if m == "m"), found[0][1])
-        rows.append((label, token, "e.g. `--%s` = %s" % (sample, tokens.display(sample))))
+    for label, candidates in ROLES:
+        row = None
+        for cand in candidates:
+            if isinstance(cand, tuple):
+                present = [full_name(prefix, c) for c in cand if full_name(prefix, c) in tokens.known]
+                if present:
+                    variants = colour_variants(tokens, present[0])
+                    note = ("each has " + "; ".join(variants).replace("--%s-" % present[0], "--{colour}-")) if variants else ""
+                    row = (label, ", ".join("`--%s`" % n for n in present), note)
+                    break
+                continue
+            found = role_matches(tokens, prefix, cand)
+            if not found:
+                continue
+            if "{" not in cand:
+                name = found[0][1]
+                row = (label, "`--%s`" % name, tokens.display(name))
+            elif "{ramp}" in cand:
+                _, ramps = collapse_ramps(n for _, n in found)
+                row = (label, ", ".join(ramps), "e.g. `--%s` = %s" % (found[0][1], tokens.display(found[0][1])))
+            else:
+                members = [m for m, _ in found]
+                listed = number_span(members) if "{n}" in cand else ", ".join(sorted(members, key=size_key))
+                token = "`--%s{%s}`" % (full_name(prefix, cand).split("{")[0], listed)
+                sample = next((n for m, n in found if m == "m"), found[0][1])
+                row = (label, token, "e.g. `--%s` = %s" % (sample, tokens.display(sample)))
+            break
+        rows.append(row or (label, "— not found", ""))
     return rows
 
 
@@ -210,17 +284,58 @@ def variables_section(tokens, names, heading_level="###"):
             out.append("Shade ramps: " + ", ".join(ramps) + "\n")
         if plain:
             out.append("| Variable | Value |\n|---|---|")
-            for n in plain:
-                out.append("| `--%s` | %s |" % (n, cell(tokens.display(n))))
+            for token, value in collapse_series(tokens, plain):
+                out.append("| %s | %s |" % (token, cell(value)))
             out.append("")
     return out
 
 
-def render(ctx, data):
+def collapse_series(tokens, names, minimum=5):
+    """Rows for a table; a numbered series (`primary-5 … primary-90`) of at
+    least `minimum` members becomes one row showing its first and last value."""
+    series = OrderedDict()
+    for n in names:
+        m = re.fullmatch(r"(.+)-(\d+)", n)
+        if m:
+            series.setdefault(m.group(1), []).append(n)
+    rows, done = [], set()
+    for n in names:
+        m = re.fullmatch(r"(.+)-(\d+)", n)
+        group = series.get(m.group(1)) if m else None
+        if group and len(group) >= minimum:
+            if m.group(1) in done:
+                continue
+            done.add(m.group(1))
+            nums = [g.rsplit("-", 1)[1] for g in group]
+            rows.append(("`--%s-{%s}`" % (m.group(1), number_span(nums)),
+                         "%s … %s" % (tokens.display(group[0]), tokens.display(group[-1]))))
+        else:
+            rows.append(("`--%s`" % n, tokens.display(n)))
+    return rows
+
+
+def class_list(items, limit=60):
+    """Full list for small categories; families (`text-*` …) for big ones."""
+    names = sorted(c["name"] for c in items)
+    if len(names) <= limit:
+        return ", ".join("`%s`" % n for n in names)
+    families = OrderedDict()
+    for n in names:
+        families.setdefault(n.split("-")[0], []).append(n)
+    big = ["`%s-*` (%d)" % (f, len(v)) for f, v in sorted(families.items(), key=lambda kv: -len(kv[1])) if len(v) >= 3]
+    small = [n for v in families.values() if len(v) < 3 for n in v]
+    return "families " + ", ".join(big) + (("; plus " + ", ".join("`%s`" % n for n in small)) if small else "")
+
+
+def render(ctx, data, instructions=None):
     site = data.get("site", {})
     variables = data.get("variables", [])
     tokens = Tokens(variables)
     names = list(tokens.values)
+    tokens.add_palette_names(
+        m.group(1)
+        for p in data.get("palettes", []) for c in p["colors"]
+        for m in [re.search(r"var\(\s*--([\w-]+)", c.get("raw") or "")] if m)
     framework, prefix, source = detect_framework(ctx, names)
 
     layers = {"framework": [], "brxp": [], "other": []}
@@ -246,17 +361,17 @@ def render(ctx, data):
         ", ".join(code.get("detected") or []) or "none detected",
         " — `brxprod/create-snippet` writes drafts" if code.get("canCreateSnippet") else ""))
     L.append("| Style Guide page | %s |" % ("ID %s" % sg.get("pageId") if sg.get("exists") else "none"))
+    if instructions:
+        L.append("| House rules | **%s** set%s — read live with `brxprod/get-design-instructions`; sections: %s |" % (
+            house_rule_set(instructions.get("instructions", "")),
+            " (default)" if instructions.get("isDefault") else " (customised by the owner)",
+            ", ".join(sorted((instructions.get("sections") or {}).keys()))))
+    else:
+        L.append("| House rules | unavailable — enable BRXProd's read-only abilities |")
     L.append("| Active plugins | %s |" % cell(", ".join("%s %s" % (p["name"], p["version"]) for p in plugins)))
     L.append("| Generated | %s |" % data.get("generatedAt", "?"))
     L.append("")
 
-    if framework == "core-framework":
-        L.append("> **Core Framework support is provisional.** The concept map below uses guessed "
-                 "names. Verify against the variable list and update `ROLES` in "
-                 "`.claude/skills/design-system/scripts/render.py`.")
-        if data.get("coreFrameworkOptions"):
-            L.append("> Core Framework options found: " + ", ".join("`%s`" % o for o in data["coreFrameworkOptions"]))
-        L.append("")
     if framework == "unknown":
         L.append("> **No supported framework detected.** Only BRXProd (`brxp-*`) tokens and site "
                  "variables are listed; the concept map will be mostly empty.\n")
@@ -268,19 +383,9 @@ def render(ctx, data):
     L.append("| Concept | Token | Value |\n|---|---|---|")
     for label, token, value in concept_rows(tokens, prefix):
         L.append("| %s | %s | %s |" % (label, token, cell(value)))
-    brand = [n for n in ("brxp-primary", "brxp-secondary", "brxp-surface", "brxp-info",
-                         "brxp-success", "brxp-warning", "brxp-danger")]
-    palette_vars = set()
-    for p in data.get("palettes", []):
-        for c in p["colors"]:
-            m = re.search(r"var\(\s*--([\w-]+)", c.get("raw") or "")
-            if m:
-                palette_vars.add(m.group(1))
-    present = [n for n in brand if n in palette_vars or n in tokens.values]
-    if present:
-        _, shade_ramps = collapse_ramps(sorted(n for n in palette_vars if n.startswith("brxp-")))
-        L.append("| Brand & status colours (BRXProd) | %s | shades: %s; text on a colour: `--brxp-a11y-{colour}[-{l,d}-N]-text` |"
-                 % (", ".join("`--%s`" % n for n in present), ", ".join(shade_ramps) or "none"))
+    if any(n.startswith("brxp-a11y-") for n in tokens.values):
+        L.append("| Text on a coloured background (BRXProd) | `--brxp-a11y-{colour}[-{l,d}-N]-text` | "
+                 "readable text colour for that background — see BRXProd tokens › Colors |")
     L.append("")
 
     label = {"bricks-wireframes": "Bricks Wireframes", "core-framework": "Core Framework"}.get(framework, framework)
@@ -306,7 +411,9 @@ def render(ctx, data):
         if p["name"].lower() == "default":
             L.append("- **%s** (%d) — Bricks' built-in palette; not part of the design system." % (p["name"], len(refs)))
             continue
-        L.append("- **%s** (%d): %s" % (p["name"], len(refs), ", ".join(["`--%s`" % r for r in plain] + ramps)))
+        listed = [t for t, _ in collapse_series(tokens, [r for r in plain if r in tokens.values])]
+        listed += ["`%s`" % r for r in plain if r not in tokens.values]
+        L.append("- **%s** (%d): %s" % (p["name"], len(refs), ", ".join(listed + ramps)))
     L.append("")
 
     L.append("## Global classes\n")
@@ -318,17 +425,18 @@ def render(ctx, data):
     by_cat = OrderedDict()
     style_guide = 0
     for c in data.get("classes", []):
-        if re.match(r"sg\d+-", c["name"]):
+        # Style Guide classes: `sg5-*` (Wireframes), `cfsg_sg4-*` (Core
+        # Framework), always in BRXProd's "Style-guide" category.
+        if re.search(r"(^|_)sg\d+-", c["name"]) or "style-guide" in (c.get("category") or "").lower():
             style_guide += 1
             continue
         by_cat.setdefault(c.get("category") or "Uncategorised", []).append(c)
     for cat in sorted(by_cat):
         items = by_cat[cat]
         locked = all(c["locked"] for c in items)
-        L.append("**%s** (%d%s): %s\n" % (cat, len(items), ", locked" if locked else "",
-                                          ", ".join("`%s`" % c["name"] for c in sorted(items, key=lambda c: c["name"]))))
+        L.append("**%s** (%d%s): %s\n" % (cat, len(items), ", locked" if locked else "", class_list(items)))
     if style_guide:
-        L.append("Style Guide classes: %d `sg{n}-*` classes omitted — the Style Guide generator owns them.\n" % style_guide)
+        L.append("Style Guide classes: %d (`sg{n}-*` / `cfsg_sg{n}-*`) omitted — the Style Guide generator owns them.\n" % style_guide)
 
     L.append("## Theme styles\n")
     for t in data.get("themeStyles", []):
@@ -363,16 +471,17 @@ def write(path, body):
 
 
 def main():
-    if len(sys.argv) != 4:
-        fail("usage: render.py CONTEXT_JSON DATA_JSON OUTPUT_MD")
+    if len(sys.argv) not in (4, 5):
+        fail("usage: render.py CONTEXT_JSON DATA_JSON OUTPUT_MD [INSTRUCTIONS_JSON]")
     ctx = load(sys.argv[1])
+    instructions = load(sys.argv[4]) if len(sys.argv) == 5 else None
     result = load(sys.argv[2])
     if not isinstance(result, dict):
         fail("execute-php returned no data — check `novamira doctor --json`")
     if result.get("success") is False:
         fail("extract.php failed: %s" % result.get("error_message"))
     data = result.get("return_value", result)
-    write(sys.argv[3], render(ctx, data))
+    write(sys.argv[3], render(ctx, data, instructions))
     framework = detect_framework(ctx, [v["name"] for v in data.get("variables", [])])
     print("Wrote %s — framework %s, %d variables, %d classes" % (
         sys.argv[3], framework[0], len(data.get("variables", [])), len(data.get("classes", []))))

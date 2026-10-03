@@ -77,7 +77,8 @@ Tools → WordPress Abilities** in BRXProd — tell them, don't work around it.
 
 ## 5. Generate the design system
 
-Run the `/design-system` skill. Its script reads the env vars, so if this
+Skip this when `/init-brxprod` called you — it runs the design system itself.
+Otherwise run the `/design-system` skill. Its script reads the env vars, so if this
 session does not yet see the new values, prefix the command with the same
 `NOVAMIRA_HOME=… NOVAMIRA_SITE=…`.
 
@@ -85,5 +86,5 @@ session does not yet see the new values, prefix the command with the same
 
 Site URL, profile, framework detected, design-system counts, and that a new
 chat may be needed for the env vars to apply everywhere. Remind the user, if
-this is a site project rather than the base, to delete the `DESIGN_SYSTEM.md`
-line from `.gitignore` so it is committed.
+this is a site project rather than the base, to delete the per-site lines
+(`DESIGN_SYSTEM.md`, `PROJECT_BRIEF.md`) from `.gitignore` so they are committed.

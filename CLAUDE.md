@@ -3,20 +3,34 @@
 Reusable base for building on a Bricks site running Bricks Productivity
 (BRXProd). Each project made from it connects to exactly **one** site.
 
-- **New project:** create from this template, then run `/setup-site <site-url>`.
+- **New project:** create from this template, then run `/init-brxprod <site-url>`.
+  Re-run it any time to re-check the site is ready.
 - **This site's facts and tokens:** [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md), generated
   by `/design-system`. **Read it before writing any CSS or naming any token** —
   resolve every concept ("spacing M", "section padding", "brand colour") through
   its *Concept map*. If it is missing or stale, run `/design-system`.
+- **What to write:** [PROJECT_BRIEF.md](PROJECT_BRIEF.md) — business, audience,
+  voice, pages, content sources. Anything still `_TODO_` is unknown: ask, never
+  invent content, contact details or claims.
 
 ## Order of authority
 
-1. `brxprod/get-design-instructions` — the site owner's live house rules, plus
-   the `rails` / `corners` / `grids` sections when those systems are installed.
-2. This file — how we work in every project.
-3. Skills (`bricks:*`, `brxprod`, `novamira`) — general reference.
+1. **Bricks' own skills and abilities** (`bricks:*` skills, `bricks/*`
+   abilities) — the highest priority, always. They own *how* anything is
+   built: pages, posts, templates, elements, components, global classes,
+   variables, theme styles, the save pipeline and render verification. Load
+   `bricks:bricks-start-here` and the task's Bricks skill before any write, and
+   use a `bricks/*` ability whenever one exists — never execute-php, a
+   `novamira/bricks-*` ability or a BRXProd ability in its place.
+2. `brxprod/get-design-instructions` — the site owner's live house rules for
+   *what* to write (CSS, naming, labels, semantics, code location), plus the
+   `rails` / `corners` / `grids` sections when those systems are installed.
+3. This file — how we work in every project.
+4. Other skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`, `novamira`).
 
-Where they disagree, the higher one wins.
+Where they disagree, the higher one wins. If a needed `bricks/*` ability is
+unavailable, stop and tell the user which switch to turn on (Bricks → AI) —
+do not fall back to another write path.
 
 ## Connection — Novamira CLI (not MCP)
 
@@ -32,23 +46,25 @@ Where they disagree, the higher one wins.
   Only add it after confirming what the code does. Pass code through a JSON file:
   `novamira --yes run novamira/execute-php --input @input.json` with
   `{"code": "..."}` — no `<?php`, `return` a value.
-- Prefer real abilities (`bricks/*`, `brxprod/*`) over execute-php; use PHP for
-  read-only inspection when no ability covers it.
+- execute-php is for **read-only inspection** when no ability covers it. Never
+  use it to write Bricks data.
 
 ## Frameworks
 
 A BRXProd site runs one of two token frameworks, and the same concept has a
 different name in each:
 
-| Framework | Variables |
-|---|---|
-| **Bricks Wireframes** | `brxw-*` (e.g. `--brxw-space-m`) |
-| **Core Framework** | unprefixed (`--space-m`), or under a user-chosen prefix |
+| Framework | Variables | Brand colours |
+|---|---|---|
+| **Bricks Wireframes** | `brxw-*` (e.g. `--brxw-space-m`) | BRXProd palette: `--brxp-primary`, shades `-{l,d,t}-N` |
+| **Core Framework** | unprefixed (`--space-m`), or a user-chosen prefix | its own: `--primary`, transparency `-{5…90}`, shades `-{l,d}-N`; plus semantic `--text-body`, `--bg-surface`, `--border-primary` |
 
 `brxprod/get-context` reports which one and the prefix in force;
 `DESIGN_SYSTEM.md` records it. **The `brxp-*` CSS, classes and variables are
 common to both.** Never hard-code a framework's token name in a rule meant for
-either — and never invent a name the site doesn't have.
+either — and never invent a name the site doesn't have. Each framework lacks
+some concepts the other has (Core Framework: no width, measure, line-height,
+transition or ratio tokens); the concept map shows these as *not found*.
 
 ## BRXProd systems (summary — the site's design instructions are authoritative)
 
@@ -123,8 +139,13 @@ have), never a Bricks Code element; read `brxprod/get-site-js` first.
 
 ## Skills
 
-- `/setup-site <url>` — connect this project to its site (isolated profile).
+- `/init-brxprod [url]` — connect, install skills, check site readiness,
+  generate the design system, create the brief, offer Wireframes templates.
+- `/setup-site <url>` — connection step on its own (also run by init).
 - `/design-system` — (re)generate `DESIGN_SYSTEM.md`.
-- Official Bricks skills (`bricks:*`, start with `bricks:bricks-start-here`) for
-  all Bricks work; `brxprod`, `brxprod-notes`, `brxprod-feedback` for plugin
-  features; `novamira` for general CLI use.
+- **Bricks skills first** (`bricks:*`, from the `bricks@bricks-skills` plugin;
+  start with `bricks:bricks-start-here`) for all Bricks work. Then the
+  project's `brxprod`, `brxprod-notes`, `brxprod-feedback` (installed by init
+  from `wpeasy/bricks-productivity-skills`, version in
+  `.claude/skills/.brxprod-skills-version`) for plugin features, and
+  `novamira` for general CLI use.

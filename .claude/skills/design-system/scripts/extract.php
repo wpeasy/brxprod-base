@@ -78,13 +78,6 @@ foreach ( (array) get_option( 'active_plugins', [] ) as $file ) {
 	];
 }
 
-global $wpdb;
-// Core Framework support is unverified: record its footprint so the renderer
-// (and whoever finishes that branch) can see where its tokens live.
-$cf_options = $wpdb->get_col(
-	"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE 'core\\_framework%' OR option_name LIKE 'cf\\_%' LIMIT 50"
-);
-
 $theme = wp_get_theme();
 
 return [
@@ -100,6 +93,5 @@ return [
 	'palettes'     => $palettes,
 	'classes'      => $classes,
 	'themeStyles'  => $theme_styles,
-	'coreFrameworkOptions' => $cf_options,
 	'generatedAt'  => gmdate( 'c' ),
 ];
