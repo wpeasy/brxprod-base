@@ -1,0 +1,10 @@
+# Site connection — created per project by /setup-site, never shared
+.claude/novamira/
+.claude/settings.local.json
+
+# Generated per site by /design-system.
+# In a SITE project made from this template, delete this line so the
+# site's design system is committed alongside its other notes.
+DESIGN_SYSTEM.md
+
+.DS_Store

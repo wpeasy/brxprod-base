@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(novamira:*)",
+      "Bash(sh .claude/skills/design-system/scripts/generate.sh)"
+    ],
+    "ask": [
+      "Bash(novamira auth:*)",
+      "Bash(novamira sites:*)",
+      "Bash(novamira --site:*)",
+      "Bash(NOVAMIRA_*)",
+      "Bash(env NOVAMIRA_*)",
+      "Bash(export NOVAMIRA_*)",
+      "Bash(unset NOVAMIRA_*)"
+    ]
+  }
+}
