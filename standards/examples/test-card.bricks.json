@@ -1,0 +1,32 @@
+{
+  "content": [
+    { "id": "qqydcm", "name": "section", "parent": 0, "children": ["nuoidr"], "settings": { "_cssGlobalClasses": ["ukedzg"] }, "label": "Main Section" },
+    { "id": "nuoidr", "name": "container", "parent": "qqydcm", "children": ["zcfhvc"], "settings": { "_cssGlobalClasses": ["iwljzz"] } },
+    { "id": "zcfhvc", "name": "block", "parent": "nuoidr", "children": ["lznhlh"], "settings": { "_cssGlobalClasses": ["vtyhlh"] }, "label": "Inner" },
+    { "id": "lznhlh", "name": "div", "parent": "zcfhvc", "children": ["whvxpg", "vpoxfy"], "settings": { "_cssGlobalClasses": ["krxhev", "nfbaiw"], "_abpBemMeta": { "bemAction": "skip" } }, "label": "Test Card" },
+    { "id": "whvxpg", "name": "div", "parent": "lznhlh", "children": ["giylvd", "nymvxe", "srwtgt"], "settings": { "_cssGlobalClasses": ["wktzqh"] }, "label": "Content" },
+    { "id": "giylvd", "name": "heading", "parent": "whvxpg", "children": [], "settings": { "text": "I am a heading", "_cssGlobalClasses": ["fohwiy"] } },
+    { "id": "nymvxe", "name": "text-basic", "parent": "whvxpg", "children": [], "settings": { "text": "Here goes your text ... Select any part of your text to access the formatting toolbar.", "_cssGlobalClasses": ["iynqsk"] }, "label": "Text" },
+    { "id": "srwtgt", "name": "button", "parent": "whvxpg", "children": [], "settings": { "text": "I am a button", "style": "primary", "_cssGlobalClasses": ["grkfae"] } },
+    { "id": "vpoxfy", "name": "div", "parent": "lznhlh", "children": ["kqriog"], "settings": { "_cssGlobalClasses": ["gozjzb", "vrxcul"] }, "label": "Media" },
+    { "id": "kqriog", "name": "image", "parent": "vpoxfy", "children": [], "settings": { "_cssGlobalClasses": ["rdsfvj", "qrmblv"], "image": { "id": 39, "filename": "qsdkmlbfne4.jpg", "size": "large", "full": "https://dev.dev-wp.au/scratch/wp-content/uploads/2026/09/qsdkmlbfne4.jpg", "url": "https://dev.dev-wp.au/scratch/wp-content/uploads/2026/09/qsdkmlbfne4-1024x512.jpg" } } }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://dev.dev-wp.au/scratch",
+  "version": "2.4.2",
+  "globalClasses": [
+    { "id": "ukedzg", "name": "main-section", "settings": { "_cssCustom": "\n.main-section{\n  background: var(--base-l-8);\n}" } },
+    { "id": "iwljzz", "name": "main-section__container", "settings": {} },
+    { "id": "vtyhlh", "name": "main-section__inner", "settings": {} },
+    { "id": "krxhev", "name": "test-card", "settings": { "_cssCustom": "/* Settings */\n.test-card{\n  --_test-card__content-padding: var(--test-card__content-padding, var(--space-s));\n  --_test-card__media-max-width: var(--test-card__media-max-width, 200px);\n  --_test-card__media-min-height: var(--test-card__media-min-height, 150px);\n  --_test-card-background: var(--test-card-background, var(--light));\n  --_test-card-border-radius: var(--test-card-border-radius, var(--radius-m));\n  --_test-card-box-shadow: var(--test-card-box-shadow, var(--shadow-m));\n\n  --_test-card-border: var(--test-card-border, none);\n}\n\n:has(> .test-card) {\n  container-type: inline-size;\n}\n\n.test-card {\n  display: flex;\n  overflow: clip;\n  flex-direction: row;\n  border-radius: var(--_test-card-border-radius);\n  box-shadow: var(--_test-card-box-shadow);\n  background: var(--_test-card-background);\n  width: 100%;\n  border: var(--_test-card-border);\n\n  @container (inline-size <=562px) {\n    flex-direction: column;\n\n    .test-card__media {\n      flex: auto;\n      max-width: 100%;\n    }\n  }\n}\n\n.test-card__content {\n  flex: 1 1 0;\n  min-width: 0;\n  padding: var(--_test-card__content-padding);\n}\n\n.test-card__media {\n  order: -1;\n  flex: 0 0 auto;\n  width: 100%;\n  max-width: var(--_test-card__media-max-width);\n  min-height: var(--_test-card__media-min-height);\n}" } },
+    { "id": "nfbaiw", "name": "test-card--style2", "settings": { "_cssCustom": "/* Settings */\n.test-card--style2{\n  --test-card__content-padding: var(--space-s);\n  --test-card-background: var(--light);\n  --test-card-border-radius: var(--radius-m);\n  --test-card-box-shadow: var(--shadow-l);\n  --test-card__media-max-width: 250px;\n  --test-card__media-min-height: 180px;\n  --test-card-border: 2px solid var(--base-l-2);\n}" } },
+    { "id": "wktzqh", "name": "test-card__content", "settings": {} },
+    { "id": "fohwiy", "name": "test-card__heading", "settings": {} },
+    { "id": "iynqsk", "name": "test-card__text", "settings": {} },
+    { "id": "grkfae", "name": "test-card__button", "settings": {} },
+    { "id": "gozjzb", "name": "test-card__media", "settings": {} },
+    { "id": "vrxcul", "name": "brxp-has-bg-media", "category": "brxp-layout-rails", "settings": {}, "locked": true },
+    { "id": "rdsfvj", "name": "test-card__image", "settings": {} },
+    { "id": "qrmblv", "name": "brxp-has-bg-media__media", "category": "brxp-layout-rails", "settings": {}, "locked": true }
+  ]
+}

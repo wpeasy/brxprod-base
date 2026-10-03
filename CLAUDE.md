@@ -25,7 +25,8 @@ Reusable base for building on a Bricks site running Bricks Productivity
 2. `brxprod/get-design-instructions` — the site owner's live house rules for
    *what* to write (CSS, naming, labels, semantics, code location), plus the
    `rails` / `corners` / `grids` sections when those systems are installed.
-3. This file — how we work in every project.
+3. This file and `standards/` — how we work in every project. Where a standard
+   explicitly says it overrides the site's instructions (label case), it wins.
 4. Other skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`, `novamira`).
 
 Where they disagree, the higher one wins. If a needed `bricks/*` ability is
@@ -116,9 +117,21 @@ either — fixes belong in the BRXProd plugin.
 
 ## CSS standards
 
-_To be specified._ Until then follow the site's `get-design-instructions` `css`
-section (CSS not Bricks controls, `@container` not `@media`, one `/* Settings */`
-`%root%` block with `--_x: var(--x, token)`, nested rules, BEM).
+**Read [standards/css.md](standards/css.md) before writing any class, label or
+CSS.** Reference build: [standards/examples/test-card.bricks.json](standards/examples/test-card.bricks.json).
+In short:
+
+- BEM classes; nested blocks are new blocks marked `_abpBemMeta.bemAction: "skip"`.
+- Labels = the BEM segment in **Title Case** ("Test Card", "Content"); bracket
+  comments `()` `[]` `{}` ignored. Overrides the site default's sentence case.
+- All component CSS in the **block's** global class (literal `.block` selector);
+  element classes stay empty.
+- One `/* Settings */` block: `--_block__element-prop: var(--block__element-prop, token)`;
+  rules use only `--_` vars. **Modifiers only set the public vars** — structural
+  variants become variables too.
+- Element rules flat; nest only states, pseudo-elements and `@container`.
+- **Never `@media`**: `:has(> .block){container-type:inline-size}` + nested
+  `@container (inline-size <= Npx)`, literal px, widest first.
 
 ## JavaScript & PHP standards
 
