@@ -135,9 +135,20 @@ In short:
 
 ## JavaScript & PHP standards
 
-_To be specified._ Until then follow the site's `code` section: code goes in a
-code manager via `brxprod/create-snippet` (draft — never activate it or claim to
-have), never a Bricks Code element; read `brxprod/get-site-js` first.
+**Read [standards/js.md](standards/js.md) before writing any JavaScript.** In short:
+
+- Every script in an **IIFE**; ES6+ (`const`/`let`, arrows); no jQuery, no globals.
+- **Browser APIs first** (IntersectionObserver, ResizeObserver, delegation,
+  AbortController…), and **events instead of timers** — including Bricks'
+  frontend events (`bricks/ajax/query_result/displayed`, `bricks/popup/open`…).
+- AJAX-loaded content: delegate, or idempotent init re-run on the Bricks event.
+- JS sets state (attributes, custom properties); CSS decides looks.
+
+Where code goes (follows the site's `code` section): a code manager via
+`brxprod/create-snippet` — a **draft**; never activate it or claim to have —
+never a Bricks Code element. Read `brxprod/get-site-js` first. PHP standards:
+_to be specified_; meanwhile WordPress coding standards, prefixed names,
+escape/sanitise/capability checks.
 
 ## Known issues (BRXProd plugin, not site faults)
 
