@@ -66,6 +66,8 @@ import, and the `brxprod` skill's pointer to it.
 - all styling goes in the **block's global class CSS** (`_cssCustom`) per
   [standards/css.md](standards/css.md), created/edited with Bricks'
   global-class abilities;
+- **read every CSS write back and compare** — Bricks 2.4.2 can rewrite it
+  (see *Known issues*);
 - verify with `bricks/render-elements` (and `brxprod/render-frontend-html` for
   content inside nestable elements).
 
@@ -194,7 +196,22 @@ never a Bricks Code element. Read `brxprod/get-site-js` first.
 prefixed global names; escape, sanitise, capability/nonce checks; no `eval`;
 enqueue assets. Stored as a draft snippet — never activated by the agent.
 
-## Known issues (BRXProd plugin, not site faults)
+## Known issues
+
+- **Bricks 2.4.2 rewrites CSS written through the abilities.** Every
+  `_cssCustom` saved by an ability (element or global class) passes a
+  normaliser that ignores the "sync Custom CSS ↔ style controls" setting —
+  moving root declarations into style controls — and cannot parse CSS nesting,
+  corrupting `&:hover`, nested `@container` and nested selectors (unbalanced
+  braces, wrong values) while the save still reports `ok: true`. **After every
+  `_cssCustom` write, read it back** (`bricks/get-page-elements` for elements,
+  `bricks/list-global-classes` for classes) and compare it with what you sent,
+  and check no style-control keys appeared. If it differs, **stop and report
+  it** — never leave altered CSS in place or call the work done. Remove this
+  rule once Bricks fixes the normaliser.
+
+### BRXProd plugin (not site faults)
+
 
 - `bricks/audit-design-system` reports locally-scoped custom properties (e.g.
   `--_layout`, `--_m-tl`, `--brxp-distance`, `--brxp-duration`) as orphans. They

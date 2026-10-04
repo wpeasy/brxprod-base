@@ -239,3 +239,4 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] Modifiers only set public variables
 - [ ] No `@media`; containment declared via `:has(> .block)`; queries widest → narrowest
 - [ ] Every token name exists on this site (`DESIGN_SYSTEM.md`)
+- [ ] After saving: `_cssCustom` read back matches what was sent, no style-control keys added (Bricks 2.4.2 normaliser bug — CLAUDE.md › Known issues)
