@@ -25,13 +25,52 @@ Reusable base for building on a Bricks site running Bricks Productivity
 2. `brxprod/get-design-instructions` — the site owner's live house rules for
    *what* to write (CSS, naming, labels, semantics, code location), plus the
    `rails` / `corners` / `grids` sections when those systems are installed.
-3. This file and `standards/` — how we work in every project. Where a standard
-   explicitly says it overrides the site's instructions (label case), it wins.
+3. This file and `standards/` — how we work in every project. Where they
+   explicitly say they override the site's instructions (label case; no
+   HTML/CSS import), they win.
 4. Other skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`, `novamira`).
 
 Where they disagree, the higher one wins. If a needed `bricks/*` ability is
 unavailable, stop and tell the user which switch to turn on (Bricks → AI) —
 do not fall back to another write path.
+
+## Building content — element trees, never copy/paste or HTML import
+
+**Never create content with Bricks' copy/paste or HTML/CSS conversion.** The
+converter turns CSS into values in the element **Settings model** (Bricks'
+style controls) instead of CSS — the opposite of our CSS standard. This
+covers:
+
+- the builder's paste (pasting HTML/CSS or copied elements into the canvas);
+- `bricks/convert-html-css-to-bricks-data`,
+  `bricks/preview-html-css-page-import`, `bricks/apply-html-css-page-import`,
+  `bricks/commit-html-css-page-import`, and the `bricks:bricks-html-css-to-bricks`
+  workflow.
+
+This overrides the site's default instruction to build through the HTML/CSS
+import, and the `brxprod` skill's pointer to it.
+
+**Build element structures directly with Bricks' abilities:**
+
+- write the tree with `bricks/add-element` (nested children), or
+  `bricks/set-page-elements` / `bricks/create-template` with `elements` for an
+  empty page or template; edit with `bricks/update-element`,
+  `bricks/batch-update-elements` or the page-workspace abilities
+  (`checkout` → `preview` → `apply`);
+- check element settings against `bricks/get-element-schema` (load
+  `bricks:bricks-element-schemas`);
+- element settings carry **structure and content only** — `_cssGlobalClasses`,
+  label, `tag`, text, links, media, attributes, and simple UI settings such as a
+  button's `style`; never style-control values (spacing, colour, typography,
+  layout);
+- all styling goes in the **block's global class CSS** (`_cssCustom`) per
+  [standards/css.md](standards/css.md), created/edited with Bricks'
+  global-class abilities;
+- verify with `bricks/render-elements` (and `brxprod/render-frontend-html` for
+  content inside nestable elements).
+
+The reference shape is [standards/examples/test-card.bricks.json](standards/examples/test-card.bricks.json)
+— that is the structure to produce, written through abilities, never pasted.
 
 ## Connection — Novamira CLI (not MCP)
 

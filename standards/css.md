@@ -14,6 +14,11 @@ Reference example: [examples/test-card.bricks.json](examples/test-card.bricks.js
 (Bricks copied-elements JSON — a section holding a card component with a
 modifier).
 
+**Never produce this through Bricks' copy/paste or HTML/CSS import** — the
+converter writes CSS into element settings instead of class CSS. Build the
+element tree with Bricks' element abilities and write the CSS into the block's
+global class (CLAUDE.md › Building content).
+
 ## 1. BEM everywhere
 
 - Every class is BEM: `block`, `block__element`, `block--modifier`. Lowercase,
