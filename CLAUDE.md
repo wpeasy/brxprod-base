@@ -132,6 +132,9 @@ In short:
 - Element rules flat; nest only states, pseudo-elements and `@container`.
 - **Never `@media`**: `:has(> .block){container-type:inline-size}` + nested
   `@container (inline-size <= Npx)`, literal px, widest first.
+- Use **BRXProd CSS Patterns** verbatim when one fits — e.g. a sticky header
+  template gets the `sticky-header` pattern in its top element's CSS (needs the
+  `header-height` snippet active).
 
 ## JavaScript & PHP standards
 

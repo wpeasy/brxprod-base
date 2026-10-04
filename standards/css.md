@@ -184,7 +184,40 @@ rail; use the `brxp-rail-*` classes on those children for symmetric spans and
 ID-level `%root%` CSS for asymmetric ones (see CLAUDE.md › Rails). Put
 `brxp-rails` on whichever element's children should sit on the rails.
 
-## 9. Images
+## 9. BRXProd CSS Patterns
+
+BRXProd's CSS panel ships **CSS Patterns** — typeahead templates for recurring
+rules. When one fits, use it verbatim rather than writing your own version.
+
+### Sticky header (`sticky-header`)
+
+A Bricks sticky header (`#brx-header.brx-sticky`) is `position: fixed`, so the
+first section slides under it. The pattern pads the first section by the
+section padding plus the measured header height.
+
+**Where:** whenever a header template is set to sticky, put the pattern in the
+custom CSS of that template's **top element** — it travels with the header and
+disappears with it. Not in the theme style, a page, or a section.
+
+```css
+#brx-header.brx-sticky ~ #brx-content > section:first-child {
+  padding-block-start: calc(
+    var(--brxw-section-space-vertical, var(--section-padding-block, 0px)) +
+    var(--brxp-header-height, 130px)
+  );
+}
+```
+
+- Works unchanged on Bricks Wireframes and Core Framework (the fallback chain
+  picks whichever section-padding variable exists). On another framework,
+  replace both with its section padding-block token from the concept map.
+- **Requires** BRXProd's "Header & Footer Heights → CSS Variables" snippet
+  (`header-height`), which sets `--brxp-header-height` on `<html>`. The init
+  status check reports whether it is installed and active.
+- Bricks' `.on-scroll` sticky variant is `position: sticky` (in flow) and
+  needs no offset.
+
+## 10. Images
 
 - Content images rely on the media library's alt text (Bricks falls back to
   the attachment's alt when `altText` is empty) — make sure the attachment has

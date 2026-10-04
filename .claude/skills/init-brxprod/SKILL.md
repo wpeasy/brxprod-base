@@ -54,9 +54,10 @@ remote-template ability availability).
   there is no supported way to create or edit pages, templates, classes or
   variables. Continue the remaining read-only steps, then stop before step 5.
 - **WARN** lines are worth fixing but don't block. Offer what the agent can do:
-  - missing animation snippets → `novamira run brxprod/install-snippet --input '{"id":"fadein-fix"}'`
-    and `'{"id":"register-compound-animation"}'` (they land as Fluent Snippets
-    **drafts**; never claim they are active);
+  - missing bundled snippets (`header-height` — needed by the sticky-header
+    CSS pattern; `fadein-fix`, `register-compound-animation` — animations) →
+    `novamira run brxprod/install-snippet --input '{"id":"<id>"}'` (they land as
+    Fluent Snippets **drafts**; never claim they are active);
   - snippets in draft → remind the user to review and activate them;
   - no Style Guide page → BRXProd's *Update Style Guide Page* (owner action).
 - If `facts.bricksPostTypes` lacks a type the brief needs (e.g. `post`), say so:

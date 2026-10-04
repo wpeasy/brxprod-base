@@ -17,7 +17,12 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..",
 sys.path.insert(0, os.path.join(ROOT, ".claude", "skills", "design-system", "scripts"))
 from render import house_rule_set  # noqa: E402  (shared with DESIGN_SYSTEM.md)
 
-SNIPPETS = {"fadein-fix": "fix-fadein-compound", "register-compound-animation": "register-compound-animation"}
+# Bundled BRXProd snippets the standards rely on: id -> Fluent Snippets file stem.
+SNIPPETS = {
+    "header-height": "header-footer-heights",  # --brxp-header-height (sticky-header pattern)
+    "fadein-fix": "fix-fadein-compound",
+    "register-compound-animation": "register-compound-animation",
+}
 
 # Read-only probe; executed with --yes only because the CLI treats every
 # execute-php call as destructive.
@@ -188,7 +193,7 @@ def main():
         for sid, fname in SNIPPETS.items():
             hit = [(f, st) for f, st in snips.items() if fname in f]
             if not hit:
-                add("WARN", "Snippets", "%s not installed" % sid, "init offers: brxprod/install-snippet (draft)")
+                add("WARN", "Snippets", "%s not installed" % sid, "init offers: brxprod/install-snippet {\"id\":\"%s\"} (draft)" % sid)
             else:
                 add("PASS" if hit[0][1] == "published" else "WARN", "Snippets", "%s: %s" % (sid, hit[0][1]),
                     "" if hit[0][1] == "published" else "review and activate in Fluent Snippets")
