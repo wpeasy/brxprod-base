@@ -79,6 +79,23 @@ import, and the `brxprod` skill's pointer to it.
 The reference shape is [standards/examples/test-card.bricks.json](standards/examples/test-card.bricks.json)
 — that is the structure to produce, written through abilities, never pasted.
 
+### Example designs with a header or footer
+
+When an example design (mockup, screenshot, Figma frame, HTML) includes a
+header and/or footer, **build them as Bricks templates**, never as sections in
+a page:
+
+- load `bricks-headers-footers` (and `bricks-templates-conditions`) first;
+- create each with `bricks/create-template` (`type: "header"` /
+  `type: "footer"`), then build its element tree and classes exactly as for any
+  other content (BEM, Title Case labels, class CSS, readback);
+- the page itself gets only what sits between them;
+- a sticky header gets BRXProd's `sticky-header` pattern in its top element's
+  CSS ([standards/css.md](standards/css.md) › BRXProd CSS Patterns);
+- display conditions decide where a template appears site-wide — **confirm
+  with the user before setting them** (e.g. entire website), since that
+  changes every page; until then leave them unset and say so.
+
 ## Connection — Novamira CLI (not MCP)
 
 - The site is reached **only** through the `novamira` CLI. The `setup-site`
