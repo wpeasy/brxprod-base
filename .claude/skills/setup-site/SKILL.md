@@ -58,6 +58,18 @@ Exactly one profile must be listed; take its `name`. Then merge into
 { "env": { "NOVAMIRA_HOME": "<H>", "NOVAMIRA_SITE": "<profile name>" } }
 ```
 
+Also write `.codex/config.toml` (gitignored) so Codex gets the same pin —
+Codex applies it only once the user marks the project as **trusted**:
+
+```toml
+# Per-site Codex settings — written by the setup-site skill. Never commit.
+[shell_environment_policy]
+set = { NOVAMIRA_HOME = "<H>", NOVAMIRA_SITE = "<profile name>" }
+
+[sandbox_workspace_write]
+network_access = true
+```
+
 Do not touch `.claude/settings.json` — the permission rules there are shared by
 every project made from the base.
 

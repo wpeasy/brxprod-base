@@ -37,7 +37,7 @@ and any concept-map row that says **not found** — that means this site has no
 token for the concept, which matters before anyone writes CSS against it.
 
 If the framework is `unknown`, say so prominently — the concept map will be
-mostly empty and the rules in CLAUDE.md can't be resolved against it.
+mostly empty and the rules in AGENTS.md can't be resolved against it.
 
 ## What the file contains
 

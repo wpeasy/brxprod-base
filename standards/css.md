@@ -17,7 +17,7 @@ modifier).
 **Never produce this through Bricks' copy/paste or HTML/CSS import** — the
 converter writes CSS into element settings instead of class CSS. Build the
 element tree with Bricks' element abilities and write the CSS into the block's
-global class (CLAUDE.md › Building content).
+global class (AGENTS.md › Building content).
 
 ## 1. BEM everywhere
 
@@ -186,7 +186,7 @@ never `&__content`, so every element stays at single-class specificity.
 
 `brxp-rails` places **its direct children**, whatever they are, on the content
 rail; use the `brxp-rail-*` classes on those children for symmetric spans and
-ID-level `%root%` CSS for asymmetric ones (see CLAUDE.md › Rails). Put
+ID-level `%root%` CSS for asymmetric ones (see AGENTS.md › Rails). Put
 `brxp-rails` on whichever element's children should sit on the rails.
 
 ## 9. BRXProd CSS Patterns
@@ -239,4 +239,4 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] Modifiers only set public variables
 - [ ] No `@media`; containment declared via `:has(> .block)`; queries widest → narrowest
 - [ ] Every token name exists on this site (`DESIGN_SYSTEM.md`)
-- [ ] After saving: `_cssCustom` read back matches what was sent, no style-control keys added (Bricks 2.4.2 normaliser bug — CLAUDE.md › Known issues)
+- [ ] After saving: `_cssCustom` read back matches what was sent, no style-control keys added (Bricks 2.4.2 normaliser bug — AGENTS.md › Known issues)

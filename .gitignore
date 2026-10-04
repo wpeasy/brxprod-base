@@ -1,6 +1,7 @@
 # Site connection — created per project by /setup-site, never shared
 .claude/novamira/
 .claude/settings.local.json
+.codex/config.toml
 
 # Per-site files (/design-system, /init-brxprod).
 # In a SITE project made from this template, delete these lines so they

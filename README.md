@@ -1,7 +1,9 @@
 # BRXProd base project
 
 A starting point for building WordPress sites with **Bricks Builder** and the
-**Bricks Productivity** plugin (BRXProd) using [Claude Code](https://claude.com/claude-code).
+**Bricks Productivity** plugin (BRXProd) with an AI coding agent —
+[Claude Code](https://claude.com/claude-code) or [Codex](https://openai.com/codex).
+Both read the same instructions (`AGENTS.md`) and the same skills.
 
 Each project made from this template connects to **one** site and gives the
 agent everything it needs to build pages, posts, templates and content the way
@@ -20,14 +22,25 @@ site's own framework tokens — Bricks Wireframes or Core Framework.
 
 **On your machine**
 
-- Claude Code
+- Claude Code and/or Codex
 - Node.js 22.20+ (for the Novamira CLI), `python3`, `git`
-- The Bricks agent skills plugin:
+- Bricks' agent skills:
+  - **Claude Code** — the plugin:
 
-  ```
-  /plugin marketplace add codeerhq/bricks-skills
-  /plugin install bricks@bricks-skills
-  ```
+    ```
+    /plugin marketplace add codeerhq/bricks-skills
+    /plugin install bricks@bricks-skills
+    ```
+
+  - **Codex** — the release checkout, symlinked into the shared skills folder
+    (from [Bricks' instructions](https://github.com/codeerhq/bricks-skills)):
+
+    ```bash
+    git clone https://github.com/codeerhq/bricks-skills.git ~/.bricks/skills/bricks-skills
+    ~/.bricks/skills/bricks-skills/scripts/bricks-skills-upgrade
+    mkdir -p ~/.agents/skills
+    for s in ~/.bricks/skills/bricks-skills/skills/bricks-*; do ln -sfn "$s" ~/.agents/skills/"$(basename "$s")"; done
+    ```
 
 ## Quick start
 
@@ -35,19 +48,20 @@ site's own framework tokens — Bricks Wireframes or Core Framework.
    clone it.
 2. In the new repository, delete the per-site lines from `.gitignore`
    (`DESIGN_SYSTEM.md`, `PROJECT_BRIEF.md`) so the site's files get committed.
-3. Open the folder in Claude Code and run:
+3. Open the folder in your agent and run the init skill:
 
-   ```
-   /init-brxprod https://example.com/
-   ```
+   - Claude Code: `/init-brxprod https://example.com/`
+   - Codex: **trust the project** first (Codex only applies the project's
+     `.codex/config.toml` to trusted projects), then `$init-brxprod https://example.com/`
 
-   Approve the login in your browser when asked.
+   Approve the login in your browser when asked. Init writes the site
+   connection for both agents, so you can switch between them.
 4. Fill in `PROJECT_BRIEF.md`, then start a new chat and start building.
 
-Re-run `/init-brxprod` any time to re-check that the site is ready; finished
+Re-run the init skill any time to re-check that the site is ready; finished
 steps are skipped.
 
-## What `/init-brxprod` does
+## What the init skill does
 
 | Step | |
 |---|---|
@@ -65,14 +79,16 @@ you which switch to use.
 ## Project layout
 
 ```
-CLAUDE.md                 How the agent works in every project (loaded each session)
+AGENTS.md                 How the agent works in every project (Codex reads it directly)
+CLAUDE.md                 Imports AGENTS.md + Claude Code specifics
 standards/
   css.md                  CSS, BEM and label standard
   js.md                   JavaScript standard
   php.md                  PHP standard
   examples/               Reference Bricks builds
+.agents/skills -> .claude/skills   Same skills for Codex (symlink)
 .claude/
-  settings.json           Shared permission rules
+  settings.json           Shared Claude Code permission rules
   skills/
     init-brxprod/         One-command setup and status check
     setup-site/           Connection step on its own
@@ -82,12 +98,14 @@ standards/
 Per site — created by init, not in this template:
   DESIGN_SYSTEM.md        Framework, tokens, concept map, classes
   PROJECT_BRIEF.md        Business, audience, voice, pages, content
-  .claude/settings.local.json, .claude/novamira/   Site connection (never committed)
+  .claude/novamira/              Site profile store (never committed)
+  .claude/settings.local.json    Site pin for Claude Code (never committed)
+  .codex/config.toml             Site pin for Codex (never committed)
 ```
 
 ## DESIGN_SYSTEM.md
 
-Generated from the site by `/design-system` (run by init; re-run whenever the
+Generated from the site by the `design-system` skill (run by init; re-run whenever the
 site's variables, classes or palettes change). Its **concept map** turns
 framework-neutral ideas — "spacing M", "section padding", "brand colour" — into
 the site's real token names, so the standards work on both frameworks and the
@@ -108,24 +126,27 @@ survive.
   code manager as a draft snippet, never a Bricks Code element.
 
 Order of authority: **Bricks' skills and abilities** → the site's BRXProd
-design instructions → `CLAUDE.md` and `standards/` → other skills.
+design instructions → `AGENTS.md` and `standards/` → other skills.
 
 ## Site isolation
 
 A project can only reach its own site:
 
-- `/init-brxprod` gives the project a private Novamira profile store
-  (`.claude/novamira/`) holding exactly one site, and pins it in
-  `.claude/settings.local.json`. Both are gitignored.
+- Init gives the project a private Novamira profile store (`.claude/novamira/`)
+  holding exactly one site, and pins it for Claude Code
+  (`.claude/settings.local.json`) and Codex (`.codex/config.toml`). All are
+  gitignored.
 - The access token is kept in the OS keychain, not in the repository.
-- Shared rules in `.claude/settings.json` make the agent ask before logging in,
-  switching sites or overriding the connection.
+- In Claude Code, shared rules in `.claude/settings.json` make the agent ask
+  before logging in, switching sites or overriding the connection. Codex has no
+  equivalent, so `AGENTS.md` carries the rule as an instruction.
 
 ## Updating
 
-- **BRXProd skills:** re-run `/init-brxprod` (or
+- **BRXProd skills:** re-run the init skill (or
   `sh .claude/skills/init-brxprod/scripts/install-skills.sh`). The installed
   version is in `.claude/skills/.brxprod-skills-version`.
-- **Bricks skills:** `/plugin marketplace update bricks-skills`.
+- **Bricks skills:** Claude Code `/plugin marketplace update bricks-skills`;
+  Codex `~/.bricks/skills/bricks-skills/scripts/bricks-skills-upgrade`.
 - **This template:** pull improvements from it into a site repository as you
   would any upstream.

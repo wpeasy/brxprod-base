@@ -1,7 +1,7 @@
 # JavaScript standard
 
 Plain, modern browser JavaScript. Where the code goes (code manager, never a
-Bricks Code element) is in CLAUDE.md › JavaScript & PHP.
+Bricks Code element) is in AGENTS.md › JavaScript & PHP.
 
 ## 1. Shape
 

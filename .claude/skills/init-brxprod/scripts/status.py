@@ -102,11 +102,16 @@ def main():
         plugins = subprocess.run(["claude", "plugin", "list"], capture_output=True, text=True, timeout=60).stdout
     except (OSError, subprocess.TimeoutExpired):
         plugins = ""
-    if "bricks@bricks-skills" in plugins:
-        add("PASS", "Skills", "Bricks agent skills plugin (bricks@bricks-skills) installed")
+    # Bricks' skills: a Claude Code plugin, or (Codex and other agents) the
+    # release checkout symlinked into a shared skills directory.
+    codex_dirs = [os.path.expanduser(d) for d in ("~/.agents/skills", "~/.codex/skills")]
+    codex_has = any(os.path.isfile(os.path.join(d, "bricks-start-here", "SKILL.md")) for d in codex_dirs)
+    found = (["Claude Code plugin"] if "bricks@bricks-skills" in plugins else []) + (["Codex (~/.agents/skills)"] if codex_has else [])
+    if found:
+        add("PASS", "Skills", "Bricks agent skills: " + ", ".join(found))
     else:
-        add("FAIL", "Skills", "Bricks agent skills plugin not found",
-            "/plugin marketplace add codeerhq/bricks-skills, then /plugin install bricks@bricks-skills")
+        add("FAIL", "Skills", "Bricks agent skills not found",
+            "Claude Code: /plugin install bricks@bricks-skills; Codex: symlink ~/.bricks/skills/bricks-skills/skills/bricks-* into ~/.agents/skills")
 
     # --- Site --------------------------------------------------------------
     doctor, err = novamira("doctor")
