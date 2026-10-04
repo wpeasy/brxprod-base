@@ -20,6 +20,13 @@ project's `ask` rules will prompt the user for each — that is intended.
 - **CLI** — `command -v novamira`. If missing, tell the user and offer the
   official installer (`curl -fsSL https://raw.githubusercontent.com/use-novamira/novamira-cli/main/install.sh | env NOVAMIRA_AGENT='claude-code' sh`);
   run it only with their go-ahead.
+- **Site OAuth** — `curl -s <site-url>.well-known/oauth-authorization-server`
+  (the URL with its subdirectory, e.g. `https://host/site/.well-known/…`) must
+  return JSON with an `authorization_endpoint`. If it returns a 404 page, login
+  will fail with `server_unsupported: OAuth metadata is malformed or
+  unavailable`: the site's Novamira plugin is too old or its OAuth/CLI access
+  is off. Tell the user to update Novamira and enable it — don't try another
+  login route (application passwords, MCP).
 - **Existing connection** — read `.claude/settings.local.json` and list
   `.claude/novamira/`. If a profile already exists:
   - same site → this is a reconnect; skip to step 2 (re-login) only if

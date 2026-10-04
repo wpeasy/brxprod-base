@@ -62,6 +62,10 @@ remote-template ability availability).
   - no Style Guide page → BRXProd's *Update Style Guide Page* (owner action).
 - If `facts.bricksPostTypes` lacks a type the brief needs (e.g. `post`), say so:
   Bricks → Settings → Post types.
+- A *Bricks content ignored (Rendered with WordPress)* WARN lists posts whose
+  Bricks data the front end skips. Relay the fix (admin bar → **Render with
+  Bricks** on each one's WordPress edit screen). A builder Save does not fix
+  it, and execute-php must not write the meta (AGENTS.md › Known issues).
 
 ## 4. Design system
 
@@ -112,7 +116,10 @@ so it is out of scope for init — use it only on an explicit request.
 If `PROJECT_BRIEF.md` is missing, copy
 `.claude/skills/init-brxprod/templates/PROJECT_BRIEF.md` to the project root.
 Don't fill it in from guesses — ask the user to complete it (or to answer its
-questions in chat, then write their answers in).
+questions in chat, then write their answers in). When the user gives only an
+outline (business, place, audience), write their answers in and leave every
+fact they didn't give — names, contact details, prices, statistics, team,
+testimonials — as `_TODO_`; list those in section 9.
 
 ## 7. Report
 
