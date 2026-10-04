@@ -189,7 +189,7 @@ def main():
         add("WARN" if missing else "PASS", "BRXProd",
             "theme stylesheet missing: " + ", ".join(missing) if missing else "rails, corners and animation overrides in theme stylesheet",
             "BRXProd → Features: re-run Process / Animation Overrides" if missing else "")
-        snips = probe["snippets"]
+        snips = probe["snippets"] or {}  # PHP encodes an empty map as []
         for sid, fname in SNIPPETS.items():
             hit = [(f, st) for f, st in snips.items() if fname in f]
             if not hit:
