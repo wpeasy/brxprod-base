@@ -3,6 +3,9 @@
 .claude/settings.local.json
 .codex/config.toml
 
+# Scratch input for `novamira --input @file`
+.claude/tmp/
+
 # Per-site files (/design-system, /init-brxprod).
 # In a SITE project made from this template, delete these lines so they
 # are committed alongside the site's other notes.

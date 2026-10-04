@@ -58,6 +58,32 @@ Exactly one profile must be listed; take its `name`. Then merge into
 { "env": { "NOVAMIRA_HOME": "<H>", "NOVAMIRA_SITE": "<profile name>" } }
 ```
 
+In the same file, set `autoMode.environment` (replace any existing list) so
+Claude Code's Auto mode treats routine `novamira` work on this site as routine
+instead of prompting for every call. Auto mode reads these notes only from
+personal/local settings, never the shared `.claude/settings.json`, so they
+have to be written here per site. Fill in the site host and profile; if the
+site is live/production, say so instead of "development" — the user should
+then expect prompts for writes.
+
+```json
+{
+  "autoMode": {
+    "environment": [
+      "$defaults",
+      "**This project**: builds content on one WordPress/Bricks site using the Bricks Productivity plugin. `brxprod` / `BRXProd` is that plugin's name, not a production marker.",
+      "**Site**: <host>, a development site, not production. Reached only through the `novamira` CLI, pinned by NOVAMIRA_HOME/NOVAMIRA_SITE in this file to the profile `<profile name>`.",
+      "**Routine**: `novamira` commands against that pinned site: reads, `bricks/*` and `brxprod/*` abilities, page/template/class writes, and `novamira --yes run novamira/execute-php` for read-only inspection, with input JSON under `.claude/tmp/`.",
+      "**Not routine (ask first)**: changing NOVAMIRA_HOME/NOVAMIRA_SITE, passing `--site`, `novamira auth` / `novamira sites`, or reaching any other WordPress site."
+    ]
+  }
+}
+```
+
+Auto mode may refuse to let the agent write this block (it guards its own
+settings). If so, show the user the filled-in JSON and ask them to paste it
+into `.claude/settings.local.json` themselves.
+
 Also write `.codex/config.toml` (gitignored) so Codex gets the same pin —
 Codex applies it only once the user marks the project as **trusted**:
 

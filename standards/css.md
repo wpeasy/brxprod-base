@@ -92,6 +92,35 @@ the sentence-case rule in the site's default instructions.
   button's `style`, a heading `tag`, an image `size`. Visual styling (spacing,
   colour, type, layout) is CSS.
 
+### Wrap everything in `@supports (display: grid)`
+
+**Every `_cssCustom` written through an ability — global class or element
+(`%root%`) CSS — is wrapped, in full, in one `@supports (display: grid)`
+block.** Bricks 2.4.2's normaliser leaves an at-rule's contents alone, so this
+stops it moving root declarations into style controls and mangling nesting
+(AGENTS.md › Known issues). Every browser supports grid, so the wrapper never
+changes what renders.
+
+```css
+@supports (display: grid) {
+/* Settings */
+.test-card{
+  --_test-card-background: var(--test-card-background, var(--light));
+}
+
+.test-card{
+  background: var(--_test-card-background);
+  &:hover{ /* … */ }
+}
+}
+```
+
+- One wrapper around **all** the code — the Settings block, the rules, nested
+  states and `@container` queries alike. Nothing outside it.
+- The examples in this file omit the wrapper for readability; add it when you
+  save.
+- Still **read the CSS back** after saving and compare it with what you sent.
+
 ## 4. The Settings block
 
 Any value a modifier (or a caller) may need to change is a variable, declared
@@ -260,4 +289,5 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] Modifiers only set public variables
 - [ ] No `@media`; containment declared via `:has(> .block)`; queries widest → narrowest
 - [ ] Every token name exists on this site (`DESIGN_SYSTEM.md`)
+- [ ] All CSS wrapped in one `@supports (display: grid) { … }` block
 - [ ] After saving: `_cssCustom` read back matches what was sent, no style-control keys added (Bricks 2.4.2 normaliser bug — AGENTS.md › Known issues)

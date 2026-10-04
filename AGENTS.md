@@ -70,7 +70,7 @@ import, and the `brxprod` skill's pointer to it.
   layout);
 - all styling goes in the **block's global class CSS** (`_cssCustom`) per
   [standards/css.md](standards/css.md), created/edited with Bricks'
-  global-class abilities;
+  global-class abilities, wrapped in `@supports (display: grid)`;
 - **read every CSS write back and compare** — Bricks 2.4.2 can rewrite it
   (see *Known issues*);
 - verify with `bricks/render-elements` (and `brxprod/render-frontend-html` for
@@ -113,9 +113,17 @@ a page:
   `novamira` against the global store. Run `setup-site` (or, in Codex, check the
   project is trusted so `.codex/config.toml` applies).
 - Health check: `novamira doctor --json`.
+- **Run every `novamira` command on its own** — one command per shell call,
+  from the project root: no `cd … &&`, no pipes (`| python3`, `| jq`), no
+  heredocs, `;` or `&&` chains. The `Bash(novamira:*)` allow rule only covers a
+  command that is *only* `novamira`; anything chained to it makes Claude Code
+  prompt for every call. Write input JSON with the file-writing tool (not the
+  shell) to `.claude/tmp/` (gitignored), pass it as
+  `--input @.claude/tmp/<name>.json`, and read the `--json` output directly
+  instead of piping it into a parser.
 - `novamira/execute-php` always needs `--yes` (the CLI treats it as destructive).
   Only add it after confirming what the code does. Pass code through a JSON file:
-  `novamira --yes run novamira/execute-php --input @input.json` with
+  `novamira --yes run novamira/execute-php --input @.claude/tmp/input.json` with
   `{"code": "..."}` — no `<?php`, `return` a value.
 - execute-php is for **read-only inspection** when no ability covers it. Never
   use it to write Bricks data.
@@ -201,6 +209,8 @@ In short:
   comments `()` `[]` `{}` ignored. Overrides the site default's sentence case.
 - All component CSS in the **block's** global class (literal `.block` selector);
   element classes stay empty.
+- **Wrap all CSS in `@supports (display: grid) { … }`** — works around the
+  Bricks 2.4.2 normaliser (see *Known issues*).
 - One `/* Settings */` block: `--_block__element-prop: var(--block__element-prop, token)`;
   rules use only `--_` vars. **Modifiers only set the public vars** — structural
   variants become variables too.
@@ -255,12 +265,15 @@ enqueue assets. Stored as a draft snippet — never activated by the agent.
   normaliser that ignores the "sync Custom CSS ↔ style controls" setting —
   moving root declarations into style controls — and cannot parse CSS nesting,
   corrupting `&:hover`, nested `@container` and nested selectors (unbalanced
-  braces, wrong values) while the save still reports `ok: true`. **After every
+  braces, wrong values) while the save still reports `ok: true`.
+  **Workaround: wrap all of the CSS in one `@supports (display: grid) { … }`
+  block** — the normaliser leaves at-rule contents alone, and every browser
+  supports grid (standards/css.md › Where CSS lives). **Still, after every
   `_cssCustom` write, read it back** (`bricks/get-page-elements` for elements,
   `bricks/list-global-classes` for classes) and compare it with what you sent,
   and check no style-control keys appeared. If it differs, **stop and report
-  it** — never leave altered CSS in place or call the work done. Remove this
-  rule once Bricks fixes the normaliser.
+  it** — never leave altered CSS in place or call the work done. Remove the
+  wrapper and this rule once Bricks fixes the normaliser.
 
 ### BRXProd plugin (not site faults)
 
