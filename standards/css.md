@@ -40,6 +40,26 @@ an element of the outer one: `test-card`, not `main-section__test-card`. Set
 `"_abpBemMeta": {"bemAction": "skip"}` on the nested block's root element so
 BRXProd's BEM tool keeps it atomic instead of renaming it into the parent.
 
+### Atomic components are generic
+
+Reusable building blocks — cards, button groups, lists, badges, media
+objects — are named for their **structure**, never their content:
+
+- **One generic block per structure:** `card`, `button-group`, `media-object`
+  — never `product-card`, `feature-card`, `person-card` when they share a
+  structure. What a card *shows* is content, not a new component.
+- **Visual differences → a modifier** (Settings-only, §5): `card--feature`,
+  `card--compact`, `button-group--stacked`.
+- **Structural differences → a version:** when the element tree genuinely
+  differs (different elements, order that can't be a variable), create a new
+  versioned block — the first is `card`, the next `card-v2`, then `card-v3` —
+  each with its own elements (`card-v2__body`). Never rename an existing block.
+- **Purpose goes in the label comment**, not the class: label `Card (Product)`,
+  `Card [Team member]` (bracket comments are ignored for BEM matching, §2).
+- **Check before creating:** look for an existing generic block in
+  `DESIGN_SYSTEM.md` › Global classes (or `bricks/list-global-classes`) and
+  reuse it — add a modifier or a version only if it really doesn't fit.
+
 ## 2. Labels
 
 **Every element's label matches its BEM name, in Title Case** — this overrides
@@ -233,6 +253,7 @@ disappears with it. Not in the theme style, a page, or a section.
 ## Checklist before saving
 
 - [ ] Every class BEM; nested blocks marked `bemAction: skip`
+- [ ] Components generic (no content-named blocks); reused existing block, modifier for visuals, `-v2` only for a different structure
 - [ ] Every label = Title Case BEM segment (bracket comments allowed)
 - [ ] All component CSS in the block class; element classes empty
 - [ ] One `/* Settings */` block; rules use only `--_` variables; defaults are tokens

@@ -192,6 +192,11 @@ CSS.** Reference build: [standards/examples/test-card.bricks.json](standards/exa
 In short:
 
 - BEM classes; nested blocks are new blocks marked `_abpBemMeta.bemAction: "skip"`.
+- Atomic components are **generic and structural**: one `card`, not
+  `product-card` / `feature-card` / `person-card`. Visual variants are
+  modifiers (`card--feature`); a different element tree is a version
+  (`card-v2`). Purpose goes in the label comment (`Card (Product)`). Reuse an
+  existing block before creating one.
 - Labels = the BEM segment in **Title Case** ("Test Card", "Content"); bracket
   comments `()` `[]` `{}` ignored. Overrides the site default's sentence case.
 - All component CSS in the **block's** global class (literal `.block` selector);
@@ -205,6 +210,24 @@ In short:
 - Use **BRXProd CSS Patterns** verbatim when one fits — e.g. a sticky header
   template gets the `sticky-header` pattern in its top element's CSS (needs the
   `header-height` snippet active).
+
+## HTML semantics & accessibility
+
+**Read [standards/html.md](standards/html.md) before building any element
+tree.** Tags are chosen for what the content *is* (Bricks `tag`, or
+`tag: "custom"` + `customTag` for `dl`/`dt`/`dd`/`time`/`blockquote`…;
+attributes via `_attributes`). In short:
+
+- collections → `ul`/`ol` > `li`; term/value pairs → `dl` > `dt`/`dd`;
+  self-contained items → `article`; quotes → `figure` > `blockquote` +
+  `figcaption`; dates → `time datetime`; contact → `address`; data → `table`.
+- one `h1`, no skipped levels; Basic Text is a `div` by default — set `p`.
+- Bricks provides `<main id="brx-content">` — never add another `main`, nor
+  duplicate a landmark Bricks' header/footer wrappers output; every `nav` and
+  `section` is named (`aria-label` / `aria-labelledby`).
+- links navigate, buttons act; native elements before ARIA roles; decorative
+  media `aria-hidden`; state via `aria-*`; WCAG 2.2 AA (contrast, keyboard,
+  focus, reduced motion).
 
 ## JavaScript & PHP standards
 
