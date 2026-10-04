@@ -67,7 +67,7 @@ steps are skipped.
 |---|---|
 | **Connect** | Logs in to the site through the Novamira CLI and pins this project to it (see *Site isolation*). |
 | **Skills** | Installs the BRXProd skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`) and checks the Bricks skills plugin. |
-| **Status** | Read-only readiness check — Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets, Style Guide. Every problem comes with the switch to fix it. |
+| **Status** | Read-only readiness check — Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets, Style Guide, pages whose Bricks content is ignored (*Rendered with WordPress*). Every problem comes with the switch to fix it. |
 | **Design system** | Generates `DESIGN_SYSTEM.md` from the live site. |
 | **Wireframes** | On Bricks Wireframes sites, proposes templates from the brief and saves the ones you approve as Bricks templates. |
 | **Brief** | Creates `PROJECT_BRIEF.md` for you to fill in. |
@@ -92,6 +92,7 @@ standards/
   settings.json           Shared Claude Code permission rules
   skills/
     init-brxprod/         One-command setup and status check
+                          (templates/PROJECT_BRIEF.md = the brief template)
     setup-site/           Connection step on its own
     design-system/        Generates DESIGN_SYSTEM.md
     brxprod*/             BRXProd skills (installed by init)

@@ -46,7 +46,14 @@ foreach ((array) glob($dir . '/*.php') as $f) {
     $snips[basename($f)] = $st[1] ?? '?';
 }
 $gs = (array) get_option('bricks_global_settings', []);
+// Posts holding Bricks data that the front end ignores (editor mode "wordpress").
+$wpMode = [];
+foreach (get_posts([
+    'post_type' => 'any', 'post_status' => ['publish', 'draft', 'private'], 'posts_per_page' => 50, 'fields' => 'ids',
+    'meta_query' => [['key' => '_bricks_page_content_2', 'compare' => 'EXISTS'], ['key' => '_bricks_editor_mode', 'value' => 'wordpress']],
+]) as $pid) $wpMode[] = ['id' => $pid, 'title' => get_the_title($pid)];
 return [
+    'renderedWithWordPress' => $wpMode,
     'themeStyles' => $styles,
     'markers' => $markers,
     'snippets' => $snips,
@@ -207,6 +214,13 @@ def main():
         add("PASS" if probe["bricksPostTypes"] else "WARN", "Bricks",
             "Bricks enabled for: " + (", ".join(probe["bricksPostTypes"]) or "no post types"),
             "" if probe["bricksPostTypes"] else "Bricks → Settings → Post types")
+        ignored = probe.get("renderedWithWordPress") or []
+        if ignored:
+            add("WARN", "Bricks", "Bricks content ignored (Rendered with WordPress): " +
+                ", ".join("%s (ID %s)" % (p["title"], p["id"]) for p in ignored),
+                "edit each in WordPress → admin bar: Rendered with WordPress → Render with Bricks")
+        else:
+            add("PASS", "Bricks", "every post with Bricks data renders with Bricks")
     else:
         add("WARN", "Site", "read-only probe failed (%s)" % err)
 

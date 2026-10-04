@@ -40,6 +40,11 @@ an element of the outer one: `test-card`, not `main-section__test-card`. Set
 `"_abpBemMeta": {"bemAction": "skip"}` on the nested block's root element so
 BRXProd's BEM tool keeps it atomic instead of renaming it into the parent.
 
+Bricks' abilities reject `_abpBemMeta` (it isn't a registered element
+setting), so when building through abilities you can't set it — leave it out,
+and tell the user the nested blocks are unmarked (set it in the builder, or
+don't run the BEM tool on that page). See AGENTS.md › Known issues.
+
 ### Atomic components are generic
 
 Reusable building blocks — cards, button groups, lists, badges, media
@@ -91,6 +96,12 @@ the sentence-case rule in the site's default instructions.
 - Simple Bricks UI settings are fine for what they are designed for — a
   button's `style`, a heading `tag`, an image `size`. Visual styling (spacing,
   colour, type, layout) is CSS.
+- **When writing through abilities, wrap the whole `_cssCustom` in
+  `@supports (display: grid) { … }`** — Settings block, rules and all. Bricks
+  2.4.2's normaliser otherwise moves root declarations into style controls and
+  breaks nesting; inside `@supports` it leaves the CSS untouched
+  (AGENTS.md › Known issues). The wrapper is always true, so it changes
+  nothing in the browser. Examples in this file omit it for readability.
 
 ## 4. The Settings block
 
@@ -249,10 +260,14 @@ disappears with it. Not in the theme style, a page, or a section.
   one.
 - Decorative images — `brxp-has-bg-media__media`, pattern art — are hidden from
   assistive technology (`aria-hidden="true"`); an empty `altText` is not enough.
+- **No real photography yet?** Use clearly labelled placeholders (e.g.
+  `https://placehold.co/1200x900/e5e5e5/404040/png?text=Lifestyle+photo:+terrace`)
+  with alt text that says it's a placeholder. Never use stock photos as if they
+  were the client's real listings, products, team or premises.
 
 ## Checklist before saving
 
-- [ ] Every class BEM; nested blocks marked `bemAction: skip`
+- [ ] Every class BEM; nested blocks marked `bemAction: skip` (builder only — abilities reject it; say so if unmarked)
 - [ ] Components generic (no content-named blocks); reused existing block, modifier for visuals, `-v2` only for a different structure
 - [ ] Every label = Title Case BEM segment (bracket comments allowed)
 - [ ] All component CSS in the block class; element classes empty
@@ -260,4 +275,5 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] Modifiers only set public variables
 - [ ] No `@media`; containment declared via `:has(> .block)`; queries widest → narrowest
 - [ ] Every token name exists on this site (`DESIGN_SYSTEM.md`)
+- [ ] `_cssCustom` wrapped in `@supports (display: grid) { … }`
 - [ ] After saving: `_cssCustom` read back matches what was sent, no style-control keys added (Bricks 2.4.2 normaliser bug — AGENTS.md › Known issues)

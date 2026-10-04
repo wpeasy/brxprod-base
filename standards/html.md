@@ -116,7 +116,11 @@ with no BEM class is labelled by its role: `Item` (`li`), `Term` (`dt`),
 ## 8. Verify
 
 Read the saved tree back and render it with `brxprod/render-frontend-html`
-(Bricks' own render can't show children of nestable elements). Check:
+(Bricks' own render can't show children of nestable elements). It needs an
+`elementId` and reads only a post's content area — render header/footer
+templates with `bricks/render-elements` (`postId` = the template). For the
+whole page, fetch the live URL — and first confirm the page renders with
+Bricks at all (AGENTS.md › Known issues › render mode). Check:
 
 - [ ] one `h1`, no skipped heading levels
 - [ ] collections are `ul`/`ol` > `li`; pairs are `dl` > `dt`/`dd`; self-contained items are `article`

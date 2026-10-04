@@ -71,10 +71,16 @@ import, and the `brxprod` skill's pointer to it.
 - all styling goes in the **block's global class CSS** (`_cssCustom`) per
   [standards/css.md](standards/css.md), created/edited with Bricks'
   global-class abilities;
-- **read every CSS write back and compare** — Bricks 2.4.2 can rewrite it
-  (see *Known issues*);
+- **wrap every `_cssCustom` in `@supports (display: grid) { … }`** and **read
+  every CSS write back and compare** — without the wrapper Bricks 2.4.2
+  rewrites it (see *Known issues*);
 - verify with `bricks/render-elements` (and `brxprod/render-frontend-html` for
-  content inside nestable elements).
+  content inside nestable elements — it requires an `elementId` and reads only
+  a post's *content* area, so render header/footer templates with
+  `bricks/render-elements` and the template's post id);
+- **check the page actually renders with Bricks** (see *Known issues* ›
+  render mode) — valid Bricks data is silently ignored when the page is set to
+  *Rendered with WordPress*.
 
 The reference shape is [standards/examples/test-card.bricks.json](standards/examples/test-card.bricks.json)
 — that is the structure to produce, written through abilities, never pasted.
@@ -94,7 +100,11 @@ a page:
   CSS ([standards/css.md](standards/css.md) › BRXProd CSS Patterns);
 - display conditions decide where a template appears site-wide — **confirm
   with the user before setting them** (e.g. entire website), since that
-  changes every page; until then leave them unset and say so.
+  changes every page; until then leave them unset and say so. **Unset does
+  not mean hidden:** when no other header/footer template matches, Bricks
+  falls back to a condition-less one, so a new published header/footer can
+  appear on every page immediately. Tell the user that when you create one
+  (or create it as a draft if it must stay off the site).
 
 ## Connection — Novamira CLI (not MCP)
 
@@ -261,6 +271,48 @@ enqueue assets. Stored as a draft snippet — never activated by the agent.
   and check no style-control keys appeared. If it differs, **stop and report
   it** — never leave altered CSS in place or call the work done. Remove this
   rule once Bricks fixes the normaliser.
+  - **Workaround — wrap the whole CSS in an always-true `@supports`:**
+
+    ```css
+    @supports (display: grid) {
+      /* Settings */
+      .card { --_card-gap: var(--card-gap, var(--brxw-space-s)); }
+
+      .card {
+        gap: var(--_card-gap);
+        &:hover { … }
+        @container (inline-size <= 640px) { … }
+      }
+    }
+    ```
+
+    The normaliser leaves the contents alone: no style-control keys, nesting
+    intact (verified on Bricks 2.4.2 — only a trailing newline is trimmed).
+    Still read every write back.
+  - The design-resource workspace (`checkout-` → `preview-` →
+    `apply-design-resource-workspace`) runs the same normaliser — it is not a
+    way round it. Its preview's `normalizationDelta` shows the rewrite without
+    writing, which makes it a safe test. `apply-…` needs `--yes` in the CLI.
+- **A page can hold valid Bricks data and still render WordPress content.**
+  If the page's `_bricks_editor_mode` is `wordpress` (*Rendered with
+  WordPress*), the front end ignores the Bricks tree. Writing it with
+  `bricks/set-page-elements` doesn't change the mode, no ability can, and a
+  builder **Save** doesn't either (the builder sends nothing at all when it has
+  no edits of its own). After writing a page, check it read-only —
+  `\Bricks\Helpers::render_with_bricks( $id )` via `novamira/execute-php`, or
+  look for the page's `h1` in the live HTML. If it's off, ask the user to open
+  the page's WordPress edit screen and pick **Rendered with WordPress → Render
+  with Bricks** in the admin bar (or do it in their browser with their OK).
+  Never write the meta with execute-php.
+- **`_abpBemMeta` cannot be written through Bricks' abilities.** They reject it
+  as an unregistered setting (verified on `div` and `text-link`), so a nested
+  block's `bemAction: "skip"` marker ([standards/css.md](standards/css.md))
+  can only be set in the builder. Build without it and tell the user: running
+  BRXProd's BEM tool on that page may rename nested blocks into their parent.
+- **Deleting a global class** (`bricks/delete-global-class`) needs the class's
+  `itemOwnership`, the store's `lockOwnership` (both from
+  `bricks/list-global-classes`) and `allowOrphans: true` — always required,
+  even for an unused class, so confirm it's unused first.
 
 ### BRXProd plugin (not site faults)
 
