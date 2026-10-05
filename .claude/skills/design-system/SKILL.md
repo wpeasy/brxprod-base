@@ -88,6 +88,10 @@ variables):
   only if the user asks. Report its `created` / `updated` lists. If the ability
   isn't on the site (older BRXProd), stop and ask the user to update the plugin
   or run it in BRXProd.
+- Don't touch the theme style for a palette change: its element defaults
+  (buttons, links, site background, text colours) already read the colour
+  variables and a11y tokens, so the change flows through. Remap one only when
+  the design needs a different mapping, and report which keys changed and why.
 - Then re-run this skill so `DESIGN_SYSTEM.md` shows the new values.
 
 ## Changing the concept map

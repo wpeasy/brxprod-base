@@ -36,9 +36,12 @@ global class (AGENTS.md › Building content).
 ### Nested blocks
 
 A block inside another block (a card inside a section) is a **new block**, not
-an element of the outer one: `test-card`, not `main-section__test-card`. Set
-`"_abpBemMeta": {"bemAction": "skip"}` on the nested block's root element so
-BRXProd's BEM tool keeps it atomic instead of renaming it into the parent.
+an element of the outer one: `test-card`, not `main-section__test-card`.
+`"_abpBemMeta": {"bemAction": "skip"}` on the nested block's root element makes
+BRXProd's BEM tool keep it atomic instead of renaming it into the parent — but
+Bricks 2.4.2 rejects that setting on ability writes (AGENTS.md › Known issues),
+so leave it out, note the omission, and set it in the builder if the BEM tool
+will be run on the page.
 
 ### Atomic components are generic
 
@@ -89,8 +92,31 @@ the sentence-case rule in the site's default instructions.
 - Global-class CSS uses the **literal class selector** (`.test-card`).
   `%root%` is only for element-level (ID) CSS, such as an asymmetric rail span.
 - Simple Bricks UI settings are fine for what they are designed for — a
-  button's `style`, a heading `tag`, an image `size`. Visual styling (spacing,
-  colour, type, layout) is CSS.
+  heading `tag`, an image `size`. Visual styling (spacing, colour, type,
+  layout) is CSS.
+- **Text colour is always the a11y token for the background it sits on:**
+  `--brxp-a11y-{colour}[-{l|d}-N]-text` — e.g. `--brxp-a11y-surface-d-7-text`
+  on the page, `--brxp-a11y-surface-d-6-text` on a card. That covers body,
+  headings, muted text, labels and prices. Brand colours (primary, secondary,
+  surface shades) are for backgrounds, borders and decoration, never text; no
+  hand-picked "muted" shade — use size and weight for hierarchy.
+
+### Buttons, links and element defaults
+
+- **Never write CSS that targets a button or a link** — no `.x__button {…}`,
+  `.x__link {…}`, nor hover, colour, padding or radius rules for them.
+- A button is styled only with the Button element's own controls: `size`
+  (sm/md/lg/xl), `style` (primary/secondary/…), `circle`, `outline`. Anything
+  that looks like a button is a Button element, never a styled Text Link.
+- Layout around a button (alignment, spacing, pushing it to the bottom of a
+  card) goes in the parent's CSS — `align-items` / `align-self` on the card and
+  its other elements — not on the button.
+- Links take their look from the theme style's `links` defaults. Typography
+  that only needs to reach a link (a wordmark) goes on a wrapping element (`p`
+  containing the `a`); a nav's font size can go on its list.
+- Element defaults — button colours in every state, sizes, borders, radius;
+  link colours; site background; body and heading text colour — live in the
+  active theme style, not component CSS (AGENTS.md › Building content).
 
 ### Wrap everything in `@supports (display: grid)`
 
@@ -143,7 +169,9 @@ once at the top of the block class:
   name without the leading underscore.
 - **Default** = a design token where one exists (resolved via the concept map),
   otherwise a literal (`200px`, `none`). A raw colour or spacing value where a
-  token exists is a token that wasn't looked up.
+  token exists is a token that wasn't looked up. **Text colour variables default
+  to the a11y token** for the block's background
+  (`--_card-color: var(--card-color, var(--brxp-a11y-surface-d-6-text))`).
 - **Rules read only the private `--_` variables**; the public names are the
   override handles.
 - Values nothing will ever override can be written directly (`main-section`
@@ -161,7 +189,7 @@ once at the top of the block class:
 | `.test-card__content { padding }` | `--_test-card__content-padding` |
 | `.test-card__media { max-width }` | `--_test-card__media-max-width` |
 | `.test-card ul li { padding }` (markup we don't control) | `--_test-card-ul-li-padding` |
-| `.test-card__button:hover { background }` | `--_test-card__button-background--hover` |
+| `.test-card:hover { box-shadow }` | `--_test-card-box-shadow--hover` |
 
 BEM elements keep their `__`; tag/selector steps are joined with `-`; a state
 appends `--{state}`.
@@ -281,7 +309,7 @@ disappears with it. Not in the theme style, a page, or a section.
 
 ## Checklist before saving
 
-- [ ] Every class BEM; nested blocks marked `bemAction: skip`
+- [ ] Every class BEM; nested blocks marked `bemAction: skip` in the builder, or the omission reported
 - [ ] Components generic (no content-named blocks); reused existing block, modifier for visuals, `-v2` only for a different structure
 - [ ] Every label = Title Case BEM segment (bracket comments allowed)
 - [ ] All component CSS in the block class; element classes empty
@@ -289,5 +317,8 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] Modifiers only set public variables
 - [ ] No `@media`; containment declared via `:has(> .block)`; queries widest → narrowest
 - [ ] Every token name exists on this site (`DESIGN_SYSTEM.md`)
+- [ ] Every text colour is the `--brxp-a11y-*-text` token for its background; brand colours only on backgrounds, borders, decoration
+- [ ] No CSS targets a button or a link; buttons use only Size / Style / Circle / Outline
+- [ ] Element-default changes made in the theme style, only where the design needs them, and each changed key reported
 - [ ] All CSS wrapped in one `@supports (display: grid) { … }` block
 - [ ] After saving: `_cssCustom` read back matches what was sent, no style-control keys added (Bricks 2.4.2 normaliser bug — AGENTS.md › Known issues)

@@ -67,6 +67,9 @@ button is a button.
 
 - **`a` navigates** (has an `href`); **`button` acts** (opens, toggles,
   submits). Never a clickable `div`, never `href="#"` for an action.
+- Anything that **looks** like a button is a Bricks Button element (which can
+  still link), never a Text Link styled as one; its look comes from the
+  Button's Size / Style / Circle / Outline controls, not CSS ([css.md](css.md)).
 - Link text makes sense out of context — no "click here" / "read more" alone;
   add context (visually hidden text or `aria-label` matching the visible text's
   start) when the design forces a short label.
@@ -98,8 +101,9 @@ button is a button.
 7. **Keyboard:** everything interactive is reachable and operable by keyboard
    in DOM order; never remove focus outlines without a visible replacement;
    no positive `tabindex`.
-8. **Contrast:** text meets 4.5:1 (3:1 for large text and UI parts). Text on a
-   brand or image background uses the `--brxp-a11y-*-text` tokens or a scrim.
+8. **Contrast:** text meets 4.5:1 (3:1 for large text and UI parts). Every text
+   colour is the `--brxp-a11y-*-text` token for the background it sits on
+   ([css.md](css.md)); text on an image needs a scrim.
 9. **Never rely on colour alone** to convey meaning (errors, required fields,
    links in body text).
 10. **Motion** respects `prefers-reduced-motion` (BRXProd's animation overrides
@@ -123,6 +127,8 @@ Read the saved tree back and render it with `brxprod/render-frontend-html`
 - [ ] every `section` and `nav` has an accessible name
 - [ ] no second `main`; no `header` / `footer` landmark duplicating Bricks' wrappers
 - [ ] links navigate, buttons act; link text makes sense alone
+- [ ] everything that looks like a button is a Button element (no styled Text Links)
+- [ ] text colours are `--brxp-a11y-*-text` tokens for their background
 - [ ] decorative media/icons `aria-hidden`; informative images have alt text
 - [ ] interactive state exposed via `aria-*`; keyboard-operable; focus visible
 - [ ] say plainly what you could not check (contrast against images, real

@@ -65,12 +65,28 @@ import, and the `brxprod` skill's pointer to it.
 - check element settings against `bricks/get-element-schema` (load
   `bricks:bricks-element-schemas`);
 - element settings carry **structure and content only** — `_cssGlobalClasses`,
-  label, `tag`, text, links, media, attributes, and simple UI settings such as a
-  button's `style`; never style-control values (spacing, colour, typography,
-  layout);
-- all styling goes in the **block's global class CSS** (`_cssCustom`) per
+  label, `tag`, text, links, media, attributes; never style-control values
+  (spacing, colour, typography, layout);
+- **buttons are the exception:** a Button element is styled only with its own
+  controls — `size` (sm/md/lg/xl), `style` (primary/secondary/…), `circle`,
+  `outline` — never CSS. Anything that looks like a button is a Button element,
+  never a Text Link styled as one;
+- all other styling goes in the **block's global class CSS** (`_cssCustom`) per
   [standards/css.md](standards/css.md), created/edited with Bricks'
-  global-class abilities, wrapped in `@supports (display: grid)`;
+  global-class abilities, wrapped in `@supports (display: grid)` — and **never
+  targets a button or a link**; layout around a button (alignment, spacing)
+  goes on its parent and siblings;
+- **element defaults live in the active theme style**
+  (`bricks/update-theme-style`): button colours in every state, sizes, borders
+  and radius (`button.*`), links (`links.*`), site background and body/heading
+  text colour (`general.siteBackground`, `typography.typographyBody.color`,
+  `typography.typographyHeadings.color`). They are already mapped to the colour
+  variables (e.g. `primaryBackground: var(--brxp-primary)`, hover
+  `var(--brxp-primary-d-2)`), so a palette change flows through. Change a
+  mapping only when the design needs it, and report exactly which keys changed
+  and why. Shape shared by every button (radius, border width/style) goes on the
+  default `button.border` and `button.border:hover`; the per-style keys
+  (`primaryBorder`, `outlineBorder`…) stay colour-only;
 - **read every CSS write back and compare** — Bricks 2.4.2 can rewrite it
   (see *Known issues*);
 - verify with `bricks/render-elements` (and `brxprod/render-frontend-html` for
@@ -78,6 +94,15 @@ import, and the `brxprod` skill's pointer to it.
 
 The reference shape is [standards/examples/test-card.bricks.json](standards/examples/test-card.bricks.json)
 — that is the structure to produce, written through abilities, never pasted.
+
+**After creating a new page**, if BRXProd's Client Feedback is enabled and its
+abilities are exposed (`brxprod/create-feedback` is listed; `get-context`
+reports the group), log one internal review item on it with
+`brxprod/create-feedback` — `scope: "page"`, `postId` the new page,
+`visibility: "internal"`, `label: "Review new page"`, `body: "AI Generated
+page, please check and confirm the page quality and content"`. Once per new
+page (the ability isn't idempotent); not for edits to existing pages. If the
+feedback abilities aren't available, skip it and say so.
 
 ### Example designs with a header or footer
 
@@ -204,7 +229,8 @@ either — fixes belong in the BRXProd plugin.
 CSS.** Reference build: [standards/examples/test-card.bricks.json](standards/examples/test-card.bricks.json).
 In short:
 
-- BEM classes; nested blocks are new blocks marked `_abpBemMeta.bemAction: "skip"`.
+- BEM classes; nested blocks are new blocks marked `_abpBemMeta.bemAction: "skip"`
+  (in the builder — abilities can't write it, see *Known issues*).
 - Atomic components are **generic and structural**: one `card`, not
   `product-card` / `feature-card` / `person-card`. Visual variants are
   modifiers (`card--feature`); a different element tree is a version
@@ -220,6 +246,12 @@ In short:
   rules use only `--_` vars. **Modifiers only set the public vars** — structural
   variants become variables too.
 - Element rules flat; nest only states, pseudo-elements and `@container`.
+- **Text colour is always the a11y token for its background** —
+  `--brxp-a11y-{colour}[-{l|d}-N]-text` (body, headings, muted text, labels,
+  prices, button and link text). Brand colours are for backgrounds, borders and
+  decoration only; hierarchy comes from size/weight, never a "muted" shade.
+- **No CSS for buttons or links** — they take their look from the Button
+  controls and the theme style's defaults (above).
 - **Never `@media`**: `:has(> .block){container-type:inline-size}` + nested
   `@container (inline-size <= Npx)`, literal px, widest first.
 - Use **BRXProd CSS Patterns** verbatim when one fits — e.g. a sticky header
@@ -279,6 +311,11 @@ enqueue assets. Stored as a draft snippet — never activated by the agent.
   and check no style-control keys appeared. If it differs, **stop and report
   it** — never leave altered CSS in place or call the work done. Remove the
   wrapper and this rule once Bricks fixes the normaliser.
+- **Bricks 2.4.2's element validator rejects `settings._abpBemMeta`**
+  ("Expected a registered setting for the 'div' element") on ability writes
+  (`create-post`, `set-page-elements`…), so the nested-block
+  `bemAction: "skip"` marker can't be written that way. Leave it out, say so,
+  and set it in the builder if BRXProd's BEM tool will be run on the page.
 
 ### BRXProd plugin (not site faults)
 
