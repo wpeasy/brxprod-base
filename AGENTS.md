@@ -145,6 +145,11 @@ either — and never invent a name the site doesn't have. Each framework lacks
 some concepts the other has (Core Framework: no width, measure, line-height,
 transition or ratio tokens); the concept map shows these as *not found*.
 
+**Changing colours:** change only the base colours (variants are
+auto-generated), keep each base at 50% HSL lightness (use `-l-N` / `-d-N`
+variants for lighter/darker tones), then always run
+`brxprod/regenerate-a11y-colors`. Details: the `design-system` skill › *Changing colours*.
+
 ## BRXProd systems (summary — the site's design instructions are authoritative)
 
 All plugin classes are **locked, empty shells**. Their CSS lives in the active

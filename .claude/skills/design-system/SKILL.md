@@ -68,6 +68,28 @@ Both are verified against real sites (Bricks Wireframes; Core Framework 2.0.2):
 A concept that is *not found* is a real gap in that framework's preset (e.g.
 Core Framework has no width, measure, line-height, transition or ratio tokens).
 
+## Changing colours
+
+When creating or changing the site's colours (palette entries or colour
+variables):
+
+- **Only change the base colours** (`primary`, `secondary`, `base`, status
+  colours…). Every variant — shades `-{l,d}-N`, transparencies `-{5…90}`,
+  tints — is auto-generated from the base. Never edit a variant by hand.
+- **The base (surface) colour is always 50% lightness** (HSL `l = 50%`). Keep
+  the hue and saturation, set lightness to 50%. Where a design needs a lighter
+  or darker tone, use the generated `-l-N` / `-d-N` variant instead of moving
+  the base.
+- **Always regenerate BRXProd's a11y colour variables afterwards** —
+  `novamira run brxprod/regenerate-a11y-colors --json` (no input). It
+  recalculates every `--brxp-a11y-*-text` for the bases and their shades, from
+  the BRXProd palette (Wireframes) or Core Framework's colours. Omit `method` so
+  it uses the contrast method the user last chose (`wcag2` / `apca`); pass one
+  only if the user asks. Report its `created` / `updated` lists. If the ability
+  isn't on the site (older BRXProd), stop and ask the user to update the plugin
+  or run it in BRXProd.
+- Then re-run this skill so `DESIGN_SYSTEM.md` shows the new values.
+
 ## Changing the concept map
 
 `ROLES` at the top of `scripts/render.py` maps each concept to candidate token
