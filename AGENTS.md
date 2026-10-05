@@ -8,7 +8,7 @@ Shared by **Claude Code** (reads `CLAUDE.md`, which imports this file) and
 is a symlink to it, so both agents load the same ones. Invoke a skill as
 `/name` in Claude Code or `$name` in Codex.
 
-- **New project:** create from this template, then run the `init-brxprod`
+- **New project:** copy this base's files into a new folder, then run the `init-brxprod`
   skill with the site URL. Re-run it any time to re-check the site is ready.
 - **This site's facts and tokens:** [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md), generated
   by the `design-system` skill. **Read it before writing any CSS or naming any token** —

@@ -5,7 +5,7 @@ A starting point for building WordPress sites with **Bricks Builder** and the
 [Claude Code](https://claude.com/claude-code) or [Codex](https://openai.com/codex).
 Both read the same instructions (`AGENTS.md`) and the same skills.
 
-Each project made from this template connects to **one** site and gives the
+Each project made from this base connects to **one** site and gives the
 agent everything it needs to build pages, posts, templates and content the way
 we do: Bricks' own skills and abilities first, BRXProd's rules on top, and the
 site's own framework tokens — Bricks Wireframes or Core Framework.
@@ -44,9 +44,15 @@ site's own framework tokens — Bricks Wireframes or Core Framework.
 
 ## Quick start
 
-1. **Use this template** on GitHub to create a repository for the site, and
-   clone it.
-2. In the new repository, delete the per-site lines from `.gitignore`
+1. Copy the files into a new project folder — a plain local copy, with no link
+   back to this repository:
+
+   ```bash
+   git clone --depth 1 https://github.com/wpeasy/brxprod-base.git "my-site" && rm -rf "my-site/.git"
+   ```
+
+   Run `git init` in it if the site gets its own repository.
+2. In the new project, delete the per-site lines from `.gitignore`
    (`DESIGN_SYSTEM.md`, `PROJECT_BRIEF.md`) so the site's files get committed.
 3. Open the folder in your agent and run the init skill:
 
@@ -96,7 +102,7 @@ standards/
     design-system/        Generates DESIGN_SYSTEM.md
     brxprod*/             BRXProd skills (installed by init)
 
-Per site — created by init, not in this template:
+Per site — created by init, not in this base:
   DESIGN_SYSTEM.md        Framework, tokens, concept map, classes
   PROJECT_BRIEF.md        Business, audience, voice, pages, content
   .claude/novamira/              Site profile store (never committed)
@@ -152,5 +158,5 @@ A project can only reach its own site:
   version is in `.claude/skills/.brxprod-skills-version`.
 - **Bricks skills:** Claude Code `/plugin marketplace update bricks-skills`;
   Codex `~/.bricks/skills/bricks-skills/scripts/bricks-skills-upgrade`.
-- **This template:** pull improvements from it into a site repository as you
-  would any upstream.
+- **This base:** a project is a copy, not a fork — copy improved files
+  (`AGENTS.md`, `standards/`, `.claude/skills/`) across from a fresh clone.
