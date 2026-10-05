@@ -54,7 +54,13 @@ site's own framework tokens — Bricks Wireframes or Core Framework.
    Run `git init` in it if the site gets its own repository.
 2. In the new project, delete the per-site lines from `.gitignore`
    (`DESIGN_SYSTEM.md`, `PROJECT_BRIEF.md`) so the site's files get committed.
-3. Open the folder in your agent and run the init skill:
+3. **Start a new agent session inside the new folder** (it must be the
+   session's working directory), then run the init skill. Agents load
+   `CLAUDE.md` / `AGENTS.md`, the project skills and `.claude/settings*.json`
+   only from the folder the session starts in — a session that copied the files
+   into a subfolder has none of them and will ignore the house rules. If an
+   agent did the copy, or you're unsure, tell it first: *"Read `CLAUDE.md` and
+   `AGENTS.md` in full before doing any work."*
 
    - Claude Code: `/init-brxprod https://example.com/`
    - Codex: **trust the project** first (Codex only applies the project's

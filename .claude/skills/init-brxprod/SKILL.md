@@ -12,6 +12,16 @@ refreshes and re-checks rather than redoing.
 
 Run the steps in order. Report progress in one line per step.
 
+## 0. Read the project instructions — before anything else
+
+- **Check the working directory is the project root** (`AGENTS.md` and
+  `CLAUDE.md` are in it). If the project is a subfolder — e.g. this session
+  copied the base into `my-site/` — **stop**: tell the user to start a new
+  session in that folder. Its skills, permissions and site connection
+  (`.claude/settings*.json`, `.codex/config.toml`) only apply there.
+- **Read `CLAUDE.md` and `AGENTS.md` in full** if they are not already in your
+  context, and follow them for everything after. Do no other work first.
+
 ## 1. Connect
 
 If `NOVAMIRA_HOME` / `NOVAMIRA_SITE` are not set, or `novamira doctor --json`
