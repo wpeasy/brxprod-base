@@ -10,8 +10,8 @@ and pins it. Every `novamira` command run from this project then reaches only
 that site; another site's login cannot be seen from here, and this site cannot be
 seen from other projects.
 
-Several commands below set `NOVAMIRA_*` inline or call `novamira auth`, so the
-project's `ask` rules will prompt the user for each — that is intended.
+Several commands below set `NOVAMIRA_*` inline or call `novamira auth` — the
+only time that is allowed (AGENTS.md › Connection).
 
 ## 1. Preconditions
 

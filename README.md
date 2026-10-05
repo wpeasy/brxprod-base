@@ -153,9 +153,9 @@ A project can only reach its own site:
   (`.claude/settings.local.json`) and Codex (`.codex/config.toml`). All are
   gitignored.
 - The access token is kept in the OS keychain, not in the repository.
-- In Claude Code, shared rules in `.claude/settings.json` make the agent ask
-  before logging in, switching sites or overriding the connection. Codex has no
-  equivalent, so `AGENTS.md` carries the rule as an instruction.
+- `AGENTS.md` tells the agent never to log in, switch sites or override the
+  connection without asking. There are no permission rules for this, so
+  `novamira` commands don't prompt.
 
 ## Updating
 

@@ -137,9 +137,8 @@ a page:
   project's own profile store `.claude/novamira/` — containing only this site —
   and `NOVAMIRA_SITE` to its profile. The global Novamira store stays empty.
 - **Never** override `NOVAMIRA_HOME` / `NOVAMIRA_SITE`, pass `--site`, or run
-  `novamira auth login` for a different site from here. In Claude Code the
-  `ask` rules in `.claude/settings.json` make each of those prompt; Codex has
-  no equivalent, so this rule is the only guard — ask the user first.
+  `novamira auth login` for a different site from here. No permission rule
+  stops these — this instruction is the only guard, so ask the user first.
 - If `NOVAMIRA_HOME` / `NOVAMIRA_SITE` are not set, **stop** — do not run
   `novamira` against the global store. Run `setup-site` (or, in Codex, check the
   project is trusted so `.codex/config.toml` applies).
