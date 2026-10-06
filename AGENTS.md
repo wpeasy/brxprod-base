@@ -107,6 +107,13 @@ import, and the `brxprod` skill's pointer to it.
 - verify with `bricks/render-elements` (and `brxprod/render-frontend-html` for
   content inside nestable elements).
 
+**Never use or suggest Bricks Wireframes templates** — the remote template
+library (`bricks/list-remote-templates` / `bricks/insert-remote-template`,
+`source: "wireframes"` or `"design-sets"`), the builder's Templates panel, or
+copying a Wireframes layout. This holds on a Bricks Wireframes site too: we use
+the framework's *tokens*, never its templates. Build every section, header and
+footer ourselves (or from the user's own design) as element trees, as above.
+
 The reference shape is [standards/examples/test-card.bricks.json](standards/examples/test-card.bricks.json)
 — that is the structure to produce, written through abilities, never pasted.
 
@@ -353,7 +360,7 @@ enqueue assets. Stored as a draft snippet — never activated by the agent.
 ## Skills
 
 - `init-brxprod [url]` — connect, install skills, check site readiness,
-  generate the design system, create the brief, offer Wireframes templates.
+  generate the design system, create the brief.
 - `setup-site <url>` — connection step on its own (also run by init).
 - `design-system` — (re)generate `DESIGN_SYSTEM.md`.
 - **Bricks skills first** (`bricks-start-here` and the task's Bricks skill) for

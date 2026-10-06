@@ -1,6 +1,6 @@
 ---
 name: init-brxprod
-description: One-command setup (and re-check) of a BRXProd project — connects the site if needed, installs the BRXProd agent skills, checks the site is ready for agent work (Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets), generates DESIGN_SYSTEM.md, creates PROJECT_BRIEF.md, and on Bricks Wireframes sites offers Wireframes templates. Use when the user runs `/init-brxprod`, starts a new project from the base, or asks whether the project/site is ready to build on. Safe to re-run; done steps are skipped.
+description: One-command setup (and re-check) of a BRXProd project — connects the site if needed, installs the BRXProd agent skills, checks the site is ready for agent work (Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets), generates DESIGN_SYSTEM.md, creates PROJECT_BRIEF.md. Never offers or inserts Bricks Wireframes templates. Use when the user runs `/init-brxprod`, starts a new project from the base, or asks whether the project/site is ready to build on. Safe to re-run; done steps are skipped.
 ---
 
 # /init-brxprod [site-url]
@@ -53,8 +53,7 @@ python3 .claude/skills/init-brxprod/scripts/status.py
 ```
 
 Read-only. Prints PASS / WARN / FAIL lines, each FAIL/WARN with the fix, and a
-`facts` line (ability counts, framework, house-rule set, Bricks post types,
-remote-template ability availability).
+`facts` line (ability counts, framework, house-rule set, Bricks post types).
 
 - **FAIL** lines block agent building. Relay each fix verbatim — they are
   switches only the site owner can turn on (Bricks → AI, BRXProd → Settings →
@@ -62,7 +61,7 @@ remote-template ability availability).
   the user the switch and ask (AGENTS.md › Abilities first).
 - **No `bricks/*` abilities** is the critical one: without Bricks' agent layer
   there is no supported way to create or edit pages, templates, classes or
-  variables. Continue the remaining read-only steps, then stop before step 5.
+  variables. Continue the remaining read-only steps, then report it as blocking.
 - **WARN** lines are worth fixing but don't block. Offer what the agent can do:
   - missing bundled snippets (`header-height` — needed by the sticky-header
     CSS pattern; `fadein-fix`, `register-compound-animation` — animations) →
@@ -79,54 +78,16 @@ Run the **design-system** skill. Then confirm `DESIGN_SYSTEM.md` shows the
 framework, the house-rule set (Code / Visual / Custom) and a concept map. Note
 any *not found* concepts in the report.
 
-## 5. Wireframes templates (Bricks Wireframes sites only)
-
-Skip unless `facts.framework` is `bricks-wireframes` and both remote-template
-abilities are available. **Never on a Core Framework site** — inserting imports
-the template's `brxw-*` design assets and would put a second framework on the
-site. Load `bricks:bricks-templates-conditions` first; all writes here are
-Bricks abilities.
-
-1. `novamira describe` both `bricks/list-remote-templates` and
-   `bricks/insert-remote-template` — the schemas are authoritative over this file.
-2. List the library: `bricks/list-remote-templates` with
-   `{"source":"wireframes","perPage":100}` (summary mode; page through all
-   ~180). Each entry has `id`, `title`, `name`, `type` (section, header,
-   footer…) and `bundles` (category: heroes, ctas, testimonials, slider…).
-   Group by bundle.
-3. **Propose** a set: from `PROJECT_BRIEF.md` when filled in (one or two options
-   per section type its pages need), otherwise a starter set — one header, one
-   footer, and a hero, features, testimonial and CTA section. Show title,
-   bundle and thumbnail URL; wait for approval. Insert nothing unapproved.
-4. For each approved template, make it a **saved Bricks template** — never
-   insert into a page:
-   1. `bricks/create-template` with `title` = the remote title, `type` = the
-      remote `type`, `status: "publish"`, no elements, **no conditions**.
-   2. `bricks/insert-remote-template` with `source: "wireframes"`,
-      `remoteTemplateId`, `targetPostId` = the new template, `position:
-      "replace"`, `importDesignAssets: "missing"` (keeps existing tokens),
-      `importImages: false`. On the first insert into a site with no active
-      theme style, also pass `applyThemeStyle: true`.
-5. Verify with `bricks/list-templates`. A header/footer template must not have
-   become site-wide: confirm it has no conditions.
-6. Re-run step 4 (design system) — the inserts may have added `brxw-*`
-   variables, classes or palettes. BRXProd's optional *Bricks Wireframe* tool
-   (convert the variables to Bricks Scales and categories) is an owner action
-   in BRXProd; mention it, don't attempt it.
-
-The `design-sets` source also exists; its sets carry their own design assets,
-so it is out of scope for init — use it only on an explicit request.
-
-## 6. Project brief
+## 5. Project brief
 
 If `PROJECT_BRIEF.md` is missing, copy
 `.claude/skills/init-brxprod/templates/PROJECT_BRIEF.md` to the project root.
 Don't fill it in from guesses — ask the user to complete it (or to answer its
 questions in chat, then write their answers in).
 
-## 7. Report
+## 6. Report
 
 A short checklist: connection, skills (versions, whether a new chat is
 needed), status FAILs with their fixes, framework + house-rule set,
-design-system counts, templates inserted, brief state, and a clear verdict:
+design-system counts, brief state, and a clear verdict:
 **ready to build** or **blocked by …**.

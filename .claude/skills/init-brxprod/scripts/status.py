@@ -132,8 +132,6 @@ def main():
     else:
         add("FAIL", "Bricks", "no bricks/* abilities — Bricks' agent layer is off",
             "WordPress admin → Bricks → AI: enable the Bricks Abilities API")
-    for needed in ("bricks/list-remote-templates", "bricks/insert-remote-template"):
-        facts[needed] = needed in names
 
     ctx, err = novamira("run", "brxprod/get-context")
     if not ctx:
@@ -145,7 +143,7 @@ def main():
     facts["prefix"] = fw.get("variablePrefix")
     status = "PASS" if fw.get("detected") in ("bricks-wireframes", "core-framework") else "WARN"
     add(status, "Framework", "%s (prefix `%s`)" % (fw.get("detected"), fw.get("variablePrefix") or ""),
-        "" if status == "PASS" else "install Bricks Wireframes (insert a Wireframes template) or Core Framework")
+        "" if status == "PASS" else "install the Bricks Wireframes or Core Framework framework")
 
     groups = ((ctx.get("abilityGroups") or {}).get("groups")) or {}
     for key, why in (("reads", "required"), ("createCode", "needed to store JS/PHP"), ("snippets", "needed to install bundled snippets")):

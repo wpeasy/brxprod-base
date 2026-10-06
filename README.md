@@ -81,7 +81,6 @@ steps are skipped.
 | **Skills** | Installs the BRXProd skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`) and checks the Bricks skills plugin. |
 | **Status** | Read-only readiness check — Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets, Style Guide. Every problem comes with the switch to fix it. |
 | **Design system** | Generates `DESIGN_SYSTEM.md` from the live site. |
-| **Wireframes** | On Bricks Wireframes sites, proposes templates from the brief and saves the ones you approve as Bricks templates. |
 | **Brief** | Creates `PROJECT_BRIEF.md` for you to fill in. |
 | **Report** | Ends with *ready to build* or *blocked by …*. |
 
