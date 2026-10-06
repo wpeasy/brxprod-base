@@ -24,23 +24,8 @@ site's own framework tokens — Bricks Wireframes or Core Framework.
 
 - Claude Code and/or Codex
 - Node.js 22.20+ (for the Novamira CLI), `python3`, `git`
-- Bricks' agent skills:
-  - **Claude Code** — the plugin:
-
-    ```
-    /plugin marketplace add codeerhq/bricks-skills
-    /plugin install bricks@bricks-skills
-    ```
-
-  - **Codex** — the release checkout, symlinked into the shared skills folder
-    (from [Bricks' instructions](https://github.com/codeerhq/bricks-skills)):
-
-    ```bash
-    git clone https://github.com/codeerhq/bricks-skills.git ~/.bricks/skills/bricks-skills
-    ~/.bricks/skills/bricks-skills/scripts/bricks-skills-upgrade
-    mkdir -p ~/.agents/skills
-    for s in ~/.bricks/skills/bricks-skills/skills/bricks-*; do ln -sfn "$s" ~/.agents/skills/"$(basename "$s")"; done
-    ```
+- Nothing else — the init skill installs the agent skills (BRXProd's and
+  [Bricks'](https://github.com/codeerhq/bricks-skills)) itself.
 
 ## Quick start
 
@@ -78,7 +63,7 @@ steps are skipped.
 | Step | |
 |---|---|
 | **Connect** | Logs in to the site through the Novamira CLI and pins this project to it (see *Site isolation*). |
-| **Skills** | Installs the BRXProd skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`) and checks the Bricks skills plugin. |
+| **Skills** | Checks, then installs or updates, the BRXProd skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`, into the project) and Bricks' skills (the release checkout in `~/.bricks/skills/bricks-skills`, as a Claude Code plugin and Codex symlinks). Skips anything already current. |
 | **Status** | Read-only readiness check — Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets, Style Guide. Every problem comes with the switch to fix it. |
 | **Design system** | Generates `DESIGN_SYSTEM.md` from the live site. |
 | **Brief** | Creates `PROJECT_BRIEF.md` for you to fill in. |
@@ -165,7 +150,8 @@ A project can only reach its own site:
 - **BRXProd skills:** re-run the init skill (or
   `sh .claude/skills/init-brxprod/scripts/install-skills.sh`). The installed
   version is in `.claude/skills/.brxprod-skills-version`.
-- **Bricks skills:** Claude Code `/plugin marketplace update bricks-skills`;
-  Codex `~/.bricks/skills/bricks-skills/scripts/bricks-skills-upgrade`.
+- **Bricks skills:** re-run the init skill (or
+  `sh .claude/skills/init-brxprod/scripts/install-bricks-skills.sh`) — it
+  upgrades the release checkout, which both Claude Code and Codex read from.
 - **This base:** a project is a copy, not a fork — copy improved files
   (`AGENTS.md`, `standards/`, `.claude/skills/`) across from a fresh clone.

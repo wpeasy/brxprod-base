@@ -390,9 +390,10 @@ enqueue assets. Stored as a draft snippet — never activated by the agent.
 - `setup-site <url>` — connection step on its own (also run by init).
 - `design-system` — (re)generate `DESIGN_SYSTEM.md`.
 - **Bricks skills first** (`bricks-start-here` and the task's Bricks skill) for
-  all Bricks work — from the `bricks@bricks-skills` plugin in Claude Code, or
-  the `~/.bricks/skills/bricks-skills` checkout symlinked into
-  `~/.agents/skills` for Codex. Then the project's `brxprod`,
+  all Bricks work — from the `~/.bricks/skills/bricks-skills` release checkout,
+  as the `bricks@bricks-skills` plugin in Claude Code and symlinked into
+  `~/.agents/skills` for Codex; `init-brxprod` installs and updates both. Then
+  the project's `brxprod`,
   `brxprod-notes`, `brxprod-feedback` (installed by init from
   `wpeasy/bricks-productivity-skills`, version in
   `.claude/skills/.brxprod-skills-version`) for plugin features, and

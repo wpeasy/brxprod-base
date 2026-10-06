@@ -112,7 +112,7 @@ def main():
         add("PASS", "Skills", "Bricks agent skills: " + ", ".join(found))
     else:
         add("FAIL", "Skills", "Bricks agent skills not found",
-            "Claude Code: /plugin install bricks@bricks-skills; Codex: symlink ~/.bricks/skills/bricks-skills/skills/bricks-* into ~/.agents/skills")
+            "run: sh .claude/skills/init-brxprod/scripts/install-bricks-skills.sh")
 
     # --- Site --------------------------------------------------------------
     doctor, err = novamira("doctor")

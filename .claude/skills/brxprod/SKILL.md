@@ -1,6 +1,6 @@
 ---
 name: brxprod
-description: House standards for building and styling on a Bricks site running the Bricks Productivity plugin (BRXProd). Use when writing CSS or applying classes on such a site, identifying which token framework it uses, applying BRXProd rails/corner/utility classes, working with the Style Guide page, deciding where JavaScript or PHP should live, or installing snippets. Says what to delegate to Bricks' own abilities and what is genuinely this plugin's. For builder notes, use the brxprod-notes skill.
+description: House standards for building and styling on a Bricks site running the Bricks Productivity plugin (BRXProd). Use when writing CSS or applying classes on such a site, identifying which token framework it uses, applying BRXProd rails/corner/utility classes, regenerating the a11y text colours after a palette change, working with the Style Guide page, deciding where JavaScript or PHP should live, or installing snippets. Says what to delegate to Bricks' own abilities and what is genuinely this plugin's. For builder notes, use the brxprod-notes skill.
 ---
 
 # Working on a BRXProd site
@@ -84,9 +84,12 @@ Reach for BRXProd abilities only for these:
 | `brxprod/create-snippet` | store JavaScript or PHP you wrote, as a draft snippet |
 | `brxprod/list-snippets`, `install-snippet` | install one of the plugin's own bundled snippets |
 | `brxprod/get-diagnostics` | server / WP / plugin diagnostics for support |
+| `brxprod/regenerate-a11y-colors` | recompute the `--brxp-a11y-*-text` variables after the site's colours change — see Rule 4 |
 
 Each group is behind its own switch in **Settings → AI Tools → WordPress
-Abilities**, all off by default except reads.
+Abilities**, all off by default except reads. `regenerate-a11y-colors` is in no
+group: it is there whenever the Abilities master switch is on (`get-context`
+lists it under `abilityGroups.ungrouped`), and it needs `manage_options`.
 
 **If an ability you expect is missing, it is almost certainly switched off
 rather than broken** — an unregistered ability and a nonexistent one look
@@ -150,7 +153,7 @@ Installed by the plugin, under fixed, readable category ids:
 |---|---|
 | `brxp-layout-rails` | `brxp-rails`, `brxp-rail-content`, `brxp-rail-wide`, `brxp-rail-breakout`, `brxp-rail-layout`, `brxp-rail-full`, `brxp-gutter-x`, `brxp-gutter-left`, `brxp-gutter-right`, `brxp-has-bg-media`, `brxp-has-bg-media__media` |
 | `brxp-corners` | 16 classes — `brxp-outset-radius-{corner}-{horizontal\|vertical}` and `brxp-inverted-radius-{corner}-{horizontal\|vertical}` |
-| `brxp-utilities` | `brxp-line-clamp`, `brxp-line-clamp--2…6`, `brxp-list-none`, the zero-margin family (`brxp-m--0`, `brxp-mi--0`, `brxp-mb--0`, `brxp-mbs--0`, `brxp-mbe--0`, `brxp-mis--0`, `brxp-mie--0`) and its padding twin (`brxp-p--0`, `brxp-pi--0`, …) |
+| `brxp-utilities` | `brxp-line-clamp`, `brxp-line-clamp--2…6`, `brxp-list-none`, the zero-margin family (`brxp-m--0`, `brxp-mi--0`, `brxp-mb--0`, `brxp-mbs--0`, `brxp-mbe--0`, `brxp-mis--0`, `brxp-mie--0`) and its padding twin (`brxp-p--0`, `brxp-pi--0`, …), and the form colour schemes `brxp-form--dark` / `brxp-form--light` |
 
 Variables live under the `brxp-layout` category ("Design Vars"): the rails
 (`--brxp-page-gutter`, `--brxp-layout-width`, `--brxp-content-width`,
@@ -181,9 +184,37 @@ Three things to know before using them:
   the true parent, so there is nothing to fill. A value written there is read by
   nothing.
 
+**Style a Bricks Form with `brxp-form--dark` or `brxp-form--light`** rather
+than hand-writing field CSS. Put the class on the Form element (or a wrapper
+around the fields); its inputs, selects, choices, error messages and date-picker
+popup take that scheme. Pick the one that suits the section's background. To
+adjust it, set its public variables on the form or a parent, e.g.
+`--brxp-form--dark-field-background` or `--brxp-form--light-field-border-color`.
+Do not edit the class's own CSS (see below). Plugin 1.3.2 and later.
+
 These are locked, plugin-owned classes. Hand-edits to their CSS are replaced on
 the next install or Process run — if a rule needs changing, that is a plugin
 change, not a site change.
+
+**The `--brxp-a11y-*-text` variables are generated, not authored.** Each one is
+the light or dark text colour that reads best on one palette colour or shade
+(`--brxp-a11y-primary-text`, `--brxp-a11y-primary-d-2-text`, …). Use them as the
+text colour on that background rather than picking one yourself. Do not set
+their values by hand: after the site's colours change — a palette edit through
+Bricks' abilities, or a Core Framework save — call
+`brxprod/regenerate-a11y-colors`. It creates any variable a new shade needs and
+updates the ones whose pick changed.
+
+- It reads the BRX Prod palette (Bricks Wireframes), or Core Framework's
+  colours when there is no palette.
+- **Omit `method`** unless the user asked for one. It then uses the contrast
+  method they last chose in the plugin, which is what the builder's Recalculate
+  button would do. `wcag2` lets WCAG 2 AA decide and APCA break ties; `apca`
+  follows APCA always and can fail WCAG 2 AA. The light and dark text colours
+  are always the user's saved ones.
+- Report `created` and `updated` from the response. An `abp_cf_unresolved`
+  error means Core Framework's colours have not synced to Bricks: ask the user
+  to click Save changes in Core Framework, then run it again.
 
 ## Rule 5: the managed Style Guide page
 

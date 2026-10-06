@@ -26,7 +26,7 @@ is that line, not a bug. Reads keep working on a lapsed licence; writes do not.
 
 | ability | notes |
 |---|---|
-| `brxprod/list-feedback` | filter by `postId`, `status[]`, `assignee`, `roundId`, `open`, `q`; 50 per `page`. Returns `assignees` — the team members an item can go to |
+| `brxprod/list-feedback` | filter by `postId`, `status[]`, `assignee`, `roundId`, `open`, `q`; 50 per `page`. Returns `assignees` — the team members an item can go to. You get internal and client-visible items together; each carries `visibility`. `postId` returns that page's items only — site-wide feedback (`scope: site`) is not tied to a page, so list without `postId` to include it |
 | `brxprod/get-feedback` | one item in full: text, status, where it was pinned, the reporter's browser details, every reply (client-visible and internal), attachments, reactions |
 | `brxprod/create-feedback` | `scope` site / page / element (+ `postId`, `elementId`), `body`, optional `label`, `format`, `visibility` |
 | `brxprod/update-feedback` | `noteId` + only the fields to change: `label`, `body`, `visibility`, `dueAt` |
@@ -83,6 +83,26 @@ is that line, not a bug. Reads keep working on a lapsed licence; writes do not.
   anything that was said to you as internal, and do not reveal internal
   replies when summarising a thread for a client.
 - **A reply on an internal item is internal** whatever you ask for.
+
+## What people see in the widget
+
+Useful when the user asks about something they saw on the front end. Since
+plugin 1.3.2:
+
+- **The team sees internal items by default.** For feedback managers
+  (Administrators and Editors by default) the widget's **Internal** filter
+  starts ticked, and internal items carry an **Internal** label. Unticking it
+  shows what the client sees. A client never sees internal items or replies,
+  so "my client can't see #12" usually means #12 is internal: offer
+  `update-feedback` with `visibility: "client"`, after checking it holds
+  nothing meant for the team only.
+- **"This page" includes site-wide feedback** as well as the page's own items,
+  because site-wide feedback applies to every page. Your `postId` list does not,
+  so add the site-wide items yourself when you reconstruct what someone saw.
+- **The launcher badge counts open items in the current view**: this page (or
+  All pages), with the person's Mine and Internal filters applied. It is not an
+  unread count. So staff and a client can see different numbers on the same
+  page, and both are right.
 
 ## How to work with them
 

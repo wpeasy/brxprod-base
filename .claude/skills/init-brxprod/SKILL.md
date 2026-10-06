@@ -30,21 +30,41 @@ given; otherwise ask for it). Otherwise skip.
 
 ## 2. Skills
 
+Install both skill sets automatically. Each script **checks first** and only
+downloads or changes what is missing or out of date — run both every time.
+
+**BRXProd skills** (`wpeasy/bricks-productivity-skills`, into this project):
+
 ```bash
 sh .claude/skills/init-brxprod/scripts/install-skills.sh
 ```
 
-Installs/updates `brxprod`, `brxprod-notes`, `brxprod-feedback` from
-`wpeasy/bricks-productivity-skills` into `.claude/skills/` (committed with the
-project; version in `.claude/skills/.brxprod-skills-version`). It prints
-`BRXPROD_SKILLS_CURRENT` or `BRXPROD_SKILLS_INSTALLED old -> new`.
+Compares the repo's latest commit with `.claude/skills/.brxprod-skills-version`
+and the installed `brxprod`, `brxprod-notes`, `brxprod-feedback` folders.
+Prints `BRXPROD_SKILLS_CURRENT <commit>` (nothing downloaded) or
+`BRXPROD_SKILLS_INSTALLED old -> new`. The skills are committed with the project.
 
-Bricks' own skills come from the `bricks@bricks-skills` Claude Code plugin. If
-the status check (step 3) reports it missing, tell the user to run
-`/plugin marketplace add codeerhq/bricks-skills` and
-`/plugin install bricks@bricks-skills` — plugin installs need their approval.
+**Bricks skills** (`codeerhq/bricks-skills`, machine-wide, per its README's
+release-managed install):
 
-New or updated skills load in a **new chat**; say so if anything changed.
+```bash
+sh .claude/skills/init-brxprod/scripts/install-bricks-skills.sh
+```
+
+- Checkout `~/.bricks/skills/bricks-skills`: cloned if missing, then Bricks'
+  own `bricks-skills-upgrade` compares `VERSION` with the latest GitHub release
+  (`BRICKS_SKILLS_ALREADY_CURRENT …` when nothing to do). Needs Node.js.
+- Claude Code: adds that checkout as the `bricks-skills` marketplace and
+  installs `bricks@bricks-skills`, each only if not already there
+  (`BRICKS_MARKETPLACE_PRESENT` / `BRICKS_PLUGIN_PRESENT`).
+- Codex: symlinks each `bricks-*` skill into `~/.agents/skills`
+  (`BRICKS_CODEX_LINKS present=N added=M`).
+
+A `…_FAILED` line names the manual command to give the user (e.g.
+`/plugin install bricks@bricks-skills`); continue with the other steps.
+
+New or updated skills load in a **new chat**; say so if anything was installed
+or updated.
 
 ## 3. Site status
 
