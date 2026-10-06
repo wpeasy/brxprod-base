@@ -29,8 +29,10 @@ query hooks, child themes — Bricks' skills are authoritative
 - Never use `eval`, and never fetch code at runtime to execute it.
 - Enqueue scripts and styles (`wp_enqueue_script` / `wp_enqueue_style`) — never
   echo `<script>` or `<link>` tags.
-- Read-only inspection through `novamira/execute-php` is fine; it is **never**
-  a way to change Bricks data — use `bricks/*` abilities.
+- `novamira/execute-php` runs one-off PHP on the site. Use an ability when one
+  exists; when none does, execute-php is allowed for reads and writes
+  (AGENTS.md › Order of authority › Abilities first). It's not a place for
+  code that must keep running — that is a snippet.
 
 ## Before saving
 

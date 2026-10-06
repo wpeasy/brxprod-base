@@ -73,7 +73,7 @@ then expect prompts for writes.
       "$defaults",
       "**This project**: builds content on one WordPress/Bricks site using the Bricks Productivity plugin. `brxprod` / `BRXProd` is that plugin's name, not a production marker.",
       "**Site**: <host>, a development site, not production. Reached only through the `novamira` CLI, pinned by NOVAMIRA_HOME/NOVAMIRA_SITE in this file to the profile `<profile name>`.",
-      "**Routine**: `novamira` commands against that pinned site: reads, `bricks/*` and `brxprod/*` abilities, page/template/class writes, and `novamira --yes run novamira/execute-php` for read-only inspection, with input JSON under `.claude/tmp/`.",
+      "**Routine**: `novamira` commands against that pinned site: reads, `bricks/*` and `brxprod/*` abilities, page/template/class writes, and `novamira --yes run novamira/execute-php` (reads, and writes when no ability covers the task), with input JSON under `.claude/tmp/`.",
       "**Not routine (ask first)**: changing NOVAMIRA_HOME/NOVAMIRA_SITE, passing `--site`, `novamira auth` / `novamira sites`, or reaching any other WordPress site."
     ]
   }

@@ -58,8 +58,8 @@ remote-template ability availability).
 
 - **FAIL** lines block agent building. Relay each fix verbatim — they are
   switches only the site owner can turn on (Bricks → AI, BRXProd → Settings →
-  AI Tools). **Never work around a disabled ability** (e.g. with execute-php
-  writes).
+  AI Tools). Don't silently replace a disabled ability with execute-php — tell
+  the user the switch and ask (AGENTS.md › Abilities first).
 - **No `bricks/*` abilities** is the critical one: without Bricks' agent layer
   there is no supported way to create or edit pages, templates, classes or
   variables. Continue the remaining read-only steps, then stop before step 5.

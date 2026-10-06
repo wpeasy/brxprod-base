@@ -31,7 +31,7 @@ there.
    built: pages, posts, templates, elements, components, global classes,
    variables, theme styles, the save pipeline and render verification. Load
    `bricks:bricks-start-here` and the task's Bricks skill before any write, and
-   use a `bricks/*` ability whenever one exists — never execute-php, a
+   use a `bricks/*` ability whenever one exists — not execute-php, a
    `novamira/bricks-*` ability or a BRXProd ability in its place.
 2. `brxprod/get-design-instructions` — the site owner's live house rules for
    *what* to write (CSS, naming, labels, semantics, code location), plus the
@@ -41,9 +41,18 @@ there.
    HTML/CSS import), they win.
 4. Other skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`, `novamira`).
 
-Where they disagree, the higher one wins. If a needed `bricks/*` ability is
-unavailable, stop and tell the user which switch to turn on (Bricks → AI) —
-do not fall back to another write path.
+Where they disagree, the higher one wins.
+
+**Abilities first, then execute-php.** For every task, in this order:
+
+1. **An ability exists and is enabled** → use it (`bricks/*` first, then
+   `brxprod/*`, then other `novamira` abilities).
+2. **It exists but is switched off** (`get-context` / the status check lists
+   it as unavailable) → tell the user which switch turns it on (Bricks → AI,
+   BRXProd → Settings → AI Tools) and ask whether to wait for that or go ahead
+   with execute-php.
+3. **No ability covers it** → use `novamira/execute-php` — for reads *and*
+   writes. That is allowed, not a workaround (see *Connection* for how).
 
 ## Building content — element trees, never copy/paste or HTML import
 
@@ -155,8 +164,13 @@ a page:
   Only add it after confirming what the code does. Pass code through a JSON file:
   `novamira --yes run novamira/execute-php --input @.claude/tmp/input.json` with
   `{"code": "..."}` — no `<?php`, `return` a value.
-- execute-php is for **read-only inspection** when no ability covers it. Never
-  use it to write Bricks data.
+- execute-php is the **fallback when no ability covers the task** (*Order of
+  authority* › Abilities first), for reads and writes alike. When writing with
+  it: check first that no ability does the job (`novamira discover`); read the
+  current state before changing it; use WordPress / Bricks PHP APIs, never raw
+  SQL; change only what the task needs; read the result back; and tell the user
+  you used execute-php and why. Everything else in this file — the CSS and HTML
+  standards, readback, no HTML/CSS import — still applies to what it writes.
 
 ## Frameworks
 
