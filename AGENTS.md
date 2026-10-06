@@ -117,14 +117,21 @@ footer ourselves (or from the user's own design) as element trees, as above.
 The reference shape is [standards/examples/test-card.bricks.json](standards/examples/test-card.bricks.json)
 — that is the structure to produce, written through abilities, never pasted.
 
-**After creating a new page**, if BRXProd's Client Feedback is enabled and its
+**After building a new page**, if BRXProd's Client Feedback is enabled and its
 abilities are exposed (`brxprod/create-feedback` is listed; `get-context`
 reports the group), log one internal review item on it with
-`brxprod/create-feedback` — `scope: "page"`, `postId` the new page,
+`brxprod/create-feedback` — `scope: "page"`, `postId` the page,
 `visibility: "internal"`, `label: "Review new page"`, `body: "AI Generated
-page, please check and confirm the page quality and content"`. Once per new
-page (the ability isn't idempotent); not for edits to existing pages. If the
-feedback abilities aren't available, skip it and say so.
+page, please check and confirm the page quality and content"`.
+
+- A **new page** is any page whose whole content the agent wrote: a page it
+  created, **and** an existing page that was blank, empty or wiped (or that it
+  cleared and rebuilt) before the agent filled it.
+- Not for edits to a page that already had content — adding or changing
+  sections there is an edit.
+- Once per page build (the ability isn't idempotent): check `list-feedback`
+  for that `postId` first and don't add a second open "Review new page" item.
+- If the feedback abilities aren't available, skip it and say so.
 
 ### Example designs with a header or footer
 
