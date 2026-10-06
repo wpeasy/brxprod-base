@@ -97,6 +97,7 @@ standards/
   js.md                   JavaScript standard
   php.md                  PHP standard
   html.md                 HTML semantics & accessibility standard
+  navigation.md           Nav element choice + mobile menu standard
   examples/               Reference Bricks builds
 .agents/skills -> .claude/skills   Same skills for Codex (symlink)
 .claude/
@@ -139,6 +140,9 @@ survive.
   sections, native elements before ARIA, WCAG 2.2 AA.
 - **[PHP](standards/php.md)** — WordPress PHP Coding Standards; code goes in a
   code manager as a draft snippet, never a Bricks Code element.
+- **[Navigation](standards/navigation.md)** — Nav Menu bound to a WordPress
+  menu by default; Nav (Nestable) only for designed, mixed-content or
+  data-driven navs; every mobile menu fixed (X top right, padding, colours).
 
 Order of authority: **Bricks' skills and abilities** → the site's BRXProd
 design instructions → `AGENTS.md` and `standards/` → other skills.

@@ -150,6 +150,25 @@ a page:
   with the user before setting them** (e.g. entire website), since that
   changes every page; until then leave them unset and say so.
 
+### Navigation
+
+**Read [standards/navigation.md](standards/navigation.md) before adding or
+changing any navigation.** In short — this overrides `bricks:bricks-mega-menus`'
+default of Nav (Nestable) for new headers:
+
+- **Default: the Nav Menu element bound to a WordPress menu** (Appearance →
+  Menus), so editors change links without Bricks. Link pages as page objects
+  via `bricks/save-nav-menu`. Mega panels can stay on this path (a Bricks
+  section template attached to the menu item).
+- **Nav (Nestable) only when the nav is designed UI**: CTA/search/icons inside
+  the bar, extra content in the mobile drawer, rich or data-driven dropdowns,
+  bespoke dropdown behaviour, fixed structural links, or data-driven labels.
+  Tell the user its links are edited in Bricks.
+- **Always fix the mobile menu** (Bricks' defaults are bare): X close control
+  top right, labelled toggles, edge padding, gap, size, brand background +
+  a11y text — in the header block's class CSS on the open state — then verify
+  at phone width.
+
 ## Connection — Novamira CLI (not MCP)
 
 - The site is reached **only** through the `novamira` CLI. The `setup-site`

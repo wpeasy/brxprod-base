@@ -17,11 +17,12 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..",
 sys.path.insert(0, os.path.join(ROOT, ".claude", "skills", "design-system", "scripts"))
 from render import house_rule_set  # noqa: E402  (shared with DESIGN_SYSTEM.md)
 
-# Bundled BRXProd snippets the standards rely on: id -> Fluent Snippets file stem.
+# Bundled BRXProd snippets the standards rely on: id -> Fluent Snippets file stems
+# (current name first; older BRXProd releases installed under the legacy stems).
 SNIPPETS = {
-    "header-height": "header-footer-heights",  # --brxp-header-height (sticky-header pattern)
-    "fadein-fix": "fix-fadein-compound",
-    "register-compound-animation": "register-compound-animation",
+    "header-height": ("header-height", "header-footer-heights"),  # --brxp-header-height (sticky-header pattern)
+    "fadein-fix": ("fadein-fix", "fix-fadein-compound"),
+    "register-compound-animation": ("register-compound-animation",),
 }
 
 # Read-only probe; executed with --yes only because the CLI treats every
@@ -193,8 +194,8 @@ def main():
             "theme stylesheet missing: " + ", ".join(missing) if missing else "rails, corners and animation overrides in theme stylesheet",
             "BRXProd → Features: re-run Process / Animation Overrides" if missing else "")
         snips = probe["snippets"] or {}  # PHP encodes an empty map as []
-        for sid, fname in SNIPPETS.items():
-            hit = [(f, st) for f, st in snips.items() if fname in f]
+        for sid, stems in SNIPPETS.items():
+            hit = [(f, st) for f, st in snips.items() if any(s in f for s in stems)]
             if not hit:
                 add("WARN", "Snippets", "%s not installed" % sid, "init offers: brxprod/install-snippet {\"id\":\"%s\"} (draft)" % sid)
             else:
