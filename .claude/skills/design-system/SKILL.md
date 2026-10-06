@@ -73,16 +73,21 @@ Core Framework has no width, measure, line-height, transition or ratio tokens).
 When creating or changing the site's colours (palette entries or colour
 variables):
 
-- **Only change the base colours** (`primary`, `secondary`, `base`, status
-  colours…). Every variant — shades `-{l,d}-N`, transparencies `-{5…90}`,
-  tints — is auto-generated from the base. Never edit a variant by hand.
-- **The base (surface) colour is always 50% lightness** (HSL `l = 50%`). Keep
-  the hue and saturation, set lightness to 50%. Where a design needs a lighter
-  or darker tone, use the generated `-l-N` / `-d-N` variant instead of moving
-  the base.
+- **Only change each colour's root value** — the unsuffixed one (`primary`,
+  `secondary`, `tertiary`, `base` / `surface`, status colours…). Every variant
+  — shades `-{l,d}-N`, transparencies `-{5…90}`, tints — is auto-generated from
+  it. Never edit a variant by hand.
+- **50% lightness applies only to the neutral colours** — `base` / `surface`
+  (whatever this site calls its neutral ramp; `DESIGN_SYSTEM.md` shows it).
+  Keep their hue and saturation, set HSL lightness to exactly 50%, so the
+  generated light and dark shades run evenly both ways. For a lighter or darker
+  neutral, use a `-l-N` / `-d-N` variant instead of moving the root.
+- **Brand and status colours are not 50%** — `primary`, `secondary`,
+  `tertiary`, `success`, `danger`… take whatever lightness the design calls
+  for. Never normalise them to 50%.
 - **Always regenerate BRXProd's a11y colour variables afterwards** —
   `novamira run brxprod/regenerate-a11y-colors --json` (no input). It
-  recalculates every `--brxp-a11y-*-text` for the bases and their shades, from
+  recalculates every `--brxp-a11y-*-text` for every colour and its shades, from
   the BRXProd palette (Wireframes) or Core Framework's colours. Omit `method` so
   it uses the contrast method the user last chose (`wcag2` / `apca`); pass one
   only if the user asks. Report its `created` / `updated` lists. If the ability
