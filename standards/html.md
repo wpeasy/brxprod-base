@@ -12,13 +12,14 @@ is authoritative — check it for any element not listed here):
 
 | Setting | Use |
 |---|---|
-| `tag` | Div / Block: `div`, `section`, `a`, `article`, `nav`, `ol`, `ul`, `li`, `aside`, `address`, `figure`, `custom`. Heading: `h1`–`h6`. Basic Text: `div`, `p`, `span`, `figcaption`, `address`, `figure`. Image: `figure`, `div`. |
+| `tag` | Div: `div`, `section`, `a`, `article`, `nav`, `ol`, `ul`, `li`, `aside`, `address`, `figure`, `custom`. Heading: `h1`–`h6`. Basic Text: `div`, `p`, `span`, `figcaption`, `address`, `figure`. Image: `figure`, `div`. |
 | `tag: "custom"` + `customTag` | any other element: `dl`, `dt`, `dd`, `time`, `blockquote`, `cite`, `header`, `footer`, `hgroup`, `menu`, `small`, `mark`, `abbr`, `strong`… |
 | `_attributes` | repeater of `{ "name": …, "value": … }` rows — `aria-*`, `role`, `datetime`, `lang`, `data-*` |
 | `_cssId` | the element's id, e.g. the target of `aria-labelledby` |
 | `altText` (Image) | the image's alternative text |
 
-Defaults to override deliberately: **Basic Text renders a `div`** (use `p` for
+**Use Div, never Block** — Block carries default CSS and media queries
+(AGENTS.md › Building content). Defaults to override deliberately: **Basic Text renders a `div`** (use `p` for
 a paragraph); **Heading defaults to `h3`** (set the level the outline needs).
 
 ## 2. Page structure and landmarks

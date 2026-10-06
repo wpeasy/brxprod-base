@@ -2,7 +2,7 @@
   "content": [
     { "id": "qqydcm", "name": "section", "parent": 0, "children": ["nuoidr"], "settings": { "_cssGlobalClasses": ["ukedzg"] }, "label": "Main Section" },
     { "id": "nuoidr", "name": "container", "parent": "qqydcm", "children": ["zcfhvc"], "settings": { "_cssGlobalClasses": ["iwljzz"] } },
-    { "id": "zcfhvc", "name": "block", "parent": "nuoidr", "children": ["lznhlh"], "settings": { "_cssGlobalClasses": ["vtyhlh"] }, "label": "Inner" },
+    { "id": "zcfhvc", "name": "div", "parent": "nuoidr", "children": ["lznhlh"], "settings": { "_cssGlobalClasses": ["vtyhlh"] }, "label": "Inner" },
     { "id": "lznhlh", "name": "div", "parent": "zcfhvc", "children": ["whvxpg", "vpoxfy"], "settings": { "_cssGlobalClasses": ["krxhev", "nfbaiw"], "_abpBemMeta": { "bemAction": "skip" } }, "label": "Test Card" },
     { "id": "whvxpg", "name": "div", "parent": "lznhlh", "children": ["giylvd", "nymvxe", "srwtgt"], "settings": { "_cssGlobalClasses": ["wktzqh"] }, "label": "Content" },
     { "id": "giylvd", "name": "heading", "parent": "whvxpg", "children": [], "settings": { "text": "I am a heading", "_cssGlobalClasses": ["fohwiy"] } },

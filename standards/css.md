@@ -89,6 +89,9 @@ the sentence-case rule in the site's default instructions.
 - **All of a component's CSS goes in the block's global class.** Element
   classes (`test-card__content` …) carry no CSS of their own — their rules are
   written in the block class's CSS.
+- **Wrappers are Div elements, never Block.** Block comes with default CSS
+  (flex, width) and media queries that would have to be found and overridden;
+  a Div has none, so the class CSS is the whole story.
 - Global-class CSS uses the **literal class selector** (`.test-card`).
   `%root%` is only for element-level (ID) CSS, such as an asymmetric rail span.
 - Simple Bricks UI settings are fine for what they are designed for — a
@@ -312,6 +315,7 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] Every class BEM; nested blocks marked `bemAction: skip` in the builder, or the omission reported
 - [ ] Components generic (no content-named blocks); reused existing block, modifier for visuals, `-v2` only for a different structure
 - [ ] Every label = Title Case BEM segment (bracket comments allowed)
+- [ ] Wrappers are Div elements — no Block elements
 - [ ] All component CSS in the block class; element classes empty
 - [ ] One `/* Settings */` block; rules use only `--_` variables; defaults are tokens
 - [ ] Modifiers only set public variables

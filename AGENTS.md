@@ -79,6 +79,9 @@ import, and the `brxprod` skill's pointer to it.
   (`checkout` → `preview` → `apply`);
 - check element settings against `bricks/get-element-schema` (load
   `bricks:bricks-element-schemas`);
+- **never use the Block element — use Div.** Block ships default CSS (flex,
+  width) and media queries that we'd then have to find and override; a Div
+  starts clean and gets only the CSS we write;
 - element settings carry **structure and content only** — `_cssGlobalClasses`,
   label, `tag`, text, links, media, attributes; never style-control values
   (spacing, colour, typography, layout);
