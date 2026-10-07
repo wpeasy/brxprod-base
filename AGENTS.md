@@ -309,6 +309,10 @@ In short:
   decoration only; hierarchy comes from size/weight, never a "muted" shade.
 - **No CSS for buttons or links** — they take their look from the Button
   controls and the theme style's defaults (above).
+- **Typography comes from the theme style's Typography settings** wherever
+  possible; a needed variation (size, weight, style) is set in the block's
+  class CSS. **Never `font-family` in CSS** — families come only from the theme
+  style, so they stay consistent.
 - **Never `@media`**: `:has(> .block){container-type:inline-size}` + nested
   `@container (inline-size <= Npx)`, literal px, widest first.
 - Use **BRXProd CSS Patterns** verbatim when one fits — e.g. a sticky header

@@ -104,6 +104,22 @@ the sentence-case rule in the site's default instructions.
   surface shades) are for backgrounds, borders and decoration, never text; no
   hand-picked "muted" shade — use size and weight for hierarchy.
 
+### Typography
+
+- **Theme style first.** Body and heading typography — font family, sizes,
+  weights, line height, per-level `h1`–`h6` — is set in the active theme
+  style's Typography settings (`bricks/update-theme-style`). Use those defaults
+  wherever they fit; change a theme setting only when the design needs it
+  site-wide, and report which keys changed.
+- **Variations go in CSS.** When an element needs a different size, style or
+  weight from the theme default (a kicker, a large lead paragraph, a card
+  title), set `font-size` / `font-weight` / `font-style` (and `line-height`,
+  `letter-spacing`, `text-transform` if needed) in the block's class CSS, using
+  the framework's type tokens via the Settings block.
+- **Never set `font-family` in CSS** — not in a class, `%root%`, or a modifier.
+  Families come only from the theme style, so they stay consistent site-wide.
+  If the design needs another family, it's a theme-style change: ask first.
+
 ### Buttons, links and element defaults
 
 - **Never write CSS that targets a button or a link** — no `.x__button {…}`,
@@ -322,6 +338,7 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] No `@media`; containment declared via `:has(> .block)`; queries widest → narrowest
 - [ ] Every token name exists on this site (`DESIGN_SYSTEM.md`)
 - [ ] Every text colour is the `--brxp-a11y-*-text` token for its background; brand colours only on backgrounds, borders, decoration
+- [ ] Typography from the theme style; only size / weight / style variations in CSS; no `font-family` anywhere in CSS
 - [ ] No CSS targets a button or a link; buttons use only Size / Style / Circle / Outline
 - [ ] Element-default changes made in the theme style, only where the design needs them, and each changed key reported
 - [ ] All CSS wrapped in one `@supports (display: grid) { … }` block
