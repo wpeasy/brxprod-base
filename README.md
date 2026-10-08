@@ -18,7 +18,7 @@ site's own framework tokens — Bricks Wireframes or Core Framework.
 - **Bricks Productivity** with its abilities on (Settings → AI Tools → WordPress Abilities)
 - **Novamira** (provides the connection)
 - A token framework: **Bricks Wireframes** or **Core Framework**
-- A code manager — **Fluent Snippets** recommended (the agent can write drafts to it)
+- A code manager — **Fluent Snippets** recommended (the agent writes and activates snippets in it)
 
 **On your machine**
 
@@ -69,8 +69,9 @@ steps are skipped.
 | **Brief** | Creates `PROJECT_BRIEF.md` for you to fill in. |
 | **Report** | Ends with *ready to build* or *blocked by …*. |
 
-The agent never turns on a disabled ability or activates code itself — it tells
-you which switch to use.
+The agent never turns on a disabled ability itself — it tells you which switch
+to use. It does activate the code snippets the build needs, checking the site
+after each, and tells you which.
 
 ## Project layout
 
@@ -124,7 +125,7 @@ survive.
   (lists, `dl`/`dt`/`dd`, `article`, `time`, `table`…), named landmarks and
   sections, native elements before ARIA, WCAG 2.2 AA.
 - **[PHP](standards/php.md)** — WordPress PHP Coding Standards; code goes in a
-  code manager as a draft snippet, never a Bricks Code element.
+  code manager as a snippet (activated when needed), never a Bricks Code element.
 - **[Navigation](standards/navigation.md)** — Nav Menu bound to a WordPress
   menu by default; Nav (Nestable) only for designed, mixed-content or
   data-driven navs; every mobile menu fixed (X top right, padding, colours).

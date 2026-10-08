@@ -86,8 +86,9 @@ Read-only. Prints PASS / WARN / FAIL lines, each FAIL/WARN with the fix, and a
   - missing bundled snippets (`header-height` — needed by the sticky-header
     CSS pattern; `fadein-fix`, `register-compound-animation` — animations) →
     `novamira run brxprod/install-snippet --input '{"id":"<id>"}'` (they land as
-    Fluent Snippets **drafts**; never claim they are active);
-  - snippets in draft → remind the user to review and activate them;
+    Fluent Snippets drafts);
+  - snippets in draft → activate the ones the build needs (AGENTS.md ›
+    Activating snippets) and report which;
   - no Style Guide page → BRXProd's *Update Style Guide Page* (owner action).
 - If `facts.bricksPostTypes` lacks a type the brief needs (e.g. `post`), say so:
   Bricks → Settings → Post types.

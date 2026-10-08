@@ -162,7 +162,7 @@ def main():
         "BRXProd: Add BRXProd features" if missing else "")
     code = ctx.get("codeManager") or {}
     if code.get("canCreateSnippet"):
-        add("PASS", "Code", "code manager: %s (agent can write drafts)" % ", ".join(code.get("detected") or []))
+        add("PASS", "Code", "code manager: %s (agent can write and activate snippets)" % ", ".join(code.get("detected") or []))
     elif code.get("detected"):
         add("WARN", "Code", "code manager %s — agent hands code over to paste" % ", ".join(code["detected"]))
     else:
@@ -200,7 +200,7 @@ def main():
                 add("WARN", "Snippets", "%s not installed" % sid, "init offers: brxprod/install-snippet {\"id\":\"%s\"} (draft)" % sid)
             else:
                 add("PASS" if hit[0][1] == "published" else "WARN", "Snippets", "%s: %s" % (sid, hit[0][1]),
-                    "" if hit[0][1] == "published" else "review and activate in Fluent Snippets")
+                    "" if hit[0][1] == "published" else "agent activates it when the build needs it")
         facts["bricksTemplates"] = probe["bricksTemplates"]
         facts["bricksPostTypes"] = probe["bricksPostTypes"]
         add("PASS" if probe["bricksPostTypes"] else "WARN", "Bricks",

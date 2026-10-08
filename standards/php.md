@@ -14,10 +14,11 @@ query hooks, child themes — Bricks' skills are authoritative
 
 - In a **code manager**, written with `brxprod/create-snippet`
   (`language: "php"`; the opening `<?php` is added if omitted). It lands as a
-  **draft** in the BRXProd group.
-- **Never activate a PHP snippet, and never say you have.** PHP runs on every
-  request and a mistake takes the site down; enabling it is the user's
-  decision. Tell them where it is and what it does.
+  draft in the BRXProd group.
+- **Activate it when the work needs it** (AGENTS.md › Activating snippets). PHP
+  runs on every request and a mistake takes the site down, so lint it first,
+  check the front end and `wp-admin` after, and deactivate at once on any
+  error. Tell the user what you activated and what it does.
 - **Never** in a Bricks Code element. There is no fallback location — if the
   site has no code manager, stop and offer to install one.
 
@@ -40,4 +41,4 @@ query hooks, child themes — Bricks' skills are authoritative
 - [ ] Every global name prefixed
 - [ ] Output escaped, input sanitised, capability/nonce checked
 - [ ] No `eval`, no runtime code fetch, assets enqueued
-- [ ] Stored via `brxprod/create-snippet` as a draft — and reported as a draft
+- [ ] Stored via `brxprod/create-snippet`; linted, activated if needed, site checked after, and reported

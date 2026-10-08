@@ -115,4 +115,4 @@ Query loops, filters, pagination and popups replace DOM after load, so:
 - [ ] No timer waits — an event or observer is used instead
 - [ ] Works for AJAX-loaded content (delegation, or idempotent init on a Bricks event)
 - [ ] State via attributes / custom properties, not inline styles
-- [ ] Read `brxprod/get-site-js` first; stored with `brxprod/create-snippet` (draft)
+- [ ] Read `brxprod/get-site-js` first; stored with `brxprod/create-snippet`, activated if the page needs it, page checked for console errors

@@ -276,7 +276,8 @@ either — fixes belong in the BRXProd plugin.
   on a parent staggers its children (step via `brxp-animation-stagger-step--*ms`),
   indexed by `--brx-entry-index` else `sibling-index() - 1`.
 - **Animation snippets** (bundled; install with `brxprod/install-snippet`, they
-  land as Fluent Snippets **drafts** the user activates):
+  land as Fluent Snippets drafts — activate them when the page needs them,
+  per *JavaScript & PHP standards* › Activating snippets):
   `fadein-fix` (JS — hides fadeIn*/Compound enter-view elements until Bricks'
   trigger point, fades them out on exit, sets `--brx-entry-index` per entering
   batch) and `register-compound-animation` (PHP — adds "Compound" to the
@@ -359,12 +360,26 @@ attributes via `_attributes`). In short:
 - JS sets state (attributes, custom properties); CSS decides looks.
 
 Where code goes (follows the site's `code` section): a code manager via
-`brxprod/create-snippet` — a **draft**; never activate it or claim to have —
-never a Bricks Code element. Read `brxprod/get-site-js` first.
+`brxprod/create-snippet` (it lands as a draft) — never a Bricks Code element.
+Read `brxprod/get-site-js` first.
+
+**Activating snippets — do it as needed.** When the work depends on a snippet
+(one you wrote, or a bundled one from `brxprod/install-snippet`), activate it;
+don't leave it as a draft for the user. This overrides the `brxprod` skill's
+"never activate" rule. No ability activates a snippet, so use execute-php
+against the code manager's own API (*Abilities first* › 3), then:
+
+- **PHP:** lint it first (`php -l` locally, or `token_get_all` in execute-php);
+  after activating, load the front end and `wp-admin` (`novamira doctor --json`
+  and a page render). On any fatal or white screen, **deactivate it at once**
+  and report.
+- **JS / CSS:** check the page that uses it renders without console errors.
+- Read the snippet's status back, and tell the user which snippets you
+  activated and what each does.
 
 **PHP: [standards/php.md](standards/php.md)** — WordPress PHP Coding Standards;
 prefixed global names; escape, sanitise, capability/nonce checks; no `eval`;
-enqueue assets. Stored as a draft snippet — never activated by the agent.
+enqueue assets. Stored as a snippet and activated per the rule above.
 
 ## Known issues
 
