@@ -74,7 +74,8 @@ When creating or changing the site's colours (palette entries or colour
 variables):
 
 - **Only change each colour's root value** — the unsuffixed one (`primary`,
-  `secondary`, `tertiary`, `base` / `surface`, status colours…). Every variant
+  `secondary`, `base` / `surface`, status colours, and `tertiary` where the
+  site's palette has one…). Every variant
   — shades `-{l,d}-N`, transparencies `-{5…90}`, tints — is auto-generated from
   it. Never edit a variant by hand.
 - **50% lightness applies only to the neutral colours** — `base` / `surface`
@@ -83,7 +84,7 @@ variables):
   generated light and dark shades run evenly both ways. For a lighter or darker
   neutral, use a `-l-N` / `-d-N` variant instead of moving the root.
 - **Brand and status colours are not 50%** — `primary`, `secondary`,
-  `tertiary`, `success`, `danger`… take whatever lightness the design calls
+  `tertiary` (if present), `success`, `danger`… take whatever lightness the design calls
   for. Never normalise them to 50%.
 - **Always regenerate BRXProd's a11y colour variables afterwards** —
   `novamira run brxprod/regenerate-a11y-colors --json` (no input). It
@@ -123,6 +124,10 @@ each root generates 10 light and 10 dark shades):
      won't take white text) is not Primary — make it an extra colour and say why.
    - Only one or two brand colours: derive the missing role (complementary,
      darker or lighter) and flag it for approval.
+   - **Tertiary is not one of our roles.** If the site's palette has a
+     `tertiary` (`DESIGN_SYSTEM.md` shows it), leave it unused — don't map a
+     spec colour to it, and don't create one where it's missing. Leftovers
+     always go to step 3, so every project maps a brief the same way.
 3. **Leftover colours become extra Bricks palette colours** — root only, no
    shades. **Every name starts with `brxp-`** (otherwise BRXProd's generation,
    including `regenerate-a11y-colors`, skips it), then the spec's name in

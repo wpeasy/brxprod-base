@@ -228,15 +228,15 @@ transition or ratio tokens); the concept map shows these as *not found*.
 **Changing colours:** change only each colour's root (unsuffixed) value —
 variants are auto-generated. **Only the neutral `base` / `surface` colour is
 set to 50% HSL lightness** (use its `-l-N` / `-d-N` variants for lighter or
-darker neutrals); brand colours (`primary`, `secondary`, `tertiary`) and status
-colours keep whatever lightness the design needs. Then always run
-`brxprod/regenerate-a11y-colors`. Details: the `design-system` skill › *Changing colours*.
+darker neutrals); brand colours (`primary`, `secondary`, and `tertiary` where a
+site's palette has one) and status colours keep whatever lightness the design
+needs. Then always run `brxprod/regenerate-a11y-colors`. Details: the `design-system` skill › *Changing colours*.
 
 **A brief with more colours than our roles:** map Primary (action colour),
 Secondary (nav, links, headings) and Surface (background + text, still at 50%)
 by use; every leftover colour becomes an extra palette colour, root only, named
-`brxp-<spec-name>`; check contrast and get approval before writing. Steps: the
-`design-system` skill › *Mapping a brief's colours to the roles*.
+`brxp-<spec-name>` — never Tertiary, even where the site has one; check
+contrast and get approval before writing. Steps: the `design-system` skill › *Mapping a brief's colours to the roles*.
 
 ## BRXProd systems (summary — the site's design instructions are authoritative)
 
