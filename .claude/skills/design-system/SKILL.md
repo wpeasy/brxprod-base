@@ -99,6 +99,64 @@ variables):
   the design needs a different mapping, and report which keys changed and why.
 - Then re-run this skill so `DESIGN_SYSTEM.md` shows the new values.
 
+### Mapping a brief's colours to the roles
+
+When the brief or a client spec gives more colours than our roles —
+**Primary**, **Secondary** and **Surface** (the neutral `base` / `surface`;
+each root generates 10 light and 10 dark shades):
+
+1. **List every spec colour** — name, hex, and what the spec says it's for.
+   If a hex value or a purpose is missing, ask before going on.
+2. **Map by use, not by the spec's order.** Never rename a role after a spec
+   colour — components, utilities and templates depend on the role names.
+
+   | Role | The spec colour that is… | Root value |
+   |---|---|---|
+   | Primary | the action colour (CTAs, main buttons); else the main brand colour | the spec's exact hex |
+   | Secondary | for navigation, links and headings | the spec's exact hex |
+   | Surface | the page background and text colours | the hue and saturation that best fit the spec's neutrals, at **50% lightness** (the 50% rule above) |
+
+   - Surface: the spec's background maps to the nearest `-l-N` shade and its
+     text colour to the nearest `-d-N` shade — report which, and how close.
+     Never move the root off 50% to hit them exactly.
+   - A "primary brand colour" that can't work as a button (a pale yellow that
+     won't take white text) is not Primary — make it an extra colour and say why.
+   - Only one or two brand colours: derive the missing role (complementary,
+     darker or lighter) and flag it for approval.
+3. **Leftover colours become extra Bricks palette colours** — root only, no
+   shades. **Every name starts with `brxp-`** (otherwise BRXProd's generation,
+   including `regenerate-a11y-colors`, skips it), then the spec's name in
+   kebab-case: "Sunshine Yellow" → `brxp-sunshine-yellow`. Unnamed: a short
+   descriptive name (`brxp-bright-green`) — never a role-like name
+   (`brxp-accent`, `brxp-tertiary`). Don't add colours a role already covers
+   (Surface's background and text).
+4. **Check contrast (WCAG 2.2 AA)** — each role root and each extra colour
+   against white and against dark text; 4.5:1 normal text, 3:1 large text / UI.
+   Where a root fails, name the shade to use for text or button backgrounds;
+   for extras, the text colour they must pair with. Never change the client's
+   hex values — only recommend shades and pairings.
+5. **Confirm before writing anything:** show a mapping table (role or extra →
+   spec name → hex → use), the contrast results and pairings, and anything
+   guessed. After approval: set the role roots, add the extras (check every
+   name starts with `brxp-`), run `brxprod/regenerate-a11y-colors`, record the
+   mapping in `PROJECT_BRIEF.md` › Colour scheme and as your own content on the
+   Style Guide page (`brxprod/find-style-guide`; never its generated `sg{n}-*`
+   parts), then re-run this skill.
+
+Example — a spec with six colours:
+
+| Framework | Spec name | Hex | Why |
+|---|---|---|---|
+| Primary | Coral Reef | #FF6B6B | Calls to action |
+| Secondary | Bay Blue | #1FA2D6 | Links, headings, navigation |
+| Surface | Sandy Cream → Driftwood Ink | hue/sat of #FFF8E7 / #2B2D42 at 50% | Background (nearest `-l-N`) and text (nearest `-d-N`) |
+| Extra `brxp-sunshine-yellow` | Sunshine Yellow | #FFC93C | Highlights — pair with dark text |
+| Extra `brxp-gumleaf-green` | Gumleaf Green | #6BCB77 | Eco badges, success messages |
+| Extra `brxp-jacaranda-purple` | Jacaranda Purple | #9B5DE5 | Workshop section accents |
+
+The spec calls Sunshine Yellow its "primary brand colour", but it can't take
+white text, so it's an extra colour rather than Primary.
+
 ## Changing the concept map
 
 `ROLES` at the top of `scripts/render.py` maps each concept to candidate token

@@ -86,6 +86,10 @@ colours: only root values are set (variants are generated); only the neutral
 | Primary | _TODO_ | _TODO_ | _TODO_ |
 | Secondary | _TODO_ | _TODO_ | _TODO_ |
 | Surface / base | _TODO_ | _TODO_ | _TODO_ |
+| Extra `brxp-…` (if any) | _TODO_ | _TODO_ | _TODO_ |
+
+More spec colours than roles? Map them per the `design-system` skill ›
+*Mapping a brief's colours to the roles*.
 
 ## Typography
 

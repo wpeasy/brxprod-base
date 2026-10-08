@@ -232,6 +232,12 @@ darker neutrals); brand colours (`primary`, `secondary`, `tertiary`) and status
 colours keep whatever lightness the design needs. Then always run
 `brxprod/regenerate-a11y-colors`. Details: the `design-system` skill › *Changing colours*.
 
+**A brief with more colours than our roles:** map Primary (action colour),
+Secondary (nav, links, headings) and Surface (background + text, still at 50%)
+by use; every leftover colour becomes an extra palette colour, root only, named
+`brxp-<spec-name>`; check contrast and get approval before writing. Steps: the
+`design-system` skill › *Mapping a brief's colours to the roles*.
+
 ## BRXProd systems (summary — the site's design instructions are authoritative)
 
 All plugin classes are **locked, empty shells**. Their CSS lives in the active
