@@ -119,6 +119,13 @@ the sentence-case rule in the site's default instructions.
 - **Never set `font-family` in CSS** — not in a class, `%root%`, or a modifier.
   Families come only from the theme style, so they stay consistent site-wide.
   If the design needs another family, it's a theme-style change: ask first.
+- **Google Fonts are installed as Bricks Custom Fonts** (load
+  `bricks:bricks-custom-fonts`) — the font files uploaded to the site, one face
+  per weight and style the design uses. Never load them from Google's CDN,
+  `@import` / `<link>` them, or pick them from Bricks' built-in Google Fonts
+  list. Then **select the family and weights in Bricks' UI settings** (the
+  theme style's Typography controls); Bricks outputs the `@font-face` and
+  font CSS itself. A weight used in CSS must be one of the installed faces.
 
 ### Buttons, links and element defaults
 
@@ -338,7 +345,7 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] No `@media`; containment declared via `:has(> .block)`; queries widest → narrowest
 - [ ] Every token name exists on this site (`DESIGN_SYSTEM.md`)
 - [ ] Every text colour is the `--brxp-a11y-*-text` token for its background; brand colours only on backgrounds, borders, decoration
-- [ ] Typography from the theme style; only size / weight / style variations in CSS; no `font-family` anywhere in CSS
+- [ ] Typography from the theme style; only size / weight / style variations in CSS; no `font-family` anywhere in CSS; Google Fonts installed as Bricks Custom Fonts, chosen in the theme style
 - [ ] No CSS targets a button or a link; buttons use only Size / Style / Circle / Outline
 - [ ] Element-default changes made in the theme style, only where the design needs them, and each changed key reported
 - [ ] All CSS wrapped in one `@supports (display: grid) { … }` block

@@ -319,6 +319,10 @@ In short:
   possible; a needed variation (size, weight, style) is set in the block's
   class CSS. **Never `font-family` in CSS** — families come only from the theme
   style, so they stay consistent.
+- **Google Fonts are installed as Bricks Custom Fonts** (files on the site, a
+  face per weight/style used — never Google's CDN or Bricks' Google Fonts
+  list); family and weights are then selected in Bricks' UI settings, which
+  output the CSS.
 - **Never `@media`**: `:has(> .block){container-type:inline-size}` + nested
   `@container (inline-size <= Npx)`, literal px, widest first.
 - Use **BRXProd CSS Patterns** verbatim when one fits — e.g. a sticky header
