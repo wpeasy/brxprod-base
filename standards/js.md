@@ -18,9 +18,10 @@ Every script is wrapped in an **IIFE**. Nothing leaks to the global scope.
 - **ES6+**: `const` / `let` (never `var`), arrow functions, template literals,
   destructuring, optional chaining, `for…of`, modules-free (it runs as a
   classic script in the footer).
-- **No jQuery**, no libraries unless the brief requires one. For GSAP, BRXProd
-  bundles a `gsap-loader` snippet (`brxprod/list-snippets`) — check it before
-  adding any other loader, and never inject a `<script>` tag from JS.
+- **No jQuery**, no libraries unless the brief requires one. GSAP only when
+  `PROJECT_BRIEF.md` › Motion says GSAP — then it loads through BRXProd's
+  `gsap-loader` snippet, effects come from https://gsap.brxprod.com/
+  (AGENTS.md › Motion), and no other loader or `<script>` tag is added.
 - If something genuinely must be shared, expose **one** namespaced object —
   never loose globals.
 

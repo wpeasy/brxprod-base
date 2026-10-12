@@ -67,6 +67,7 @@ steps are skipped.
 | **Status** | Read-only readiness check — Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets, Style Guide. Every problem comes with the switch to fix it. |
 | **Design system** | Generates `DESIGN_SYSTEM.md` from the live site. |
 | **Brief** | Creates `PROJECT_BRIEF.md` for you to fill in. |
+| **Motion** | Asks whether the site uses GSAP (effects from [gsap.brxprod.com](https://gsap.brxprod.com/), loaded by BRXProd's `gsap-loader` snippet) or Bricks Interactions, and records it in the brief. |
 | **Report** | Ends with *ready to build* or *blocked by …*. |
 
 The agent never turns on a disabled ability itself — it tells you which switch

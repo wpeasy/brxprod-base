@@ -1,6 +1,6 @@
 ---
 name: init-brxprod
-description: One-command setup (and re-check) of a BRXProd project — connects the site if needed, installs the BRXProd agent skills, checks the site is ready for agent work (Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets), generates DESIGN_SYSTEM.md, creates PROJECT_BRIEF.md. Never offers or inserts Bricks Wireframes templates. Use when the user runs `/init-brxprod`, starts a new project from the base, or asks whether the project/site is ready to build on. Safe to re-run; done steps are skipped.
+description: One-command setup (and re-check) of a BRXProd project — connects the site if needed, installs the BRXProd agent skills, checks the site is ready for agent work (Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets), generates DESIGN_SYSTEM.md, creates PROJECT_BRIEF.md, asks GSAP or Bricks Interactions for motion. Never offers or inserts Bricks Wireframes templates. Use when the user runs `/init-brxprod`, starts a new project from the base, or asks whether the project/site is ready to build on. Safe to re-run; done steps are skipped.
 ---
 
 # /init-brxprod [site-url]
@@ -106,9 +106,29 @@ If `PROJECT_BRIEF.md` is missing, copy
 Don't fill it in from guesses — ask the user to complete it (or to answer its
 questions in chat, then write their answers in).
 
-## 6. Report
+## 6. Motion — GSAP or Bricks Interactions
+
+Skip if `PROJECT_BRIEF.md` › Motion already records a choice. Otherwise **ask
+the user** which the site uses for animations and transitions:
+
+- **GSAP** — effects adapted from the GSAP Prompt Library
+  (https://gsap.brxprod.com/), loaded by BRXProd's `gsap-loader` snippet.
+- **Bricks Interactions** — Bricks' own interactions and animations, tuned by
+  BRXProd's tamed animations; no GSAP.
+
+Write the answer into `PROJECT_BRIEF.md` › Motion. Then:
+
+- **GSAP:** `novamira run brxprod/list-snippets --json` to confirm the
+  `gsap-loader` id and read what it loads; install it with
+  `brxprod/install-snippet` if missing, and activate it (AGENTS.md ›
+  Activating snippets). Don't install `fadein-fix` /
+  `register-compound-animation` for this — they serve Bricks' animations.
+- **Bricks Interactions:** offer `fadein-fix` and `register-compound-animation`
+  (step 3's WARN lines) and no GSAP loader.
+
+## 7. Report
 
 A short checklist: connection, skills (versions, whether a new chat is
 needed), status FAILs with their fixes, framework + house-rule set,
-design-system counts, brief state, and a clear verdict:
+design-system counts, brief state, motion choice, and a clear verdict:
 **ready to build** or **blocked by …**.

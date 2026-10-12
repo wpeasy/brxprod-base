@@ -172,6 +172,31 @@ default of Nav (Nestable) for new headers:
   a11y text — in the header block's class CSS on the open state — then verify
   at phone width.
 
+### Motion — GSAP or Bricks Interactions
+
+The project uses **one** motion system, recorded in `PROJECT_BRIEF.md` › Motion
+(asked by `init-brxprod`). If it's not recorded, ask before adding any motion.
+Never mix the two on the same element.
+
+- **Bricks Interactions:** Bricks' interactions and entrance animations
+  (`bricks:bricks-interactions`), tuned with BRXProd's tamed-animation classes
+  (*BRXProd systems*). No GSAP.
+- **GSAP:**
+  - **Find the effect in the GSAP Prompt Library** — read
+    https://gsap.brxprod.com/llms.txt, pick by description, fetch its
+    `https://gsap.brxprod.com/effects/<id>.md` (prompt, sample code, demo
+    HTML). Follow the prompt with `[SELECTOR]` = the element's BEM class;
+    don't invent an effect the library already has.
+  - **GSAP and its plugins load only through BRXProd's `gsap-loader`
+    snippet** (installed and active) — never the library's CDN `<script>`
+    tags or `npm`, which it suggests. Load only the plugins the effect lists.
+  - The effect code is JavaScript under [standards/js.md](standards/js.md)
+    (IIFE, no globals), stored with `brxprod/create-snippet` and activated
+    (*Activating snippets*). Keep the library's `data-gsap-init` guard,
+    `gsap.matchMedia()` reduced-motion handling, and its `data-gsap-cloak`
+    rule scoped to `body.bricks-is-frontend` (CSS in a class, per css.md).
+  - Verify on the front end that the effect runs and nothing flashes.
+
 ## Connection — Novamira CLI (not MCP)
 
 - The site is reached **only** through the `novamira` CLI. The `setup-site`
@@ -418,7 +443,7 @@ enqueue assets. Stored as a snippet and activated per the rule above.
 ## Skills
 
 - `init-brxprod [url]` — connect, install skills, check site readiness,
-  generate the design system, create the brief.
+  generate the design system, create the brief, choose the motion system.
 - `setup-site <url>` — connection step on its own (also run by init).
 - `design-system` — (re)generate `DESIGN_SYSTEM.md`.
 - **Bricks skills first** (`bricks-start-here` and the task's Bricks skill) for

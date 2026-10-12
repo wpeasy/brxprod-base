@@ -96,6 +96,11 @@ More spec colours than roles? Map them per the `design-system` skill ›
 - **Headings:** _TODO_ (or "agent to propose")
 - **Body:** _TODO_
 
+## Motion
+
+_TODO_ — **GSAP** or **Bricks Interactions** (asked by `init-brxprod`; see
+AGENTS.md › Motion). Note any effects the design calls for.
+
 ## Imagery
 
 - **Style:** _TODO_
