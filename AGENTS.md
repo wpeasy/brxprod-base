@@ -81,7 +81,8 @@ import, and the `brxprod` skill's pointer to it.
   `bricks:bricks-element-schemas`);
 - **never use the Block element — use Div.** Block ships default CSS (flex,
   width) and media queries that we'd then have to find and override; a Div
-  starts clean and gets only the CSS we write;
+  starts clean and gets only the CSS we write. That includes the slides of a
+  Slider (Nestable), which Bricks creates as Blocks;
 - element settings carry **structure and content only** — `_cssGlobalClasses`,
   label, `tag`, text, links, media, attributes; never style-control values
   (spacing, colour, typography, layout);
@@ -190,12 +191,43 @@ Never mix the two on the same element.
   - **GSAP and its plugins load only through BRXProd's `gsap-loader`
     snippet** (installed and active) — never the library's CDN `<script>`
     tags or `npm`, which it suggests. Load only the plugins the effect lists.
+  - **One snippet per effect**, named after it (e.g. "GSAP T-01 Line
+    Reveal"), so each can be found, activated or removed on its own. Only
+    effects that form one compound or grouped effect — sharing a timeline or
+    state, or meaningless apart — go in a single snippet, named for the group.
+    Never pile unrelated effects into one "site animations" snippet.
   - The effect code is JavaScript under [standards/js.md](standards/js.md)
     (IIFE, no globals), stored with `brxprod/create-snippet` and activated
     (*Activating snippets*). Keep the library's `data-gsap-init` guard,
     `gsap.matchMedia()` reduced-motion handling, and its `data-gsap-cloak`
     rule scoped to `body.bricks-is-frontend` (CSS in a class, per css.md).
   - Verify on the front end that the effect runs and nothing flashes.
+  - Never for carousels, sliders or marquees — see *Carousels* below.
+
+### Carousels — Slider (Nestable) + Splide Extensions
+
+**Any sliding content** — carousels, sliders, testimonial rotators, logo
+tickers, marquees — is built with Bricks' **Slider (Nestable)**
+(`slider-nested`; load `bricks:bricks-nestable-elements`), on every project
+whatever its motion system. **Never GSAP** (not even the library's marquee
+effects) and never hand-written carousel JS.
+
+- **Install and activate BRXProd's "Splide Extensions for Slider (Nestable)"
+  snippet** first: find its id with `brxprod/list-snippets` (read its
+  description for the extensions and options it adds), `brxprod/install-snippet`
+  if missing, then activate it (*Activating snippets*).
+- **Configure through the slider's Splide custom options JSON** — the
+  extension options go there, alongside Splide's own. Check the control's key
+  and shape with `bricks/get-element-schema` for `slider-nested`; use only
+  options the snippet's description lists.
+- **Slides are Divs**, not the Block slides Bricks creates by default (the
+  no-Block rule). Keep the slider's native child structure otherwise; a looped
+  carousel puts the query on the one slide Div.
+- Styling follows the CSS standard (BEM class on the slider and slides,
+  container queries, a11y text tokens); the slider's own UI controls only for
+  what Splide needs (per-page, gap, arrows, pagination).
+- Verify on the front end: it initialises, autoplay/marquee motion respects
+  reduced motion, and arrows/pagination are keyboard-operable and labelled.
 
 ## Connection — Novamira CLI (not MCP)
 
