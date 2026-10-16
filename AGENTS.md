@@ -440,7 +440,7 @@ enqueue assets. Stored as a snippet and activated per the rule above.
 
 ## Known issues
 
-- **Bricks 2.4.2 rewrites CSS written through the abilities.** Every
+- **Bricks 2.4.2 / 2.4.3 rewrite CSS written through the abilities.** Every
   `_cssCustom` saved by an ability (element or global class) passes a
   normaliser that ignores the "sync Custom CSS ↔ style controls" setting —
   moving root declarations into style controls — and cannot parse CSS nesting,
@@ -452,8 +452,17 @@ enqueue assets. Stored as a snippet and activated per the rule above.
   `_cssCustom` write, read it back** (`bricks/get-page-elements` for elements,
   `bricks/list-global-classes` for classes) and compare it with what you sent,
   and check no style-control keys appeared. If it differs, **stop and report
-  it** — never leave altered CSS in place or call the work done. Remove the
-  wrapper and this rule once Bricks fixes the normaliser.
+  it** — never leave altered CSS in place or call the work done.
+  **Bricks reports a fix, but it is version-dependent:** on 2026-10-16 Bricks
+  2.4.3 still rewrote unwrapped CSS (root `display`/`gap`/`padding`/`color`
+  moved into style controls; `&:hover` → `&: hover`, `&::before` →
+  `&: :before`; `@container` braces dropped). So keep the wrapper until a
+  test on the site's own Bricks version passes: save a throwaway class with
+  unwrapped CSS containing root declarations, `&:hover`, `&::before` and a
+  nested `@container`; read it back; delete it. Only if it comes back
+  byte-identical with no style-control keys, drop the wrapper for that site
+  and say so. Remove this rule once a passing Bricks version is the minimum
+  this base supports.
 - **Bricks 2.4.2's element validator rejects `settings._abpBemMeta`**
   ("Expected a registered setting for the 'div' element") on ability writes
   (`create-post`, `set-page-elements`…), so the nested-block
