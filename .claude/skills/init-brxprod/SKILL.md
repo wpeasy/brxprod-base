@@ -1,6 +1,6 @@
 ---
 name: init-brxprod
-description: One-command setup (and re-check) of a BRXProd project — connects the site if needed, installs the BRXProd agent skills, checks the site is ready for agent work (Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets), generates DESIGN_SYSTEM.md, creates PROJECT_BRIEF.md, asks GSAP or Bricks Interactions for motion. Never offers or inserts Bricks Wireframes templates. Use when the user runs `/init-brxprod`, starts a new project from the base, or asks whether the project/site is ready to build on. Safe to re-run; done steps are skipped.
+description: One-command setup (and re-check) of a BRXProd project — connects the site if needed, installs the BRXProd agent skills, checks the site is ready for agent work (Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets), creates PROJECT_BRIEF.md, asks for a light or dark theme and the primary/secondary colours then sets the palette, Surfaces and page colours, generates DESIGN_SYSTEM.md, asks GSAP or Bricks Interactions for motion. Never offers or inserts Bricks Wireframes templates. Use when the user runs `/init-brxprod`, starts a new project from the base, or asks whether the project/site is ready to build on. Safe to re-run; done steps are skipped.
 ---
 
 # /init-brxprod [site-url]
@@ -93,20 +93,115 @@ Read-only. Prints PASS / WARN / FAIL lines, each FAIL/WARN with the fix, and a
 - If `facts.bricksPostTypes` lacks a type the brief needs (e.g. `post`), say so:
   Bricks → Settings → Post types.
 
-## 4. Design system
-
-Run the **design-system** skill. Then confirm `DESIGN_SYSTEM.md` shows the
-framework, the house-rule set (Code / Visual / Custom) and a concept map. Note
-any *not found* concepts in the report.
-
-## 5. Project brief
+## 4. Project brief
 
 If `PROJECT_BRIEF.md` is missing, copy
 `.claude/skills/init-brxprod/templates/PROJECT_BRIEF.md` to the project root.
 Don't fill it in from guesses — ask the user to complete it (or to answer its
-questions in chat, then write their answers in).
+questions in chat, then write their answers in). It must exist before step 5,
+which writes the theme and colours into it.
 
-## 6. Motion — GSAP or Bricks Interactions
+## 5. Theme and colours — light or dark, then Primary / Secondary, then Surfaces
+
+Skip when `PROJECT_BRIEF.md` › Colour scheme already records the **Theme** and
+the role colours **and** `brxprod/get-surfaces` shows nothing under `missing`
+or `failing` and every `page` entry has `followsSurface1: true`. Otherwise run
+the parts that aren't done, **in this order** — the Surfaces and page colours
+are derived from the palette, so they come last.
+
+### 5a. Ask: light or dark?
+
+**Ask the user** (one question, two options) whether the site is
+**light-themed** (light page, dark text) or **dark-themed** (dark page, light
+text). Write it into `PROJECT_BRIEF.md` › Colour scheme › Theme.
+
+### 5b. Ask for the Primary and Secondary colours
+
+Ask for **Primary** (the action colour: buttons, CTAs) and **Secondary**
+(navigation, links, headings) as hex values, plus the neutral hue for
+**Surface** if they have one — or "agent to propose". More colours than roles,
+or only one brand colour: follow the `design-system` skill › *Mapping a
+brief's colours to the roles*. **Show the mapping and contrast check and get
+approval before writing** (that section's step 5).
+
+### 5c. Write the palette
+
+Per the `design-system` skill › *Changing colours*:
+
+1. Set each role's **root** palette colour (the BRX Prod palette entries whose
+   `raw` is `var(--brxp-primary)`, `var(--brxp-secondary)`,
+   `var(--brxp-surface)`) with `bricks/update-color`, using the colour's
+   `itemOwnership` from a fresh `bricks/list-color-palettes` read. Surface
+   keeps the chosen hue and saturation at **50% lightness**.
+2. **Regenerate the shades** — `update-color` changes the root only; the
+   `-l-N` / `-d-N` / `-t-N` children keep their old values until regenerated.
+   For each root and each shade type it already has (`light`, `dark`,
+   `transparent`, same step count): `bricks/generate-color-shades` with
+   `paletteId`, `colorId`, `baseVariable` (the root's `raw`), `shadeType`,
+   `steps` → take `saveOwnership` → call again with `save: true` and that
+   ownership. Read back one shade per type to confirm it moved.
+3. `brxprod/regenerate-a11y-colors` (no input) and report `created` / `updated`.
+4. Record the final roles and values in `PROJECT_BRIEF.md` › Colour scheme.
+
+### 5d. Set the Surfaces for the theme
+
+Needs BRXProd 1.3.6+ and its **Edit Surfaces** ability group. If
+`brxprod/set-surfaces` is unavailable (`get-context` lists it under
+`abilityGroups.unavailable`), tell the user to switch on **Edit Surfaces**
+(BRXProd → Settings → AI Tools → WordPress Abilities) and stop this part — do
+not write the variables another way.
+
+Read `brxprod/get-surfaces` first. Then set all four with `set-surfaces`,
+pointing at the palette's own tokens and giving every `-color` the a11y text
+variable of its `-bg` (`var(--brxp-a11y-<token>-text)`):
+
+| Surface | Role | Light theme `-bg` | Dark theme `-bg` |
+|---|---|---|---|
+| 1 | page / section | `--brxp-surface-l-9` | `--brxp-surface-d-9` |
+| 2 | raised card / panel | `--brxp-surface-l-10` | `--brxp-surface-d-8` |
+| 3 | inset well | `--brxp-surface-l-8` | `--brxp-surface-d-10` |
+| 4 | accent block | `--brxp-primary` | `--brxp-primary` |
+
+- **`-color`**: `var(--brxp-a11y-<that bg token>-text)`, e.g.
+  `var(--brxp-a11y-surface-d-9-text)`.
+- **`-link`**: light theme — a darker Primary/Secondary shade (start at
+  `--brxp-primary-d-2`); dark theme — a lighter one (start at
+  `--brxp-secondary-l-2`); Surface 4 — its own `-color`. Fix whatever the
+  response lists under `failing` (move the link one shade further from the
+  background) until `failing` is empty — never lower the 4.5:1 minimum.
+- `classesInstalled: false` means the `brxp-surface{1-4}` classes aren't on
+  the site yet: `set-surfaces` creates the variables, but the classes come from
+  creating or updating the Style Guide page in the builder (owner action) —
+  say so.
+
+### 5e. Link the page body to Surface 1
+
+The page is not a Surface: its background and text come from the active theme
+style. For every style `get-surfaces` lists under `page` with
+`followsSurface1: false`: `bricks/get-theme-styles` (`style` = its id) for the
+ownership, then `bricks/update-theme-style` with
+
+```json
+{"general":{"siteBackground":{"color":{"raw":"var(--brxp-surface1-bg)"}}},
+ "typography":{"typographyBody":{"color":{"raw":"var(--brxp-surface1-color)"}},
+               "typographyHeadings":{"color":{"raw":"var(--brxp-surface1-color)"}}},
+ "links":{"typography":{"color":{"raw":"var(--brxp-surface1-link)"}}}}
+```
+
+`siteBackground` takes the background-control shape (`{"color":{"raw":…}}`),
+not a bare `{"raw":…}`. It deep-merges, so fonts and background images stay.
+Report which keys changed. Then re-read `get-surfaces`: done only when
+`failing` is empty and every `page` entry shows `followsSurface1: true` — from
+then on, a re-theme of the Surfaces moves the page too.
+
+## 6. Design system
+
+Run the **design-system** skill — after step 5, so `DESIGN_SYSTEM.md` records
+the new palette. Then confirm it shows the framework, the house-rule set
+(Code / Visual / Custom) and a concept map. Note any *not found* concepts in
+the report.
+
+## 7. Motion — GSAP or Bricks Interactions
 
 Skip if `PROJECT_BRIEF.md` › Motion already records a choice. Otherwise **ask
 the user** which the site uses for animations and transitions:
@@ -126,9 +221,9 @@ Write the answer into `PROJECT_BRIEF.md` › Motion. Then:
 - **Bricks Interactions:** offer `fadein-fix` and `register-compound-animation`
   (step 3's WARN lines) and no GSAP loader.
 
-## 7. Report
+## 8. Report
 
 A short checklist: connection, skills (versions, whether a new chat is
 needed), status FAILs with their fixes, framework + house-rule set,
-design-system counts, brief state, motion choice, and a clear verdict:
+theme (light/dark) + role colours, Surfaces state (`failing`, page follows Surface 1), design-system counts, brief state, motion choice, and a clear verdict:
 **ready to build** or **blocked by …**.

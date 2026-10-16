@@ -148,10 +148,11 @@ the sentence-case rule in the site's default instructions.
 
 **Every `_cssCustom` written through an ability — global class or element
 (`%root%`) CSS — is wrapped, in full, in one `@supports (display: grid)`
-block.** Bricks 2.4.2's normaliser leaves an at-rule's contents alone, so this
-stops it moving root declarations into style controls and mangling nesting
-(AGENTS.md › Known issues). Every browser supports grid, so the wrapper never
-changes what renders.
+block.** Bricks' normaliser (still active in 2.4.3, despite a reported fix)
+leaves an at-rule's contents alone, so this stops it moving root declarations
+into style controls and mangling nesting (AGENTS.md › Known issues — including
+the test that decides when a site can drop the wrapper). Every browser
+supports grid, so the wrapper never changes what renders.
 
 ```css
 @supports (display: grid) {

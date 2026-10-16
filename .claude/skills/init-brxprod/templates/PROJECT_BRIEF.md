@@ -76,6 +76,10 @@ publish). Never invented for a real business.
 
 ## Colour scheme
 
+**Theme:** _TODO_ — **Light** (light page, dark text) or **Dark** (dark page,
+light text). Asked by `init-brxprod`; it decides the Surfaces and the page
+colours, which are set after Primary and Secondary below.
+
 _TODO_ — the root colours, or "agent to propose". Per AGENTS.md › Changing
 colours: only root values are set (variants are generated); only the neutral
 `base` / `surface` sits at 50% HSL lightness; text uses the
