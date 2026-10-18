@@ -144,35 +144,21 @@ the sentence-case rule in the site's default instructions.
   link colours; site background; body and heading text colour — live in the
   active theme style, not component CSS (AGENTS.md › Building content).
 
-### Wrap everything in `@supports (display: grid)`
+### Write CSS through execute-php — no wrapper
 
-**Every `_cssCustom` written through an ability — global class or element
-(`%root%`) CSS — is wrapped, in full, in one `@supports (display: grid)`
-block.** Bricks' normaliser (still active in 2.4.3, despite a reported fix)
-leaves an at-rule's contents alone, so this stops it moving root declarations
-into style controls and mangling nesting (AGENTS.md › Known issues — including
-the test that decides when a site can drop the wrapper). Every browser
-supports grid, so the wrapper never changes what renders.
+**Every `_cssCustom` — global class or element CSS — is saved with
+`novamira/execute-php`, exactly as written, not through a Bricks ability.**
+The abilities still rewrite saved CSS (moving root declarations into style
+controls and mangling nesting); CSS stored directly renders unchanged. How to
+write it, and when to switch back: AGENTS.md › Order of authority › Writing CSS.
 
-```css
-@supports (display: grid) {
-/* Settings */
-.test-card{
-  --_test-card-background: var(--test-card-background, var(--light));
-}
-
-.test-card{
-  background: var(--_test-card-background);
-  &:hover{ /* … */ }
-}
-}
-```
-
-- One wrapper around **all** the code — the Settings block, the rules, nested
-  states and `@container` queries alike. Nothing outside it.
-- The examples in this file omit the wrapper for readability; add it when you
-  save.
-- Still **read the CSS back** after saving and compare it with what you sent.
+- **No `@supports (display: grid)` wrapper.** That was the old workaround;
+  remove it from any class or element you touch.
+- **Element CSS is stored with its real selector** — `#brxe-{id}`, or
+  `#{_cssId}` when the element has one — never `%root%`. Write `%root%` while
+  drafting if you like, but substitute before saving.
+- **Read the CSS back** after saving and compare it with what you sent, then
+  check the front end.
 
 ## 4. The Settings block
 
@@ -349,5 +335,5 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] Typography from the theme style; only size / weight / style variations in CSS; no `font-family` anywhere in CSS; Google Fonts installed as Bricks Custom Fonts, chosen in the theme style
 - [ ] No CSS targets a button or a link; buttons use only Size / Style / Circle / Outline
 - [ ] Element-default changes made in the theme style, only where the design needs them, and each changed key reported
-- [ ] All CSS wrapped in one `@supports (display: grid) { … }` block
-- [ ] After saving: `_cssCustom` read back matches what was sent, no style-control keys added (Bricks 2.4.2 normaliser bug — AGENTS.md › Known issues)
+- [ ] CSS saved through execute-php, unwrapped (no `@supports`), element CSS with `#brxe-{id}` not `%root%` (AGENTS.md › Writing CSS)
+- [ ] After saving: `_cssCustom` read back matches what was sent, no style-control keys added; front end checked
