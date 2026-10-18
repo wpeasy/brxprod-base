@@ -31,8 +31,9 @@ there.
    built: pages, posts, templates, elements, components, global classes,
    variables, theme styles, the save pipeline and render verification. Load
    `bricks:bricks-start-here` and the task's Bricks skill before any write, and
-   use a `bricks/*` ability whenever one exists — not execute-php, a
-   `novamira/bricks-*` ability or a BRXProd ability in its place.
+   use a `bricks/*` ability whenever one exists — not a `novamira/bricks-*`
+   ability or a BRXProd ability in its place, and not execute-php except where
+   *Abilities or execute-php* below says PHP makes more sense.
 2. `brxprod/get-design-instructions` — the site owner's live house rules for
    *what* to write (CSS, naming, labels, semantics, code location), plus the
    `rails` / `corners` / `grids` sections when those systems are installed.
@@ -43,16 +44,80 @@ there.
 
 Where they disagree, the higher one wins.
 
-**Abilities first, then execute-php.** For every task, in this order:
+**Abilities or execute-php — use whichever makes more sense.** Abilities are
+the default; `novamira/execute-php` is a first-class tool, not only a last
+resort. For every task:
 
-1. **An ability exists and is enabled** → use it (`bricks/*` first, then
+1. **An ability does it in a few calls** → use it (`bricks/*` first, then
    `brxprod/*`, then other `novamira` abilities).
-2. **It exists but is switched off** (`get-context` / the status check lists
+2. **An ability exists but would take many round trips** — bulk or repetitive
+   work such as deleting, renaming or re-categorising many classes, creating
+   many pages or menu items, or any loop where each call needs a fresh
+   ownership read (roughly more than ~10 calls, or minutes of waiting) → do it
+   in **one execute-php call** with the same WordPress / Bricks PHP APIs the
+   ability uses. Say up front that you are doing so and why.
+3. **It exists but is switched off** (`get-context` / the status check lists
    it as unavailable) → tell the user which switch turns it on (Bricks → AI,
    BRXProd → Settings → AI Tools) and ask whether to wait for that or go ahead
    with execute-php.
-3. **No ability covers it** → use `novamira/execute-php` — for reads *and*
-   writes. That is allowed, not a workaround (see *Connection* for how).
+4. **No ability covers it** → use execute-php, for reads *and* writes.
+
+Reads are always fair game for execute-php when one PHP call answers what
+would take several ability calls (usage counts, scans, bulk lookups).
+
+**Keep on the abilities** whatever the call count: writing page / template
+element trees (`bricks/set-page-elements`, `create-template`…) and creating
+global classes — they run Bricks' save pipeline, revisions and validation.
+**The exception is `_cssCustom` itself:** until Bricks fixes its CSS
+normaliser, class and element CSS is written through execute-php (*Writing
+CSS* below). See *Connection* for how to run execute-php safely.
+
+### Writing CSS — through execute-php (temporary)
+
+Bricks' abilities rewrite any `_cssCustom` they save (*Known issues*), so
+**all class and element CSS is written with `novamira/execute-php`**, unwrapped
+— no `@supports` wrapper. The rewrite lives only in the abilities
+(`Bricks\Abilities\Element_Style_Normalizer`); CSS stored directly is kept and
+rendered byte-for-byte (tested on Bricks 2.4.3, 2026-10-18).
+
+1. **Structure through the abilities, CSS through PHP.** Create classes
+   (`bricks/batch-create-global-classes`, no `_cssCustom`) and build element
+   trees as usual, then set the CSS in a separate execute-php call.
+2. **Global class CSS** lives in the `bricks_global_classes` option. Read it,
+   change only the `_cssCustom` of the named classes, write it back in the
+   same call, and bump `bricks_global_classes_timestamp`:
+
+   ```php
+   $css_by_name = array( 'site-footer' => "/* Settings */\n.site-footer{\n  …\n}" );
+   $locked  = (array) get_option( 'bricks_global_classes_locked', array() );
+   $classes = get_option( 'bricks_global_classes', array() );
+   foreach ( $classes as &$class ) {
+   	if ( isset( $css_by_name[ $class['name'] ] ) && ! in_array( $class['id'], $locked, true ) ) {
+   		$class['settings'] = is_array( $class['settings'] ?? null ) ? $class['settings'] : array();
+   		$class['settings']['_cssCustom'] = $css_by_name[ $class['name'] ];
+   	}
+   }
+   unset( $class );
+   update_option( 'bricks_global_classes', $classes );
+   update_option( 'bricks_global_classes_timestamp', time() );
+   ```
+
+   Never write a locked class (BRXProd's `brxp-*` shells, framework classes).
+   Don't do this while someone has the builder open on the site's classes — a
+   builder save writes the whole list and would overwrite yours (ask first if
+   unsure).
+3. **Element CSS** lives in the element tree's post meta. Use the area's key
+   (`\Bricks\Database::get_bricks_data_key( 'content' | 'header' | 'footer' )`),
+   change only that element's `_cssCustom`, and save with `wp_slash()`.
+   **Replace `%root%` with the real selector before saving** — `#brxe-{id}`,
+   or `#{_cssId}` when the element has one. The builder and the abilities do
+   that substitution on save; stored `%root%` is printed literally and ignored
+   by the browser.
+4. **Read it back** in the same call (the stored string must equal what you
+   sent, with no new style-control keys), then check the front end renders it.
+5. When Bricks ships a fixed normaliser, re-run the throwaway test in *Known
+   issues* through the abilities; if it passes, go back to ability writes for
+   CSS and delete this section.
 
 ## Building content — element trees, never copy/paste or HTML import
 
@@ -91,10 +156,10 @@ import, and the `brxprod` skill's pointer to it.
   `outline` — never CSS. Anything that looks like a button is a Button element,
   never a Text Link styled as one;
 - all other styling goes in the **block's global class CSS** (`_cssCustom`) per
-  [standards/css.md](standards/css.md), created/edited with Bricks'
-  global-class abilities, wrapped in `@supports (display: grid)` — and **never
-  targets a button or a link**; layout around a button (alignment, spacing)
-  goes on its parent and siblings;
+  [standards/css.md](standards/css.md) — the class created with Bricks'
+  global-class abilities, its CSS written through execute-php (*Writing CSS*)
+  — and **never targets a button or a link**; layout around a button
+  (alignment, spacing) goes on its parent and siblings;
 - **element defaults live in the active theme style**
   (`bricks/update-theme-style`): button colours in every state, sizes, borders
   and radius (`button.*`), links (`links.*`), site background and body/heading
@@ -106,8 +171,7 @@ import, and the `brxprod` skill's pointer to it.
   and why. Shape shared by every button (radius, border width/style) goes on the
   default `button.border` and `button.border:hover`; the per-style keys
   (`primaryBorder`, `outlineBorder`…) stay colour-only;
-- **read every CSS write back and compare** — Bricks 2.4.2 can rewrite it
-  (see *Known issues*);
+- **read every CSS write back and compare** (*Writing CSS* › 4);
 - verify with `bricks/render-elements` (and `brxprod/render-frontend-html` for
   content inside nestable elements).
 
@@ -257,10 +321,10 @@ effects) and never hand-written carousel JS.
   Only add it after confirming what the code does. Pass code through a JSON file:
   `novamira --yes run novamira/execute-php --input @.claude/tmp/input.json` with
   `{"code": "..."}` — no `<?php`, `return` a value.
-- execute-php is the **fallback when no ability covers the task** (*Order of
-  authority* › Abilities first), for reads and writes alike. When writing with
-  it: check first that no ability does the job (`novamira discover`); read the
-  current state before changing it; use WordPress / Bricks PHP APIs, never raw
+- Use execute-php when it makes more sense than the abilities (*Order of
+  authority* › Abilities or execute-php) — bulk work, many-call loops, scans —
+  or when no ability covers the task, for reads and writes alike. When writing
+  with it: read the current state before changing it; use WordPress / Bricks PHP APIs, never raw
   SQL; change only what the task needs; read the result back; and tell the user
   you used execute-php and why. Everything else in this file — the CSS and HTML
   standards, readback, no HTML/CSS import — still applies to what it writes.
@@ -361,8 +425,8 @@ In short:
   comments `()` `[]` `{}` ignored. Overrides the site default's sentence case.
 - All component CSS in the **block's** global class (literal `.block` selector);
   element classes stay empty.
-- **Wrap all CSS in `@supports (display: grid) { … }`** — works around the
-  Bricks 2.4.2 normaliser (see *Known issues*).
+- **Write CSS through execute-php, unwrapped** — not through the abilities,
+  which rewrite it (*Writing CSS*, *Known issues*). No `@supports` wrapper.
 - One `/* Settings */` block: `--_block__element-prop: var(--block__element-prop, token)`;
   rules use only `--_` vars. **Modifiers only set the public vars** — structural
   variants become variables too.
@@ -424,7 +488,7 @@ Read `brxprod/get-site-js` first.
 (one you wrote, or a bundled one from `brxprod/install-snippet`), activate it;
 don't leave it as a draft for the user. This overrides the `brxprod` skill's
 "never activate" rule. No ability activates a snippet, so use execute-php
-against the code manager's own API (*Abilities first* › 3), then:
+against the code manager's own API (*Abilities or execute-php* › 4), then:
 
 - **PHP:** lint it first (`php -l` locally, or `token_get_all` in execute-php);
   after activating, load the front end and `wp-admin` (`novamira doctor --json`
@@ -446,23 +510,19 @@ enqueue assets. Stored as a snippet and activated per the rule above.
   moving root declarations into style controls — and cannot parse CSS nesting,
   corrupting `&:hover`, nested `@container` and nested selectors (unbalanced
   braces, wrong values) while the save still reports `ok: true`.
-  **Workaround: wrap all of the CSS in one `@supports (display: grid) { … }`
-  block** — the normaliser leaves at-rule contents alone, and every browser
-  supports grid (standards/css.md › Where CSS lives). **Still, after every
-  `_cssCustom` write, read it back** (`bricks/get-page-elements` for elements,
-  `bricks/list-global-classes` for classes) and compare it with what you sent,
-  and check no style-control keys appeared. If it differs, **stop and report
-  it** — never leave altered CSS in place or call the work done.
-  **Bricks reports a fix, but it is version-dependent:** on 2026-10-16 Bricks
-  2.4.3 still rewrote unwrapped CSS (root `display`/`gap`/`padding`/`color`
-  moved into style controls; `&:hover` → `&: hover`, `&::before` →
-  `&: :before`; `@container` braces dropped). So keep the wrapper until a
-  test on the site's own Bricks version passes: save a throwaway class with
-  unwrapped CSS containing root declarations, `&:hover`, `&::before` and a
-  nested `@container`; read it back; delete it. Only if it comes back
-  byte-identical with no style-control keys, drop the wrapper for that site
-  and say so. Remove this rule once a passing Bricks version is the minimum
-  this base supports.
+  On 2026-10-16 Bricks 2.4.3 still rewrote unwrapped CSS (root
+  `display`/`gap`/`padding`/`color` moved into style controls; `&:hover` →
+  `&: hover`, `&::before` → `&: :before`; `@container` braces dropped).
+  **Workaround: write `_cssCustom` through execute-php** (*Order of authority*
+  › Writing CSS). The rewrite is only in the abilities' write path; CSS stored
+  directly renders unchanged. (The previous workaround — wrapping all CSS in
+  `@supports (display: grid) { … }` so the normaliser skipped it — is retired;
+  unwrap any CSS still carrying it when you next touch that class.)
+  **Re-test when Bricks updates:** through the abilities, save a throwaway
+  class with unwrapped CSS containing root declarations, `&:hover`,
+  `&::before` and a nested `@container`; read it back; delete it. If it comes
+  back byte-identical with no style-control keys, go back to ability writes
+  for CSS, delete *Writing CSS*, and remove this entry.
 - **Bricks 2.4.2's element validator rejects `settings._abpBemMeta`**
   ("Expected a registered setting for the 'div' element") on ability writes
   (`create-post`, `set-page-elements`…), so the nested-block

@@ -78,7 +78,7 @@ Read-only. Prints PASS / WARN / FAIL lines, each FAIL/WARN with the fix, and a
 - **FAIL** lines block agent building. Relay each fix verbatim — they are
   switches only the site owner can turn on (Bricks → AI, BRXProd → Settings →
   AI Tools). Don't silently replace a disabled ability with execute-php — tell
-  the user the switch and ask (AGENTS.md › Abilities first).
+  the user the switch and ask (AGENTS.md › Abilities or execute-php).
 - **No `bricks/*` abilities** is the critical one: without Bricks' agent layer
   there is no supported way to create or edit pages, templates, classes or
   variables. Continue the remaining read-only steps, then report it as blocking.
