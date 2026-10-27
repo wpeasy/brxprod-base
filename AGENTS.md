@@ -346,6 +346,11 @@ either — and never invent a name the site doesn't have. Each framework lacks
 some concepts the other has (Core Framework: no width, measure, line-height,
 transition or ratio tokens); the concept map shows these as *not found*.
 
+**Colours deferred to the brief:** if `PROJECT_BRIEF.md` › Colour scheme is
+marked *Deferred* and still `_TODO_`, don't pick colours yourself — ask, or
+build with the current palette. Once the user fills it in, apply it with
+`init-brxprod` step 5 (5c–5e) before building more.
+
 **Changing colours:** change only each colour's root (unsuffixed) value —
 variants are auto-generated. **Only the neutral `base` / `surface` colour is
 set to 50% HSL lightness** (use its `-l-N` / `-d-N` variants for lighter or

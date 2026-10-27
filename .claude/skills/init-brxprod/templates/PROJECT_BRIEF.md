@@ -77,8 +77,10 @@ publish). Never invented for a real business.
 ## Colour scheme
 
 **Theme:** _TODO_ — **Light** (light page, dark text) or **Dark** (dark page,
-light text). Asked by `init-brxprod`; it decides the Surfaces and the page
-colours, which are set after Primary and Secondary below.
+light text). `init-brxprod` asks whether to set this now or here in the brief;
+it decides the Surfaces and the page colours, which are set after Primary and
+Secondary below. If you fill this section in later, re-run `/init-brxprod` (or
+ask the agent to apply the brief's colours) to write them to the site.
 
 _TODO_ — the root colours, or "agent to propose". Per AGENTS.md › Changing
 colours: only root values are set (variants are generated); only the neutral

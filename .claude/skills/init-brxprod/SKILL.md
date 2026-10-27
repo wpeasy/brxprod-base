@@ -1,6 +1,6 @@
 ---
 name: init-brxprod
-description: One-command setup (and re-check) of a BRXProd project — connects the site if needed, installs the BRXProd agent skills, checks the site is ready for agent work (Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets), creates PROJECT_BRIEF.md, asks for a light or dark theme and the primary/secondary colours then sets the palette, Surfaces and page colours, generates DESIGN_SYSTEM.md, asks GSAP or Bricks Interactions for motion. Never offers or inserts Bricks Wireframes templates. Use when the user runs `/init-brxprod`, starts a new project from the base, or asks whether the project/site is ready to build on. Safe to re-run; done steps are skipped.
+description: One-command setup (and re-check) of a BRXProd project — connects the site if needed, installs the BRXProd agent skills, checks the site is ready for agent work (Bricks abilities, BRXProd ability groups, framework, class sets, theme style, code manager, snippets), creates PROJECT_BRIEF.md, asks whether to define the theme and colours now or later in the brief — if now, asks light or dark and the primary/secondary colours then sets the palette, Surfaces and page colours — generates DESIGN_SYSTEM.md, asks GSAP or Bricks Interactions for motion. Never offers or inserts Bricks Wireframes templates. Use when the user runs `/init-brxprod`, starts a new project from the base, or asks whether the project/site is ready to build on. Safe to re-run; done steps are skipped.
 ---
 
 # /init-brxprod [site-url]
@@ -105,9 +105,24 @@ which writes the theme and colours into it.
 
 Skip when `PROJECT_BRIEF.md` › Colour scheme already records the **Theme** and
 the role colours **and** `brxprod/get-surfaces` shows nothing under `missing`
-or `failing` and every `page` entry has `followsSurface1: true`. Otherwise run
-the parts that aren't done, **in this order** — the Surfaces and page colours
-are derived from the palette, so they come last.
+or `failing` and every `page` entry has `followsSurface1: true`.
+
+### 5·0. Ask first: now, or in the brief?
+
+If the brief's Colour scheme already has the Theme and role colours filled in
+(but they aren't applied yet), skip this question and apply them (5c–5e).
+Otherwise **ask the user one question** before any design question:
+
+- **Define them now** — continue with 5a–5e.
+- **Later, in the project brief** — ask nothing about theme or colours. Mark
+  `PROJECT_BRIEF.md` › Colour scheme `Deferred — to be filled in the brief`,
+  skip 5a–5e, and carry on with step 6. Tell the user that once they fill in
+  the Theme and colours, re-running `/init-brxprod` (or asking the agent to
+  apply the brief's colours) runs 5c–5e. Until then the site keeps its
+  current palette and Surfaces.
+
+When defining now, run the parts that aren't done, **in this order** — the
+Surfaces and page colours are derived from the palette, so they come last.
 
 ### 5a. Ask: light or dark?
 
@@ -225,5 +240,5 @@ Write the answer into `PROJECT_BRIEF.md` › Motion. Then:
 
 A short checklist: connection, skills (versions, whether a new chat is
 needed), status FAILs with their fixes, framework + house-rule set,
-theme (light/dark) + role colours, Surfaces state (`failing`, page follows Surface 1), design-system counts, brief state, motion choice, and a clear verdict:
+theme (light/dark) + role colours, or *colours deferred to the brief*, Surfaces state (`failing`, page follows Surface 1), design-system counts, brief state, motion choice, and a clear verdict:
 **ready to build** or **blocked by …**.
