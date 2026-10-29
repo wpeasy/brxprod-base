@@ -39,7 +39,7 @@ there.
    `rails` / `corners` / `grids` sections when those systems are installed.
 3. This file (`AGENTS.md`) and `standards/` — how we work in every project. Where they
    explicitly say they override the site's instructions (label case; no
-   HTML/CSS import), they win.
+   HTML/CSS import; rails start at `layout`), they win.
 4. Other skills (`brxprod`, `brxprod-notes`, `brxprod-feedback`, `novamira`).
 
 Where they disagree, the higher one wins.
@@ -372,8 +372,17 @@ for animation/utility classes, in the class's own custom CSS. Never hand-edit
 either — fixes belong in the BRXProd plugin.
 
 - **Rails** — `brxp-rails` on the Section/Container makes a grid with named lines
-  `full / layout / breakout / wide / content` (each `-start` / `-end`). Children
-  default to `content`.
+  `full / layout / breakout / wide / content` (each `-start` / `-end`). Without
+  a class, children land on `content` — the narrowest rail — so never rely on
+  that default.
+  - **Start wide, then step inwards.** `layout` is the site box width (the
+    same as the Bricks container width) and is the **default for section
+    content**: card grids, CTAs, feature rows, media, headers of a section —
+    give them `brxp-rail-layout` explicitly. Step in to `breakout` / `wide` /
+    `content` only for content that should be narrower than the site box
+    (long-form text, a centred intro, a quote); `content` is for reading-width
+    text. Never start narrow and widen. This overrides the site's `rails`
+    instructions where they differ.
   - **Symmetric span** → the utility class only:
     `brxp-rail-{content|wide|breakout|layout|full}`. No width, max-width or
     negative margin. `brxp-rail-full` strips inline padding; compose

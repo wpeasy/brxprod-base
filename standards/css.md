@@ -274,10 +274,20 @@ never `&__content`, so every element stays at single-class specificity.
 
 ## 8. Layout rails
 
-`brxp-rails` places **its direct children**, whatever they are, on the content
-rail; use the `brxp-rail-*` classes on those children for symmetric spans and
-ID-level `%root%` CSS for asymmetric ones (see AGENTS.md › Rails). Put
-`brxp-rails` on whichever element's children should sit on the rails.
+`brxp-rails` makes the rail grid for **its direct children**. Put it on
+whichever element's children should sit on the rails.
+
+- **Start at `layout`, then step inwards.** `brxp-rail-layout` (the site box
+  width, the same as the Bricks container width) is the default for section
+  content — card grids, CTAs, feature rows, media. Step in to `breakout`,
+  `wide` or `content` only for content that should be narrower: `content` is
+  reading width, for long-form text. Never start narrow and widen.
+- **Set the class explicitly.** A child with no `brxp-rail-*` class lands on
+  `content`, the narrowest rail — that is a fallback, not a choice.
+- Symmetric spans use the `brxp-rail-*` classes; asymmetric ones use ID-level
+  `%root%` CSS (AGENTS.md › Rails).
+
+This overrides the site's `rails` instructions where they differ.
 
 ## 9. BRXProd CSS Patterns
 
@@ -330,6 +340,7 @@ disappears with it. Not in the theme style, a page, or a section.
 - [ ] One `/* Settings */` block; rules use only `--_` variables; defaults are tokens
 - [ ] Modifiers only set public variables
 - [ ] No `@media`; containment declared via `:has(> .block)`; queries widest → narrowest
+- [ ] Rails: section content on `brxp-rail-layout` by default, stepped inwards only where narrower; no child left on the unclassed `content` fallback
 - [ ] Every token name exists on this site (`DESIGN_SYSTEM.md`)
 - [ ] Every text colour is the `--brxp-a11y-*-text` token for its background; brand colours only on backgrounds, borders, decoration
 - [ ] Typography from the theme style; only size / weight / style variations in CSS; no `font-family` anywhere in CSS; Google Fonts installed as Bricks Custom Fonts, chosen in the theme style
