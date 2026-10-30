@@ -228,11 +228,24 @@ the user** which the site uses for animations and transitions:
 
 Write the answer into `PROJECT_BRIEF.md` › Motion. Then:
 
+- **GSAP — ask a second question:** *"Should GSAP motion run in the Bricks
+  editor?"* Recommend **No**: running effects in the editor makes it slower
+  and harder to edit (elements hidden, moving or mid-animation while you
+  work). Record the answer in `PROJECT_BRIEF.md` › Motion › *GSAP in the
+  editor*. **No** → every GSAP effect selector is scoped to the live site with
+  `body.bricks-is-frontend` (AGENTS.md › Motion › GSAP). **Yes** → selectors
+  are left unscoped.
 - **GSAP:** `novamira run brxprod/list-snippets --json` to confirm the
   `gsap-loader` id and read what it loads; install it with
   `brxprod/install-snippet` if missing, and activate it (AGENTS.md ›
-  Activating snippets). Don't install `fadein-fix` /
-  `register-compound-animation` for this — they serve Bricks' animations.
+  Activating snippets). In the same step, unless the loader's description
+  says it already includes a ScrollTrigger refresh watcher, create the
+  **"GSAP ScrollTrigger auto-refresh"** JS snippet from
+  `standards/snippets/gsap-scrolltrigger-auto-refresh.js` with
+  `brxprod/create-snippet` (set to run after the loader) and activate it
+  (AGENTS.md › Motion › GSAP). Report both snippets and their status. Don't
+  install `fadein-fix` / `register-compound-animation` for this — they serve
+  Bricks' animations.
 - **Bricks Interactions:** offer `fadein-fix` and `register-compound-animation`
   (step 3's WARN lines) and no GSAP loader.
 

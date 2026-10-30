@@ -252,6 +252,14 @@ Never mix the two on the same element.
     `https://gsap.brxprod.com/effects/<id>.md` (prompt, sample code, demo
     HTML). Follow the prompt with `[SELECTOR]` = the element's BEM class;
     don't invent an effect the library already has.
+  - **Editor or live site only** — `PROJECT_BRIEF.md` › Motion › *GSAP in
+    the editor* (asked by `init-brxprod`; if missing, ask). **No** (the
+    recommended default) → prefix **every** selector the effect code queries
+    from the document with `body.bricks-is-frontend` — the class Bricks puts
+    on `<body>` on the front end only, not in the editor canvas — e.g.
+    `[SELECTOR]` `.card` → `body.bricks-is-frontend .card`, so the effect never
+    runs in the editor. **Yes** → leave selectors unscoped. Selectors inside an
+    already-matched element (`el.querySelector(...)`) need no prefix.
   - **GSAP and its plugins load only through BRXProd's `gsap-loader`
     snippet** (installed and active) — never the library's CDN `<script>`
     tags or `npm`, which it suggests. Load only the plugins the effect lists.
@@ -266,6 +274,22 @@ Never mix the two on the same element.
     `gsap.matchMedia()` reduced-motion handling, and its `data-gsap-cloak`
     rule scoped to `body.bricks-is-frontend` (CSS in a class, per css.md).
   - Verify on the front end that the effect runs and nothing flashes.
+  - **ScrollTrigger auto-refresh** — whenever any ScrollTrigger effect is
+    used. ScrollTrigger measures positions once at load and re-measures only
+    on window resize; in the Bricks editor, late images/fonts, opening panels
+    and element re-renders shift the layout without a resize, so effects fire
+    in the wrong places (cards reveal late, then hide early). Unless the
+    `gsap-loader` already includes an equivalent watcher (check its
+    description in `brxprod/list-snippets`), create a JS snippet named
+    **"GSAP ScrollTrigger auto-refresh"** from
+    [standards/snippets/gsap-scrolltrigger-auto-refresh.js](standards/snippets/gsap-scrolltrigger-auto-refresh.js)
+    with `brxprod/create-snippet` and activate it (*Activating snippets*).
+    It must **run after the `gsap-loader`** (same location, later priority) —
+    it exits silently if `gsap` / `ScrollTrigger` aren't defined yet; confirm
+    `document.body` carries `data-st-refresh` on the front end. **Never fix
+    misfiring effects by disabling them in the builder.** Verify: scroll the
+    editor canvas after an edit — reveals still start at the effect's start
+    line.
   - Never for carousels, sliders or marquees — see *Carousels* below.
 
 ### Carousels — Slider (Nestable) + Splide Extensions
@@ -544,6 +568,11 @@ enqueue assets. Stored as a snippet and activated per the rule above.
   and set it in the builder if BRXProd's BEM tool will be run on the page.
 
 ### BRXProd plugin (not site faults)
+
+- **No ScrollTrigger auto-refresh in the `gsap-loader` yet** — hence the
+  separate "GSAP ScrollTrigger auto-refresh" snippet (*Motion* › GSAP). Once
+  the loader ships the same watcher, stop creating it, deactivate and remove
+  it on existing sites, and delete that bullet and this entry.
 
 
 - `bricks/audit-design-system` reports locally-scoped custom properties (e.g.
