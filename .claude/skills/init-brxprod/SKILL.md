@@ -166,7 +166,8 @@ Needs BRXProd 1.3.6+ and its **Edit Surfaces** ability group. If
 (BRXProd → Settings → AI Tools → WordPress Abilities) and stop this part — do
 not write the variables another way.
 
-Read `brxprod/get-surfaces` first. Then set all four with `set-surfaces`,
+Read `brxprod/get-surfaces` first. There are **six** Surfaces; set 1–4 with
+`set-surfaces` (5 and 6 — see below),
 pointing at the palette's own tokens and giving every `-color` the a11y text
 variable of its `-bg` (`var(--brxp-a11y-<token>-text)`):
 
@@ -184,7 +185,11 @@ variable of its `-bg` (`var(--brxp-a11y-<token>-text)`):
   `--brxp-secondary-l-2`); Surface 4 — its own `-color`. Fix whatever the
   response lists under `failing` (move the link one shade further from the
   background) until `failing` is empty — never lower the 4.5:1 minimum.
-- `classesInstalled: false` means the `brxp-surface{1-4}` classes aren't on
+- **Surfaces 5 and 6** (primary block, secondary block) follow the palette by
+  default (`--brxp-primary` / `--brxp-secondary` with their a11y text), so init
+  leaves them alone. Read them in `get-surfaces` and fix only a pair listed
+  under `failing`; mention them in the report so the user knows all six exist.
+- `classesInstalled: false` means the `brxp-surface{1-6}` classes aren't on
   the site yet: `set-surfaces` creates the variables, but the classes come from
   creating or updating the Style Guide page in the builder (owner action) —
   say so.
@@ -215,6 +220,21 @@ Run the **design-system** skill — after step 5, so `DESIGN_SYSTEM.md` records
 the new palette. Then confirm it shows the framework, the house-rule set
 (Code / Visual / Custom) and a concept map. Note any *not found* concepts in
 the report.
+
+## 6b. Visual language — shapes, corners, backgrounds
+
+Skip if `PROJECT_BRIEF.md` › Visual language is filled in **and** applied.
+
+- If a brief, mood board or screenshots exist, **look at them** and fill the
+  brief's *Visual language* section from what they show (AGENTS.md › Design
+  fidelity). Otherwise ask the user one question: pill, rounded or square
+  buttons, and large or small card corners.
+- Apply the button shape now through the theme style: `bricks/get-theme-styles`
+  (for the ownership), then `bricks/update-theme-style` with `radius` on
+  `button.border` and `button.border:hover` (all four corners; a pill is the
+  framework's `radius-full` token). Report the keys changed.
+- Corners, backgrounds and signature details are applied later, while
+  building, from the same checklist.
 
 ## 7. Motion — GSAP or Bricks Interactions
 

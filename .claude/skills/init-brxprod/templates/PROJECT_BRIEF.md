@@ -102,6 +102,21 @@ More spec colours than roles? Map them per the `design-system` skill ›
 - **Headings:** _TODO_ (or "agent to propose")
 - **Body:** _TODO_
 
+## Visual language
+
+The shapes and surfaces that make the site look like the design. Fill from the
+mood board or screenshots, not from guesses — `init-brxprod` and the agent read
+this before building (AGENTS.md › Design fidelity).
+
+- **Button shape:** _TODO_ — pill (fully rounded), rounded (say how much) or
+  square. Set once in the theme style, never per button.
+- **Card / panel / image corners:** _TODO_ — none, small, large or fully rounded.
+- **Borders and shadows:** _TODO_ — e.g. hairline borders, no shadows.
+- **Backgrounds:** _TODO_ — flat colour, full-bleed photo with an overlay, patterns.
+- **Image treatment:** _TODO_ — rounded, cropped tight, black and white, duotone.
+- **Distinctive details:** _TODO_ — anything a reader of the mood board would
+  call a signature (a line motif, tag chips, a glow around the main button).
+
 ## Motion
 
 _TODO_ — **GSAP** or **Bricks Interactions** (asked by `init-brxprod`; see
