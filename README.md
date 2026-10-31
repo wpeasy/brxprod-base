@@ -68,7 +68,7 @@ steps are skipped.
 | **Brief** | Creates `PROJECT_BRIEF.md` for you to fill in. |
 | **Theme & colours** | First asks whether to define them now or later in the brief (later skips this step until the brief is filled in and init is re-run). If now: asks whether the site is light or dark, then for the Primary and Secondary colours. After you approve the mapping it sets the palette roots, regenerates their shades and the a11y text colours, sets the four BRXProd Surfaces for the theme (needs BRXProd 1.3.6+ and **Edit Surfaces**), and links the page background, body, heading and link colours to Surface 1. Records it all in the brief. |
 | **Design system** | Generates `DESIGN_SYSTEM.md` from the live site, after the colours are set. |
-| **Motion** | Asks whether the site uses GSAP (effects from [gsap.brxprod.com](https://gsap.brxprod.com/), loaded by BRXProd's `gsap-loader` snippet) or Bricks Interactions, and records it in the brief. |
+| **Motion** | Asks whether the site uses GSAP (effects installed through BRXProd's GSAP Effects abilities, loaded by its `gsap-loader` snippet) or Bricks Interactions, and records it in the brief. |
 | **Report** | Ends with *ready to build* or *blocked by …*. |
 
 The agent never turns on a disabled ability itself — it tells you which switch

@@ -246,50 +246,66 @@ Never mix the two on the same element.
 - **Bricks Interactions:** Bricks' interactions and entrance animations
   (`bricks:bricks-interactions`), tuned with BRXProd's tamed-animation classes
   (*BRXProd systems*). No GSAP.
-- **GSAP:**
-  - **Find the effect in the GSAP Prompt Library** — read
-    https://gsap.brxprod.com/llms.txt, pick by description, fetch its
-    `https://gsap.brxprod.com/effects/<id>.md` (prompt, sample code, demo
-    HTML). Follow the prompt with `[SELECTOR]` = the element's BEM class;
-    don't invent an effect the library already has.
-  - **Editor or live site only** — `PROJECT_BRIEF.md` › Motion › *GSAP in
-    the editor* (asked by `init-brxprod`; if missing, ask). **No** (the
-    recommended default) → prefix **every** selector the effect code queries
-    from the document with `body.bricks-is-frontend` — the class Bricks puts
-    on `<body>` on the front end only, not in the editor canvas — e.g.
-    `[SELECTOR]` `.card` → `body.bricks-is-frontend .card`, so the effect never
-    runs in the editor. **Yes** → leave selectors unscoped. Selectors inside an
-    already-matched element (`el.querySelector(...)`) need no prefix.
-  - **GSAP and its plugins load only through BRXProd's `gsap-loader`
-    snippet** (installed and active) — never the library's CDN `<script>`
-    tags or `npm`, which it suggests. Load only the plugins the effect lists.
-  - **One snippet per effect**, named after it (e.g. "GSAP T-01 Line
-    Reveal"), so each can be found, activated or removed on its own. Only
-    effects that form one compound or grouped effect — sharing a timeline or
-    state, or meaningless apart — go in a single snippet, named for the group.
-    Never pile unrelated effects into one "site animations" snippet.
-  - The effect code is JavaScript under [standards/js.md](standards/js.md)
-    (IIFE, no globals), stored with `brxprod/create-snippet` and activated
-    (*Activating snippets*). Keep the library's `data-gsap-init` guard,
-    `gsap.matchMedia()` reduced-motion handling, and its `data-gsap-cloak`
-    rule scoped to `body.bricks-is-frontend` (CSS in a class, per css.md).
-  - Verify on the front end that the effect runs and nothing flashes.
-  - **ScrollTrigger auto-refresh** — whenever any ScrollTrigger effect is
-    used. ScrollTrigger measures positions once at load and re-measures only
-    on window resize; in the Bricks editor, late images/fonts, opening panels
-    and element re-renders shift the layout without a resize, so effects fire
-    in the wrong places (cards reveal late, then hide early). Unless the
-    `gsap-loader` already includes an equivalent watcher (check its
-    description in `brxprod/list-snippets`), create a JS snippet named
-    **"GSAP ScrollTrigger auto-refresh"** from
-    [standards/snippets/gsap-scrolltrigger-auto-refresh.js](standards/snippets/gsap-scrolltrigger-auto-refresh.js)
-    with `brxprod/create-snippet` and activate it (*Activating snippets*).
-    It must **run after the `gsap-loader`** (same location, later priority) —
-    it exits silently if `gsap` / `ScrollTrigger` aren't defined yet; confirm
-    `document.body` carries `data-st-refresh` on the front end. **Never fix
-    misfiring effects by disabling them in the builder.** Verify: scroll the
-    editor canvas after an edit — reveals still start at the effect's start
-    line.
+- **GSAP:** the effects come from BRXProd's GSAP Effects library
+  (https://gsap.brxprod.com), installed **only through the plugin's
+  abilities**. First call `brxprod/get-design-instructions` (code variant) and
+  follow its "Where code goes" and "GSAP animation" sections — the plugin's
+  text wins where it differs from this one.
+  - **Never** write GSAP yourself, paste library code into a snippet, fetch
+    effect code from the website, or load GSAP from another source (CDN,
+    `npm`). The `gsap-loader` snippet provides GSAP and its plugins.
+  - **To use an effect:**
+    1. `brxprod/get-gsap-effects` (filter by category: buttons, text, media,
+       svg), then again with the effect `id` for its target role, required
+       inner classes, options and claims. Check `claimConflicts` before
+       stacking effects on one element — on a clash, **stop and ask the user**.
+    2. `brxprod/install-gsap-effect` with that id. It installs and publishes
+       the loader, any GSAP plugin lines and the effect's own Fluent snippet
+       (one snippet per effect). Don't edit those snippets.
+    3. Create the global class named exactly as the install returned
+       (`brxp-fx-<id in lower case>`), in the category it returned
+       (`BRXProd Effects`), with Bricks' own ability and **no CSS** — then
+       write the returned `css` as its `_cssCustom` through execute-php
+       (*Writing CSS*), byte-for-byte, and read it back. Don't rename or
+       restyle it. Lock it afterwards (add its id to
+       `bricks_global_classes_locked`) if you can; an unlocked class still
+       works.
+    4. Assign that class to the target element(s) (`_cssGlobalClasses`) and
+       write any options the effect declares as custom attributes
+       (`_attributes`). One class serves every element that uses the effect —
+       never put the effect's CSS on a BEM block class or hard-code BEM
+       selectors into it.
+    5. Verify on the front end that the effect runs and nothing flashes.
+  - **Effect not in the plugin (temporary fallback).** The plugin carries
+    only part of the library. If `get-gsap-effects` doesn't list the effect,
+    tell the user which one is missing and use the library version **only
+    with their OK**; treat it exactly like a plugin effect:
+    - read `https://gsap.brxprod.com/effects/<id>.md` (code, CSS, plugins);
+    - store the code as its own snippet, one per effect, named after it
+      (e.g. "GSAP T-01 Line Reveal"), with `brxprod/create-snippet`, under
+      [standards/js.md](standards/js.md) (IIFE, no globals), and activate it
+      (*Activating snippets*); load only the plugins it lists, through the
+      `gsap-loader` — never the library's CDN tags or `npm`;
+    - create the same `brxp-fx-<id in lower case>` class in `BRXProd
+      Effects` with the effect's CSS (steps 3–4 above) and use
+      `.brxp-fx-<id>` as `[SELECTOR]` — never BEM selectors;
+    - keep the library's `data-gsap-init` guard and `gsap.matchMedia()`
+      reduced-motion handling;
+    - there is no `claimConflicts` data, so ask the user before stacking it
+      on an element that already has an effect.
+
+    Delete this fallback once the plugin carries the whole library.
+  - **In the Bricks editor** the effect reaches the canvas only after the
+    builder reloads, and the loader re-runs each effect's init for about 5
+    seconds there. Expect nothing until the canvas has reloaded. The loader
+    carries its own ScrollTrigger re-measure watcher; a site still on an old
+    copy of the loader (no watcher in its description in
+    `brxprod/list-snippets`) must have it re-imported — tell the user.
+  - The library is experimental, off by default and needs Fluent Snippets. If
+    an ability reports it is switched off, **stop and ask the user** to enable
+    it under BRXProd → Settings → Features → GSAP Effects — don't work around
+    it. If the abilities aren't listed, the "Install code snippets" group is
+    off: tell the user.
   - Never for carousels, sliders or marquees — see *Carousels* below.
 
 ### Carousels — Slider (Nestable) + Splide Extensions
@@ -442,6 +458,9 @@ either — fixes belong in the BRXProd plugin.
   batch) and `register-compound-animation` (PHP — adds "Compound" to the
   builder's Animation Type list). Without them Compound can't be picked and
   fade-ins can flash.
+- **GSAP effect classes** — `brxp-fx-<effect-id>` (lower case), one global class
+  per installed effect carrying its CSS (*Motion* › GSAP). Reuse it on any
+  element that should get the effect.
 - **Grids** — hand-written layout grids match the Grid Builder format (see the
   site's `grids` instructions): `/* abp-grid:start */` fence on the grid's ID
   CSS, placement by `> :nth-child(N)`, containment via `:has(> #id)`.
@@ -568,12 +587,6 @@ enqueue assets. Stored as a snippet and activated per the rule above.
   and set it in the builder if BRXProd's BEM tool will be run on the page.
 
 ### BRXProd plugin (not site faults)
-
-- **No ScrollTrigger auto-refresh in the `gsap-loader` yet** — hence the
-  separate "GSAP ScrollTrigger auto-refresh" snippet (*Motion* › GSAP). Once
-  the loader ships the same watcher, stop creating it, deactivate and remove
-  it on existing sites, and delete that bullet and this entry.
-
 
 - `bricks/audit-design-system` reports locally-scoped custom properties (e.g.
   `--_layout`, `--_m-tl`, `--brxp-distance`, `--brxp-duration`) as orphans. They

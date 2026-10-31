@@ -20,8 +20,8 @@ Every script is wrapped in an **IIFE**. Nothing leaks to the global scope.
   classic script in the footer).
 - **No jQuery**, no libraries unless the brief requires one. GSAP only when
   `PROJECT_BRIEF.md` › Motion says GSAP — then it loads through BRXProd's
-  `gsap-loader` snippet, effects come from https://gsap.brxprod.com/
-  (AGENTS.md › Motion), and no other loader or `<script>` tag is added.
+  `gsap-loader` snippet, effects are installed through BRXProd's GSAP
+  Effects abilities (AGENTS.md › Motion), and no other loader or `<script>` tag is added.
 - If something genuinely must be shared, expose **one** namespaced object —
   never loose globals.
 
