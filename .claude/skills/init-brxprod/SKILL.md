@@ -228,6 +228,13 @@ the user** which the site uses for animations and transitions:
 
 Write the answer into `PROJECT_BRIEF.md` › Motion. Then:
 
+- **GSAP — ask a second question:** *"Should GSAP motion run in the Bricks
+  editor?"* Recommend **No**: running effects in the editor makes it slower
+  and harder to edit (elements hidden, moving or mid-animation while you
+  work). Record the answer in `PROJECT_BRIEF.md` › Motion › *GSAP in the
+  editor*. **No** → GSAP effect selectors you write are scoped to the live
+  site with `body.bricks-is-frontend` (AGENTS.md › Motion › GSAP). **Yes** →
+  selectors are left unscoped.
 - **GSAP:** `novamira run brxprod/list-snippets --json` to confirm the
   `gsap-loader` id and whether its description includes the ScrollTrigger
   re-measure watcher (if not, tell the user to re-import the loader). Install

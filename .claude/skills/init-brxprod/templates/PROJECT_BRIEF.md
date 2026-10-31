@@ -107,6 +107,10 @@ More spec colours than roles? Map them per the `design-system` skill ›
 _TODO_ — **GSAP** or **Bricks Interactions** (asked by `init-brxprod`; see
 AGENTS.md › Motion). Note any effects the design calls for.
 
+- **GSAP in the editor:** _TODO_ — **No** (recommended: effects run on the
+  live site only, selectors scoped with `body.bricks-is-frontend`) or **Yes**.
+  GSAP only.
+
 ## Imagery
 
 - **Style:** _TODO_
