@@ -310,11 +310,23 @@ Never mix the two on the same element.
     your own) with `body.bricks-is-frontend` — the class Bricks puts on
     `<body>` on the front end only, not in the editor canvas — e.g. `.card` →
     `body.bricks-is-frontend .card`. Selectors inside an already-matched
-    element (`el.querySelector(...)`) need no prefix. The plugin's own effect
-    code and returned `css` stay **byte-for-byte** (steps 2–3 above): don't
-    edit them to add the prefix; if `brxprod/get-design-instructions` says how
-    the plugin handles the editor, follow that, otherwise tell the user the
-    effect will also run in the editor.
+    element (`el.querySelector(...)`) need no prefix.
+    **This applies to plugin effects too — the user's answer overrides the
+    plugin's "don't edit the snippet" advice.** Never leave an effect running
+    in the editor when the answer is **No**, and never decide that on your own.
+    After every `brxprod/install-gsap-effect`, in the same step:
+    1. Read the effect's snippet through Fluent Snippets (execute-php:
+       `(new \FluentSnippets\App\Model\Snippet())->findByFileName($file)`;
+       the file name is in the install result's `snippet.file`).
+    2. In its JavaScript, change the one place that collects the elements by
+       the effect class — e.g. `".brxp-fx-t-04:not(` → `"body.bricks-is-frontend
+       .brxp-fx-t-04:not(` — and make sure exactly one place changed.
+    3. Save with `->updateSnippet($file, $code, $meta)` (keep the meta), read
+       it back, and check the page on the front end: the effect still starts.
+    Leave the returned class `css` byte-for-byte (it is static styling, not
+    motion). An effect install may restore the unscoped snippet, so repeat the
+    prefix after any re-install, and tell the user the effects are front-end
+    only.
   - **Effect not in the plugin (temporary fallback).** The plugin carries
     only part of the library. If `get-gsap-effects` doesn't list the effect,
     tell the user which one is missing and use the library version **only
