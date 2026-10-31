@@ -276,6 +276,19 @@ Never mix the two on the same element.
        never put the effect's CSS on a BEM block class or hard-code BEM
        selectors into it.
     5. Verify on the front end that the effect runs and nothing flashes.
+  - **Editor or live site only** — `PROJECT_BRIEF.md` › Motion › *GSAP in
+    the editor* (asked by `init-brxprod`; if missing, ask). **Yes** → leave
+    selectors unscoped. **No** (the recommended default) → effects must run on
+    the live site only: prefix **every** selector you write that reaches the
+    document (the fallback effect's code and CSS below, and any selector of
+    your own) with `body.bricks-is-frontend` — the class Bricks puts on
+    `<body>` on the front end only, not in the editor canvas — e.g. `.card` →
+    `body.bricks-is-frontend .card`. Selectors inside an already-matched
+    element (`el.querySelector(...)`) need no prefix. The plugin's own effect
+    code and returned `css` stay **byte-for-byte** (steps 2–3 above): don't
+    edit them to add the prefix; if `brxprod/get-design-instructions` says how
+    the plugin handles the editor, follow that, otherwise tell the user the
+    effect will also run in the editor.
   - **Effect not in the plugin (temporary fallback).** The plugin carries
     only part of the library. If `get-gsap-effects` doesn't list the effect,
     tell the user which one is missing and use the library version **only
