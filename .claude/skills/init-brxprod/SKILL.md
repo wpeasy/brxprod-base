@@ -166,7 +166,8 @@ Needs BRXProd 1.3.6+ and its **Edit Surfaces** ability group. If
 (BRXProd → Settings → AI Tools → WordPress Abilities) and stop this part — do
 not write the variables another way.
 
-Read `brxprod/get-surfaces` first. Then set all four with `set-surfaces`,
+Read `brxprod/get-surfaces` first. There are **six** Surfaces; set 1–4 with
+`set-surfaces` (5 and 6 — see below),
 pointing at the palette's own tokens and giving every `-color` the a11y text
 variable of its `-bg` (`var(--brxp-a11y-<token>-text)`):
 
@@ -184,7 +185,11 @@ variable of its `-bg` (`var(--brxp-a11y-<token>-text)`):
   `--brxp-secondary-l-2`); Surface 4 — its own `-color`. Fix whatever the
   response lists under `failing` (move the link one shade further from the
   background) until `failing` is empty — never lower the 4.5:1 minimum.
-- `classesInstalled: false` means the `brxp-surface{1-4}` classes aren't on
+- **Surfaces 5 and 6** (primary block, secondary block) follow the palette by
+  default (`--brxp-primary` / `--brxp-secondary` with their a11y text), so init
+  leaves them alone. Read them in `get-surfaces` and fix only a pair listed
+  under `failing`; mention them in the report so the user knows all six exist.
+- `classesInstalled: false` means the `brxp-surface{1-6}` classes aren't on
   the site yet: `set-surfaces` creates the variables, but the classes come from
   creating or updating the Style Guide page in the builder (owner action) —
   say so.
