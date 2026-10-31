@@ -216,6 +216,21 @@ the new palette. Then confirm it shows the framework, the house-rule set
 (Code / Visual / Custom) and a concept map. Note any *not found* concepts in
 the report.
 
+## 6b. Visual language — shapes, corners, backgrounds
+
+Skip if `PROJECT_BRIEF.md` › Visual language is filled in **and** applied.
+
+- If a brief, mood board or screenshots exist, **look at them** and fill the
+  brief's *Visual language* section from what they show (AGENTS.md › Design
+  fidelity). Otherwise ask the user one question: pill, rounded or square
+  buttons, and large or small card corners.
+- Apply the button shape now through the theme style: `bricks/get-theme-styles`
+  (for the ownership), then `bricks/update-theme-style` with `radius` on
+  `button.border` and `button.border:hover` (all four corners; a pill is the
+  framework's `radius-full` token). Report the keys changed.
+- Corners, backgrounds and signature details are applied later, while
+  building, from the same checklist.
+
 ## 7. Motion — GSAP or Bricks Interactions
 
 Skip if `PROJECT_BRIEF.md` › Motion already records a choice. Otherwise **ask

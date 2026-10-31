@@ -201,6 +201,32 @@ page, please check and confirm the page quality and content"`.
   for that `postId` first and don't add a second open "Review new page" item.
 - If the feedback abilities aren't available, skip it and say so.
 
+### Design fidelity — match the brief and mood board
+
+When the user supplies a brief, mood board, mockup or screenshots, **look at the
+images, not only the text.** Shapes, corners, backgrounds and details are
+rarely written down, so a build from the words alone misses them.
+
+1. **Before building, write a visual checklist** under `PROJECT_BRIEF.md` ›
+   *Visual language*: button shape (pill, rounded, square), card and image
+   corners, borders and shadows, backgrounds (flat, photo with overlay,
+   patterns), image treatment, type scale and weight, motion, and any
+   signature detail (a line motif, tag chips, a glow on the main button). Fill
+   it from what the images show. Ask only when there is no design to read.
+2. **Apply the site-wide parts through the theme style first**
+   (`bricks/update-theme-style`), then build the sections:
+   - button shape on the default `button.border` **and** `button.border:hover`
+     (`radius` on all four corners; a pill is `var(--<framework>-radius-full)`),
+     plus weight if the design shows it. Never per-button CSS;
+   - report which keys changed.
+3. **Then take the rest from the checklist** — corner radii and chip shapes in
+   the block class CSS, photo backgrounds with an overlay, the signature
+   details — using the framework's tokens (via the concept map).
+4. **After building, compare** a screenshot of the page with the mood board
+   (the same sections side by side) and fix every difference in the checklist
+   before saying it's done. Say what still differs. "It renders and animates"
+   is not the same as "it looks like the design".
+
 ### Example designs with a header or footer
 
 When an example design (mockup, screenshot, Figma frame, HTML) includes a
