@@ -253,9 +253,10 @@ Write the answer into `PROJECT_BRIEF.md` › Motion. Then:
   re-measure watcher (if not, tell the user to re-import the loader). Install
   it with `brxprod/install-snippet` if missing, and activate it (AGENTS.md ›
   Activating snippets). Effects are added later, per use, through
-  `brxprod/get-gsap-effects` / `install-gsap-effect` (AGENTS.md › Motion ›
-  GSAP); if those abilities aren't listed or the library is switched off
-  (BRXProd → Settings → Features → GSAP Effects), say which switch. Don't
+  `brxprod/get-gsap-status` / `get-gsap-effects` / `apply-gsap-effect` (AGENTS.md ›
+  Motion › GSAP; skill `brxprod-gsap`); if those abilities aren't listed (the
+  **GSAP effects** group) or the library is switched off (BRXProd → Settings →
+  Features → GSAP Effects), say which switch. Don't
   install `fadein-fix` / `register-compound-animation` for this — they serve
   Bricks' animations.
 - **Bricks Interactions:** offer `fadein-fix` and `register-compound-animation`

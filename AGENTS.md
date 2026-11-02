@@ -287,28 +287,37 @@ Never mix the two on the same element.
   - **Never** write GSAP yourself, paste library code into a snippet, fetch
     effect code from the website, or load GSAP from another source (CDN,
     `npm`). The `gsap-loader` snippet provides GSAP and its plugins.
-  - **To use an effect:**
-    1. `brxprod/get-gsap-effects` (filter by category: buttons, text, media,
-       svg), then again with the effect `id` for its target role, required
-       inner classes, options and claims. Check `claimConflicts` before
-       stacking effects on one element — on a clash, **stop and ask the user**.
-    2. `brxprod/install-gsap-effect` with that id. It installs and publishes
-       the loader, any GSAP plugin lines and the effect's own Fluent snippet
-       (one snippet per effect). Don't edit those snippets.
-    3. Create the global class named exactly as the install returned
-       (`brxp-fx-<id in lower case>`), in the category it returned
-       (`BRXProd Effects`), with Bricks' own ability and **no CSS** — then
-       write the returned `css` as its `_cssCustom` through execute-php
-       (*Writing CSS*), byte-for-byte, and read it back. Don't rename or
-       restyle it. Lock it afterwards (add its id to
-       `bricks_global_classes_locked`) if you can; an unlocked class still
-       works.
-    4. Assign that class to the target element(s) (`_cssGlobalClasses`) and
-       write any options the effect declares as custom attributes
-       (`_attributes`). One class serves every element that uses the effect —
-       never put the effect's CSS on a BEM block class or hard-code BEM
-       selectors into it.
-    5. Verify on the front end that the effect runs and nothing flashes.
+  - **To use an effect** (nine abilities, all behind the plugin's **GSAP
+    effects** switch; the `brxprod-gsap` skill has the detail):
+    1. `brxprod/get-gsap-status` first: is the feature on, are Fluent and the
+       loader ready, which installed effects are outdated.
+    2. `brxprod/get-gsap-effects` (filter by category: buttons, text, media,
+       svg, boxes), then again with the effect `id` for its target role,
+       required inner classes, options and claims. A `container` effect goes on
+       a wrapper and animates what is inside it: its children must be real
+       elements, **never bare images** (wrap each image in a Block with the
+       class `gsap-box`).
+    3. `brxprod/apply-gsap-effect { postId, elementId, id, options }`. It
+       installs the effect if needed (the loader, any GSAP plugin lines, the
+       effect's own Fluent snippet, and its locked global class
+       `brxp-fx-<id in lower case>` in `BRXProd Effects`, carrying the effect
+       CSS), adds the class to the element and writes the options as custom
+       attributes. **Do not create the class, write its CSS, or edit the class
+       or the snippet yourself.** One class serves every element that uses the
+       effect — never put the effect's CSS on a BEM block class or hard-code
+       BEM selectors into it. Styling (colours, sizes) is the CSS variables on
+       that class.
+    4. On a `claim_clash` reply (another effect on the element, or a page-wide
+       claim, takes over the same thing) **stop and ask the user**; retry with
+       `acknowledgeClashes` only when they agree.
+    5. Change or remove it with `set-gsap-effect-options` and
+       `remove-gsap-effect`; find where effects are used with
+       `get-gsap-effect-usage`; refresh outdated ones with
+       `update-gsap-effects`; `uninstall-gsap-effect` removes one from the
+       site and refuses while elements use it (`force` only with the user's
+       agreement). Tell the user to reload any editor tab already open on the
+       page, or its next save overwrites the change.
+    6. Verify on the front end that the effect runs and nothing flashes.
   - **Effect not in the plugin (temporary fallback).** The plugin carries
     only part of the library. If `get-gsap-effects` doesn't list the effect,
     tell the user which one is missing and use the library version **only
@@ -320,8 +329,12 @@ Never mix the two on the same element.
       (*Activating snippets*); load only the plugins it lists, through the
       `gsap-loader` — never the library's CDN tags or `npm`;
     - create the same `brxp-fx-<id in lower case>` class in `BRXProd
-      Effects` with the effect's CSS (steps 3–4 above) and use
-      `.brxp-fx-<id>` as `[SELECTOR]` — never BEM selectors;
+      Effects` yourself, since no install made it: with Bricks' own ability and
+      **no CSS**, then write the effect's CSS as its `_cssCustom` through
+      execute-php (*Writing CSS*), byte-for-byte, and read it back; lock it
+      (add its id to `bricks_global_classes_locked`) if you can; assign it to
+      the element (`_cssGlobalClasses`) and write the options as custom
+      attributes. Use `.brxp-fx-<id>` as `[SELECTOR]` — never BEM selectors;
     - keep the library's `data-gsap-init` guard and `gsap.matchMedia()`
       reduced-motion handling;
     - there is no `claimConflicts` data, so ask the user before stacking it
@@ -337,8 +350,8 @@ Never mix the two on the same element.
   - The library is experimental, off by default and needs Fluent Snippets. If
     an ability reports it is switched off, **stop and ask the user** to enable
     it under BRXProd → Settings → Features → GSAP Effects — don't work around
-    it. If the abilities aren't listed, the "Install code snippets" group is
-    off: tell the user.
+    it. If the abilities aren't listed, the **GSAP effects** group (Settings →
+    AI Tools → WordPress Abilities) is off: tell the user.
   - Never for carousels, sliders or marquees — see *Carousels* below.
 
 ### Carousels — Slider (Nestable) + Splide Extensions
