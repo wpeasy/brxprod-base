@@ -296,7 +296,8 @@ Never mix the two on the same element.
        required inner classes, options and claims. A `container` effect goes on
        a wrapper and animates what is inside it: its children must be real
        elements, **never bare images** (wrap each image in a Block with the
-       class `gsap-box`).
+       **global** class `gsap-box`, created as a Bricks global class if missing; never the plain
+       "CSS classes" text box, which the editor does not show).
     3. `brxprod/apply-gsap-effect { postId, elementId, id, options }`. It
        installs the effect if needed (the loader, any GSAP plugin lines, the
        effect's own Fluent snippet, and its locked global class

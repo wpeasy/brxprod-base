@@ -57,7 +57,8 @@ need to be allowed to edit that post with Bricks.
    - `container` — on the wrapper; the effect animates what is **inside** it. The children must be
      real elements (Blocks, cards, list items). **A container effect cannot work on bare Image
      elements** — an `<img>` cannot hold the layer the effect adds. Wrap each image in a Block with
-     the class `gsap-box`. `apply-gsap-effect` warns about both an empty container and bare images.
+     the **global class** `gsap-box` (create it as a Bricks global class if the site lacks it; never type it into the plain
+     "CSS classes" box, which the editor does not show). `apply-gsap-effect` warns about both an empty container and bare images.
    - an effect may also name `requiredClasses` — an inner element with that class (for example
      `card-caption`). The apply result warns when it is missing.
 
