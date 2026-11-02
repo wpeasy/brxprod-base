@@ -64,6 +64,20 @@ a paragraph); **Heading defaults to `h3`** (set the level the outline needs).
 **Never fake a structure with Divs:** a list is a list, a table is a table, a
 button is a button.
 
+**Captioned images — the figure is the tile.** The Bricks Image element renders
+its own `figure`, so an image with a caption built beside it leaves a `figure`
+with no `figcaption` and a caption that only looks attached. Build it as:
+
+- a Div with `tag: figure` (the tile and any effect class go on it)
+  containing the Image element with its `tag` set to `div` (no nested
+  `figure`), and a Div with `tag: figcaption` for the caption;
+- the caption's title is `strong` (Heading element, `tag: custom`) or a `p`,
+  never a heading level that skips (an `h4` under an `h2`); its text is a `p`;
+- every image keeps real alt text that describes the photo, not the caption;
+- a gallery of such tiles is a `ul` > `li` > `figure` when the count matters,
+  otherwise plain `figure`s in a Div. Effects that need a `.card-caption`
+  element are tag-agnostic: put the class on the `figcaption`.
+
 ## 5. Links and buttons
 
 - **`a` navigates** (has an `href`); **`button` acts** (opens, toggles,
