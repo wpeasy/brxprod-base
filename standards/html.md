@@ -112,13 +112,46 @@ button is a button.
 11. **Forms:** every field has a visible `label`; errors are announced
     (`aria-describedby` / `aria-live`) and identify the field.
 
-## 7. Labels
+## 8. Labels
 
 Element labels follow the CSS standard (Title Case BEM segment). An element
 with no BEM class is labelled by its role: `Item` (`li`), `Term` (`dt`),
 `Description` (`dd`), `Paragraph`, `Link`, `Icon`, `Media (decorative)`.
 
-## 8. Verify
+## 7. Images: format and loading
+
+**Format — WebP.** Photos and other JPEG/PNG images are converted to **WebP**
+before they go into the Media Library, whether they are stock images or files
+the user supplied. Bricks' media abilities don't convert, so do it first:
+
+- Convert into the scratchpad (never overwrite the source file), with
+  `cwebp -q 82` or ImageMagick (`magick in.jpg -quality 82 out.webp`) if
+  installed; use lossless / near-lossless for flat-colour graphics and
+  keep transparency. Upload the `.webp` with `bricks/upload-media` and keep
+  the original name and alt text.
+- No local encoder → upload the original, then convert on the site in one
+  execute-php call with `wp_get_image_editor()` (check
+  `wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) )` first).
+  If the server can't encode WebP either, upload the original and say so.
+- **Leave as they are:** SVG, animated GIFs (ask first), images already WebP
+  or AVIF, and anything that must stay JPEG/PNG for another platform (social
+  share / Open Graph images, email, favicons).
+- Don't delete or replace the user's originals. Raw HTML content references
+  the `.webp` file. Report what was converted and the size saved.
+
+**Loading.** Decide `loading` for every image from where it sits on a **1920×1080 desktop
+first screen** (and the phone first screen when the layout differs):
+
+- **Starts inside the first screen** — hero and background images, the logo,
+  the first visible card images → `eager` (the Image element's `loading`
+  control; `loading="eager"` in raw HTML).
+- **Anything lower** → `lazy` (Bricks' default).
+- Keep `eager` to the handful actually visible on load — never a whole grid,
+  and only the first slide of a carousel.
+- Every image has `width` / `height` or an aspect ratio so nothing shifts.
+- Don't add `fetchpriority`: the Image element has no control for it.
+
+## 9. Verify
 
 Read the saved tree back and render it with `brxprod/render-frontend-html`
 (Bricks' own render can't show children of nestable elements). Check:
@@ -131,6 +164,7 @@ Read the saved tree back and render it with `brxprod/render-frontend-html`
 - [ ] everything that looks like a button is a Button element (no styled Text Links)
 - [ ] text colours are `--brxp-a11y-*-text` tokens for their background
 - [ ] decorative media/icons `aria-hidden`; informative images have alt text
+- [ ] images are WebP (or a listed exception); first-screen images are `eager`, the rest `lazy`; images have dimensions
 - [ ] interactive state exposed via `aria-*`; keyboard-operable; focus visible
 - [ ] say plainly what you could not check (contrast against images, real
       screen-reader output)

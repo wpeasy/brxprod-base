@@ -171,6 +171,13 @@ import, and the `brxprod` skill's pointer to it.
   and why. Shape shared by every button (radius, border width/style) goes on the
   default `button.border` and `button.border:hover`; the per-style keys
   (`primaryBorder`, `outlineBorder`…) stay colour-only;
+- **image format:** photos / JPEG / PNG — stock or supplied — are converted to
+  **WebP** before upload (SVG, animated GIFs, share/email images and
+  favicons excepted); originals are kept
+  ([standards/html.md](standards/html.md) › Images);
+- **image loading:** an image that starts inside a 1920×1080 desktop first
+  screen is `loading: eager`; every image below it stays `lazy`
+  ([standards/html.md](standards/html.md) › Images);
 - **read every CSS write back and compare** (*Writing CSS* › 4);
 - verify with `bricks/render-elements` (and `brxprod/render-frontend-html` for
   content inside nestable elements).
