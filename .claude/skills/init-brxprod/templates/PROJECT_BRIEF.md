@@ -122,10 +122,6 @@ this before building (AGENTS.md › Design fidelity).
 _TODO_ — **GSAP** or **Bricks Interactions** (asked by `init-brxprod`; see
 AGENTS.md › Motion). Note any effects the design calls for.
 
-- **GSAP in the editor:** _TODO_ — **No** (recommended: effects run on the
-  live site only, selectors scoped with `body.bricks-is-frontend`) or **Yes**.
-  GSAP only.
-
 ## Imagery
 
 - **Style:** _TODO_

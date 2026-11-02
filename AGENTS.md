@@ -309,31 +309,6 @@ Never mix the two on the same element.
        never put the effect's CSS on a BEM block class or hard-code BEM
        selectors into it.
     5. Verify on the front end that the effect runs and nothing flashes.
-  - **Editor or live site only** — `PROJECT_BRIEF.md` › Motion › *GSAP in
-    the editor* (asked by `init-brxprod`; if missing, ask). **Yes** → leave
-    selectors unscoped. **No** (the recommended default) → effects must run on
-    the live site only: prefix **every** selector you write that reaches the
-    document (the fallback effect's code and CSS below, and any selector of
-    your own) with `body.bricks-is-frontend` — the class Bricks puts on
-    `<body>` on the front end only, not in the editor canvas — e.g. `.card` →
-    `body.bricks-is-frontend .card`. Selectors inside an already-matched
-    element (`el.querySelector(...)`) need no prefix.
-    **This applies to plugin effects too — the user's answer overrides the
-    plugin's "don't edit the snippet" advice.** Never leave an effect running
-    in the editor when the answer is **No**, and never decide that on your own.
-    After every `brxprod/install-gsap-effect`, in the same step:
-    1. Read the effect's snippet through Fluent Snippets (execute-php:
-       `(new \FluentSnippets\App\Model\Snippet())->findByFileName($file)`;
-       the file name is in the install result's `snippet.file`).
-    2. In its JavaScript, change the one place that collects the elements by
-       the effect class — e.g. `".brxp-fx-t-04:not(` → `"body.bricks-is-frontend
-       .brxp-fx-t-04:not(` — and make sure exactly one place changed.
-    3. Save with `->updateSnippet($file, $code, $meta)` (keep the meta), read
-       it back, and check the page on the front end: the effect still starts.
-    Leave the returned class `css` byte-for-byte (it is static styling, not
-    motion). An effect install may restore the unscoped snippet, so repeat the
-    prefix after any re-install, and tell the user the effects are front-end
-    only.
   - **Effect not in the plugin (temporary fallback).** The plugin carries
     only part of the library. If `get-gsap-effects` doesn't list the effect,
     tell the user which one is missing and use the library version **only
